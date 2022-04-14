@@ -46,6 +46,7 @@ extend type Query {
 extend type Mutation {
   serviceTicketCreate(input: ServiceTicketCreateInput!): ServiceTicketMutationResult!
   serviceTicketUpdate(input: ServiceTicketUpdateInput!): ServiceTicketMutationResult!
+  serviceTicketDelete(input: ServiceTicketDeleteInput!): ServiceTicketMutationResult!
   serviceTicketAddPhoto(input: ServiceTicketAddPhotoInput!): ServiceTicketPhotoAuthHeaderResult!
   serviceTicketRemovePhoto(input: ServiceTicketRemovePhotoInput!): ServiceTicketMutationResult!
   serviceTicketSubmit(input: ServiceTicketSubmitInput!): ServiceTicketMutationResult!
@@ -72,6 +73,10 @@ input ServiceTicketUpdateInput {
   title: String!
   description: String!
   priority: Int!
+}
+
+input ServiceTicketDeleteInput {
+  serviceTicketId: ObjectID!
 }
 
 input ServiceTicketAddPhotoInput {

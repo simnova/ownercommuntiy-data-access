@@ -383,6 +383,7 @@ export type Mutation = {
   serviceTicketAssign: ServiceTicketMutationResult;
   serviceTicketChangeStatus: ServiceTicketMutationResult;
   serviceTicketCreate: ServiceTicketMutationResult;
+  serviceTicketDelete: ServiceTicketMutationResult;
   serviceTicketRemovePhoto: ServiceTicketMutationResult;
   serviceTicketSubmit: ServiceTicketMutationResult;
   serviceTicketUpdate: ServiceTicketMutationResult;
@@ -509,6 +510,11 @@ export type MutationServiceTicketChangeStatusArgs = {
 /**  Base Mutation Type definition - all mutations will be defined in separate files extending this type  */
 export type MutationServiceTicketCreateArgs = {
   input: ServiceTicketCreateInput;
+};
+
+/**  Base Mutation Type definition - all mutations will be defined in separate files extending this type  */
+export type MutationServiceTicketDeleteArgs = {
+  input: ServiceTicketDeleteInput;
 };
 
 /**  Base Mutation Type definition - all mutations will be defined in separate files extending this type  */
@@ -804,6 +810,10 @@ export type ServiceTicketCreateInput = {
   propertyId?: InputMaybe<Scalars["ObjectID"]>;
   requestorId: Scalars["ObjectID"];
   title: Scalars["String"];
+};
+
+export type ServiceTicketDeleteInput = {
+  serviceTicketId: Scalars["ObjectID"];
 };
 
 export type ServiceTicketMutationResult = {
@@ -1117,6 +1127,7 @@ export type ResolversTypes = ResolversObject<{
   ServiceTicketAssignInput: ServiceTicketAssignInput;
   ServiceTicketChangeStatusInput: ServiceTicketChangeStatusInput;
   ServiceTicketCreateInput: ServiceTicketCreateInput;
+  ServiceTicketDeleteInput: ServiceTicketDeleteInput;
   ServiceTicketMutationResult: ResolverTypeWrapper<ServiceTicketMutationResult>;
   ServiceTicketPermissions: ResolverTypeWrapper<ServiceTicketPermissions>;
   ServiceTicketPermissionsInput: ServiceTicketPermissionsInput;
@@ -1263,6 +1274,7 @@ export type ResolversParentTypes = ResolversObject<{
   ServiceTicketAssignInput: ServiceTicketAssignInput;
   ServiceTicketChangeStatusInput: ServiceTicketChangeStatusInput;
   ServiceTicketCreateInput: ServiceTicketCreateInput;
+  ServiceTicketDeleteInput: ServiceTicketDeleteInput;
   ServiceTicketMutationResult: ServiceTicketMutationResult;
   ServiceTicketPermissions: ServiceTicketPermissions;
   ServiceTicketPermissionsInput: ServiceTicketPermissionsInput;
@@ -2134,6 +2146,12 @@ export type MutationResolvers<
     ParentType,
     ContextType,
     RequireFields<MutationServiceTicketCreateArgs, "input">
+  >;
+  serviceTicketDelete?: Resolver<
+    ResolversTypes["ServiceTicketMutationResult"],
+    ParentType,
+    ContextType,
+    RequireFields<MutationServiceTicketDeleteArgs, "input">
   >;
   serviceTicketRemovePhoto?: Resolver<
     ResolversTypes["ServiceTicketMutationResult"],

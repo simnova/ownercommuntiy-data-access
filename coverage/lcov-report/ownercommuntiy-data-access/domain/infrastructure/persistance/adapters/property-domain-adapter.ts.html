@@ -1,0 +1,607 @@
+
+<!doctype html>
+<html lang="en">
+
+<head>
+    <title>Code coverage report for ownercommuntiy-data-access/domain/infrastructure/persistance/adapters/property-domain-adapter.ts</title>
+    <meta charset="utf-8" />
+    <link rel="stylesheet" href="../../../../../prettify.css" />
+    <link rel="stylesheet" href="../../../../../base.css" />
+    <link rel="shortcut icon" type="image/x-icon" href="../../../../../favicon.png" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <style type='text/css'>
+        .coverage-summary .sorter {
+            background-image: url(../../../../../sort-arrow-sprite.png);
+        }
+    </style>
+</head>
+    
+<body>
+<div class='wrapper'>
+    <div class='pad1'>
+        <h1><a href="../../../../../index.html">All files</a> / <a href="index.html">ownercommuntiy-data-access/domain/infrastructure/persistance/adapters</a> property-domain-adapter.ts</h1>
+        <div class='clearfix'>
+            
+            <div class='fl pad1y space-right2'>
+                <span class="strong">0% </span>
+                <span class="quiet">Statements</span>
+                <span class='fraction'>0/103</span>
+            </div>
+        
+            
+            <div class='fl pad1y space-right2'>
+                <span class="strong">0% </span>
+                <span class="quiet">Branches</span>
+                <span class='fraction'>0/6</span>
+            </div>
+        
+            
+            <div class='fl pad1y space-right2'>
+                <span class="strong">0% </span>
+                <span class="quiet">Functions</span>
+                <span class='fraction'>0/87</span>
+            </div>
+        
+            
+            <div class='fl pad1y space-right2'>
+                <span class="strong">0% </span>
+                <span class="quiet">Lines</span>
+                <span class='fraction'>0/99</span>
+            </div>
+        
+            
+        </div>
+        <p class="quiet">
+            Press <em>n</em> or <em>j</em> to go to the next uncovered block, <em>b</em>, <em>p</em> or <em>k</em> for the previous block.
+        </p>
+        <template id="filterTemplate">
+            <div class="quiet">
+                Filter:
+                <input oninput="onInput()" type="search" id="fileSearch">
+            </div>
+        </template>
+    </div>
+    <div class='status-line low'></div>
+    <pre><table class="coverage">
+<tr><td class="line-count quiet"><a name='L1'></a><a href='#L1'>1</a>
+<a name='L2'></a><a href='#L2'>2</a>
+<a name='L3'></a><a href='#L3'>3</a>
+<a name='L4'></a><a href='#L4'>4</a>
+<a name='L5'></a><a href='#L5'>5</a>
+<a name='L6'></a><a href='#L6'>6</a>
+<a name='L7'></a><a href='#L7'>7</a>
+<a name='L8'></a><a href='#L8'>8</a>
+<a name='L9'></a><a href='#L9'>9</a>
+<a name='L10'></a><a href='#L10'>10</a>
+<a name='L11'></a><a href='#L11'>11</a>
+<a name='L12'></a><a href='#L12'>12</a>
+<a name='L13'></a><a href='#L13'>13</a>
+<a name='L14'></a><a href='#L14'>14</a>
+<a name='L15'></a><a href='#L15'>15</a>
+<a name='L16'></a><a href='#L16'>16</a>
+<a name='L17'></a><a href='#L17'>17</a>
+<a name='L18'></a><a href='#L18'>18</a>
+<a name='L19'></a><a href='#L19'>19</a>
+<a name='L20'></a><a href='#L20'>20</a>
+<a name='L21'></a><a href='#L21'>21</a>
+<a name='L22'></a><a href='#L22'>22</a>
+<a name='L23'></a><a href='#L23'>23</a>
+<a name='L24'></a><a href='#L24'>24</a>
+<a name='L25'></a><a href='#L25'>25</a>
+<a name='L26'></a><a href='#L26'>26</a>
+<a name='L27'></a><a href='#L27'>27</a>
+<a name='L28'></a><a href='#L28'>28</a>
+<a name='L29'></a><a href='#L29'>29</a>
+<a name='L30'></a><a href='#L30'>30</a>
+<a name='L31'></a><a href='#L31'>31</a>
+<a name='L32'></a><a href='#L32'>32</a>
+<a name='L33'></a><a href='#L33'>33</a>
+<a name='L34'></a><a href='#L34'>34</a>
+<a name='L35'></a><a href='#L35'>35</a>
+<a name='L36'></a><a href='#L36'>36</a>
+<a name='L37'></a><a href='#L37'>37</a>
+<a name='L38'></a><a href='#L38'>38</a>
+<a name='L39'></a><a href='#L39'>39</a>
+<a name='L40'></a><a href='#L40'>40</a>
+<a name='L41'></a><a href='#L41'>41</a>
+<a name='L42'></a><a href='#L42'>42</a>
+<a name='L43'></a><a href='#L43'>43</a>
+<a name='L44'></a><a href='#L44'>44</a>
+<a name='L45'></a><a href='#L45'>45</a>
+<a name='L46'></a><a href='#L46'>46</a>
+<a name='L47'></a><a href='#L47'>47</a>
+<a name='L48'></a><a href='#L48'>48</a>
+<a name='L49'></a><a href='#L49'>49</a>
+<a name='L50'></a><a href='#L50'>50</a>
+<a name='L51'></a><a href='#L51'>51</a>
+<a name='L52'></a><a href='#L52'>52</a>
+<a name='L53'></a><a href='#L53'>53</a>
+<a name='L54'></a><a href='#L54'>54</a>
+<a name='L55'></a><a href='#L55'>55</a>
+<a name='L56'></a><a href='#L56'>56</a>
+<a name='L57'></a><a href='#L57'>57</a>
+<a name='L58'></a><a href='#L58'>58</a>
+<a name='L59'></a><a href='#L59'>59</a>
+<a name='L60'></a><a href='#L60'>60</a>
+<a name='L61'></a><a href='#L61'>61</a>
+<a name='L62'></a><a href='#L62'>62</a>
+<a name='L63'></a><a href='#L63'>63</a>
+<a name='L64'></a><a href='#L64'>64</a>
+<a name='L65'></a><a href='#L65'>65</a>
+<a name='L66'></a><a href='#L66'>66</a>
+<a name='L67'></a><a href='#L67'>67</a>
+<a name='L68'></a><a href='#L68'>68</a>
+<a name='L69'></a><a href='#L69'>69</a>
+<a name='L70'></a><a href='#L70'>70</a>
+<a name='L71'></a><a href='#L71'>71</a>
+<a name='L72'></a><a href='#L72'>72</a>
+<a name='L73'></a><a href='#L73'>73</a>
+<a name='L74'></a><a href='#L74'>74</a>
+<a name='L75'></a><a href='#L75'>75</a>
+<a name='L76'></a><a href='#L76'>76</a>
+<a name='L77'></a><a href='#L77'>77</a>
+<a name='L78'></a><a href='#L78'>78</a>
+<a name='L79'></a><a href='#L79'>79</a>
+<a name='L80'></a><a href='#L80'>80</a>
+<a name='L81'></a><a href='#L81'>81</a>
+<a name='L82'></a><a href='#L82'>82</a>
+<a name='L83'></a><a href='#L83'>83</a>
+<a name='L84'></a><a href='#L84'>84</a>
+<a name='L85'></a><a href='#L85'>85</a>
+<a name='L86'></a><a href='#L86'>86</a>
+<a name='L87'></a><a href='#L87'>87</a>
+<a name='L88'></a><a href='#L88'>88</a>
+<a name='L89'></a><a href='#L89'>89</a>
+<a name='L90'></a><a href='#L90'>90</a>
+<a name='L91'></a><a href='#L91'>91</a>
+<a name='L92'></a><a href='#L92'>92</a>
+<a name='L93'></a><a href='#L93'>93</a>
+<a name='L94'></a><a href='#L94'>94</a>
+<a name='L95'></a><a href='#L95'>95</a>
+<a name='L96'></a><a href='#L96'>96</a>
+<a name='L97'></a><a href='#L97'>97</a>
+<a name='L98'></a><a href='#L98'>98</a>
+<a name='L99'></a><a href='#L99'>99</a>
+<a name='L100'></a><a href='#L100'>100</a>
+<a name='L101'></a><a href='#L101'>101</a>
+<a name='L102'></a><a href='#L102'>102</a>
+<a name='L103'></a><a href='#L103'>103</a>
+<a name='L104'></a><a href='#L104'>104</a>
+<a name='L105'></a><a href='#L105'>105</a>
+<a name='L106'></a><a href='#L106'>106</a>
+<a name='L107'></a><a href='#L107'>107</a>
+<a name='L108'></a><a href='#L108'>108</a>
+<a name='L109'></a><a href='#L109'>109</a>
+<a name='L110'></a><a href='#L110'>110</a>
+<a name='L111'></a><a href='#L111'>111</a>
+<a name='L112'></a><a href='#L112'>112</a>
+<a name='L113'></a><a href='#L113'>113</a>
+<a name='L114'></a><a href='#L114'>114</a>
+<a name='L115'></a><a href='#L115'>115</a>
+<a name='L116'></a><a href='#L116'>116</a>
+<a name='L117'></a><a href='#L117'>117</a>
+<a name='L118'></a><a href='#L118'>118</a>
+<a name='L119'></a><a href='#L119'>119</a>
+<a name='L120'></a><a href='#L120'>120</a>
+<a name='L121'></a><a href='#L121'>121</a>
+<a name='L122'></a><a href='#L122'>122</a>
+<a name='L123'></a><a href='#L123'>123</a>
+<a name='L124'></a><a href='#L124'>124</a>
+<a name='L125'></a><a href='#L125'>125</a>
+<a name='L126'></a><a href='#L126'>126</a>
+<a name='L127'></a><a href='#L127'>127</a>
+<a name='L128'></a><a href='#L128'>128</a>
+<a name='L129'></a><a href='#L129'>129</a>
+<a name='L130'></a><a href='#L130'>130</a>
+<a name='L131'></a><a href='#L131'>131</a>
+<a name='L132'></a><a href='#L132'>132</a>
+<a name='L133'></a><a href='#L133'>133</a>
+<a name='L134'></a><a href='#L134'>134</a>
+<a name='L135'></a><a href='#L135'>135</a>
+<a name='L136'></a><a href='#L136'>136</a>
+<a name='L137'></a><a href='#L137'>137</a>
+<a name='L138'></a><a href='#L138'>138</a>
+<a name='L139'></a><a href='#L139'>139</a>
+<a name='L140'></a><a href='#L140'>140</a>
+<a name='L141'></a><a href='#L141'>141</a>
+<a name='L142'></a><a href='#L142'>142</a>
+<a name='L143'></a><a href='#L143'>143</a>
+<a name='L144'></a><a href='#L144'>144</a>
+<a name='L145'></a><a href='#L145'>145</a>
+<a name='L146'></a><a href='#L146'>146</a>
+<a name='L147'></a><a href='#L147'>147</a>
+<a name='L148'></a><a href='#L148'>148</a>
+<a name='L149'></a><a href='#L149'>149</a>
+<a name='L150'></a><a href='#L150'>150</a>
+<a name='L151'></a><a href='#L151'>151</a>
+<a name='L152'></a><a href='#L152'>152</a>
+<a name='L153'></a><a href='#L153'>153</a>
+<a name='L154'></a><a href='#L154'>154</a>
+<a name='L155'></a><a href='#L155'>155</a>
+<a name='L156'></a><a href='#L156'>156</a>
+<a name='L157'></a><a href='#L157'>157</a>
+<a name='L158'></a><a href='#L158'>158</a>
+<a name='L159'></a><a href='#L159'>159</a>
+<a name='L160'></a><a href='#L160'>160</a>
+<a name='L161'></a><a href='#L161'>161</a>
+<a name='L162'></a><a href='#L162'>162</a>
+<a name='L163'></a><a href='#L163'>163</a>
+<a name='L164'></a><a href='#L164'>164</a>
+<a name='L165'></a><a href='#L165'>165</a>
+<a name='L166'></a><a href='#L166'>166</a>
+<a name='L167'></a><a href='#L167'>167</a>
+<a name='L168'></a><a href='#L168'>168</a>
+<a name='L169'></a><a href='#L169'>169</a>
+<a name='L170'></a><a href='#L170'>170</a>
+<a name='L171'></a><a href='#L171'>171</a>
+<a name='L172'></a><a href='#L172'>172</a>
+<a name='L173'></a><a href='#L173'>173</a>
+<a name='L174'></a><a href='#L174'>174</a>
+<a name='L175'></a><a href='#L175'>175</a></td><td class="line-coverage quiet"><span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span></td><td class="text"><pre class="prettyprint lang-js">import { Property, ListingDetail, BedroomDetail, AdditionalAmenity } from '../../../../infrastructure/data-sources/cosmos-db/models/property';
+import { CommunityEntityReference } from '../../../contexts/community/community';
+import { MemberEntityReference } from '../../../contexts/community/member';
+import { DomainExecutionContext } from '../../../contexts/context';
+import { LocationEntityReference } from '../../../contexts/property/location';
+<span class="cstat-no" title="statement not covered" >import { Property as PropertyDO, PropertyProps } from '../../../contexts/property/property';</span>
+<span class="cstat-no" title="statement not covered" >import { MongooseDomainAdapter, MongoosePropArray } from '../mongo-domain-adapter';</span>
+<span class="cstat-no" title="statement not covered" >import { MongoTypeConverter } from '../mongo-type-converter';</span>
+<span class="cstat-no" title="statement not covered" >import { CommunityDomainAdapter } from './community-domain-adapter';</span>
+<span class="cstat-no" title="statement not covered" >import { LocationDomainAdapter } from './location-domain-adapter';</span>
+<span class="cstat-no" title="statement not covered" >import { MemberDomainAdapter } from './member-domain-adapter';</span>
+import { ListingDetailProps } from '../../../contexts/property/listing-detail';
+import { BedroomDetailProps } from '../../../contexts/property/bedroom-detail';
+import { AdditionalAmenityProps } from '../../../contexts/property/additional-amenity';
+&nbsp;
+<span class="cstat-no" title="statement not covered" >export class P</span>ropertyConverter extends MongoTypeConverter&lt;DomainExecutionContext,Property,PropertyDomainAdapter,PropertyDO&lt;PropertyDomainAdapter&gt;&gt; {
+<span class="fstat-no" title="function not covered" >  constructor() {</span>
+<span class="cstat-no" title="statement not covered" >    super(PropertyDomainAdapter, PropertyDO);</span>
+  }
+}
+&nbsp;
+<span class="cstat-no" title="statement not covered" >export class P</span>ropertyDomainAdapter extends MongooseDomainAdapter&lt;Property&gt; implements PropertyProps {
+<span class="fstat-no" title="function not covered" >  constructor(p</span>rops: Property) { <span class="cstat-no" title="statement not covered" >super(props); </span>}
+&nbsp;
+<span class="fstat-no" title="function not covered" >  get c</span>ommunity() {
+<span class="cstat-no" title="statement not covered" >    <span class="missing-if-branch" title="if path not taken" >I</span>if(this.props.community) {<span class="cstat-no" title="statement not covered" >return new CommunityDomainAdapter(this.props.community);}</span></span>
+  }
+  public <span class="fstat-no" title="function not covered" >setCommunityRef(</span>community:CommunityEntityReference) {
+<span class="cstat-no" title="statement not covered" >    this.props.set('community',community.id);</span>
+  }
+&nbsp;
+<span class="fstat-no" title="function not covered" >  get l</span>ocation() {
+<span class="cstat-no" title="statement not covered" >    <span class="missing-if-branch" title="if path not taken" >I</span>if(this.props.location) {<span class="cstat-no" title="statement not covered" >return new LocationDomainAdapter(this.props.location);}</span></span>
+  }
+  public <span class="fstat-no" title="function not covered" >setLocationRef(</span>owner:LocationEntityReference) {
+<span class="cstat-no" title="statement not covered" >    this.props.set('location',owner.id);</span>
+  }
+  
+<span class="fstat-no" title="function not covered" >  get o</span>wner() {
+<span class="cstat-no" title="statement not covered" >    <span class="missing-if-branch" title="if path not taken" >I</span>if(this.props.owner) {<span class="cstat-no" title="statement not covered" >return new MemberDomainAdapter(this.props.owner);}</span></span>
+  }
+  public <span class="fstat-no" title="function not covered" >setOwnerRef(</span>owner:MemberEntityReference | undefined) {
+<span class="cstat-no" title="statement not covered" >    this.props.set('owner',owner?owner.id:undefined);</span>
+  }
+&nbsp;
+<span class="fstat-no" title="function not covered" >  get p</span>ropertyName() {<span class="cstat-no" title="statement not covered" >return this.props.propertyName;}</span>
+<span class="fstat-no" title="function not covered" >  set p</span>ropertyName(propertyName) {<span class="cstat-no" title="statement not covered" >this.props.propertyName = propertyName;}</span>
+&nbsp;
+<span class="fstat-no" title="function not covered" >  get p</span>ropertyType() {<span class="cstat-no" title="statement not covered" >return this.props.propertyType;}</span>
+<span class="fstat-no" title="function not covered" >  set p</span>ropertyType(propertyType) {<span class="cstat-no" title="statement not covered" >this.props.propertyType = propertyType;}</span>
+&nbsp;
+<span class="fstat-no" title="function not covered" >  get l</span>istedForSale() {<span class="cstat-no" title="statement not covered" >return this.props.listedForSale;}</span>
+<span class="fstat-no" title="function not covered" >  set l</span>istedForSale(listedForSale) {<span class="cstat-no" title="statement not covered" >this.props.listedForSale = listedForSale;}</span>
+&nbsp;
+<span class="fstat-no" title="function not covered" >  get l</span>istedForRent() {<span class="cstat-no" title="statement not covered" >return this.props.listedForRent;}</span>
+<span class="fstat-no" title="function not covered" >  set l</span>istedForRent(listedForRent) {<span class="cstat-no" title="statement not covered" >this.props.listedForRent = listedForRent;}</span>
+&nbsp;
+<span class="fstat-no" title="function not covered" >  get l</span>istedForLease() {<span class="cstat-no" title="statement not covered" >return this.props.listedForLease;}</span>
+<span class="fstat-no" title="function not covered" >  set l</span>istedForLease(listedForLease) {<span class="cstat-no" title="statement not covered" >this.props.listedForLease = listedForLease;}</span>
+&nbsp;
+<span class="fstat-no" title="function not covered" >  get l</span>istedInDirectory() {<span class="cstat-no" title="statement not covered" >return this.props.listedInDirectory;}</span>
+<span class="fstat-no" title="function not covered" >  set l</span>istedInDirectory(listedInDirectory) {<span class="cstat-no" title="statement not covered" >this.props.listedInDirectory = listedInDirectory;}</span>
+&nbsp;
+<span class="fstat-no" title="function not covered" >  get l</span>istingDetail(){
+<span class="cstat-no" title="statement not covered" >    <span class="missing-if-branch" title="if path not taken" >I</span>if(!this.props.listingDetail){<span class="cstat-no" title="statement not covered" >this.props.set('listingDetail',{}); </span> }</span>
+<span class="cstat-no" title="statement not covered" >    return new ListingDetailDomainAdapter(this.props.listingDetail); </span>
+  }
+}
+&nbsp;
+<span class="cstat-no" title="statement not covered" >export class L</span>istingDetailDomainAdapter implements ListingDetailProps {
+<span class="fstat-no" title="function not covered" >  constructor(public readonly <span class="cstat-no" title="statement not covered" >p</span>rops: ListingDetail)</span> {}
+<span class="fstat-no" title="function not covered" >  public get i</span>d(): string { <span class="cstat-no" title="statement not covered" >return this.props.id.valueOf() as string; </span>}
+&nbsp;
+<span class="fstat-no" title="function not covered" >  get p</span>rice() {<span class="cstat-no" title="statement not covered" >return this.props.price;}</span>
+<span class="fstat-no" title="function not covered" >  set p</span>rice(price) {<span class="cstat-no" title="statement not covered" >this.props.price = price;}</span>
+&nbsp;
+<span class="fstat-no" title="function not covered" >  get r</span>entHigh() {<span class="cstat-no" title="statement not covered" >return this.props.rentHigh;}</span>
+<span class="fstat-no" title="function not covered" >  set r</span>entHigh(rentHigh) {<span class="cstat-no" title="statement not covered" >this.props.rentHigh = rentHigh;}</span>
+&nbsp;
+<span class="fstat-no" title="function not covered" >  get r</span>entLow() {<span class="cstat-no" title="statement not covered" >return this.props.rentLow;}</span>
+<span class="fstat-no" title="function not covered" >  set r</span>entLow(rentLow) {<span class="cstat-no" title="statement not covered" >this.props.rentLow = rentLow;}</span>
+&nbsp;
+<span class="fstat-no" title="function not covered" >  get l</span>ease() {<span class="cstat-no" title="statement not covered" >return this.props.lease;}</span>
+<span class="fstat-no" title="function not covered" >  set l</span>ease(lease) {<span class="cstat-no" title="statement not covered" >this.props.lease = lease;}</span>
+&nbsp;
+<span class="fstat-no" title="function not covered" >  get m</span>axGuests() {<span class="cstat-no" title="statement not covered" >return this.props.maxGuests;}</span>
+<span class="fstat-no" title="function not covered" >  set m</span>axGuests(maxGuests) {<span class="cstat-no" title="statement not covered" >this.props.maxGuests = maxGuests;}</span>
+&nbsp;
+<span class="fstat-no" title="function not covered" >  get b</span>edrooms() {<span class="cstat-no" title="statement not covered" >return this.props.bedrooms;}</span>
+<span class="fstat-no" title="function not covered" >  set b</span>edrooms(bedrooms) {<span class="cstat-no" title="statement not covered" >this.props.bedrooms = bedrooms;}</span>
+&nbsp;
+<span class="fstat-no" title="function not covered" >  get b</span>edroomDetails() { <span class="cstat-no" title="statement not covered" >return new MongoosePropArray(this.props.bedroomDetails,BedroomDetailDomainAdapter); </span>}
+&nbsp;
+<span class="fstat-no" title="function not covered" >  get b</span>athrooms() {<span class="cstat-no" title="statement not covered" >return this.props.bathrooms;}</span>
+<span class="fstat-no" title="function not covered" >  set b</span>athrooms(bathrooms) {<span class="cstat-no" title="statement not covered" >this.props.bathrooms = bathrooms;}</span>
+&nbsp;
+<span class="fstat-no" title="function not covered" >  get s</span>quareFeet() {<span class="cstat-no" title="statement not covered" >return this.props.squareFeet;}</span>
+<span class="fstat-no" title="function not covered" >  set s</span>quareFeet(squareFeet) {<span class="cstat-no" title="statement not covered" >this.props.squareFeet = squareFeet;}</span>
+&nbsp;
+<span class="fstat-no" title="function not covered" >  get y</span>earBuilt() {<span class="cstat-no" title="statement not covered" >return this.props.yearBuilt;}</span>
+<span class="fstat-no" title="function not covered" >  set y</span>earBuilt(yearBuilt) {<span class="cstat-no" title="statement not covered" >this.props.yearBuilt = yearBuilt;}</span>
+&nbsp;
+<span class="fstat-no" title="function not covered" >  get l</span>otSize() {<span class="cstat-no" title="statement not covered" >return this.props.lotSize;}</span>
+<span class="fstat-no" title="function not covered" >  set l</span>otSize(lotSize) {<span class="cstat-no" title="statement not covered" >this.props.lotSize = lotSize;}</span>
+&nbsp;
+<span class="fstat-no" title="function not covered" >  get d</span>escription() {<span class="cstat-no" title="statement not covered" >return this.props.description;}</span>
+<span class="fstat-no" title="function not covered" >  set d</span>escription(description) {<span class="cstat-no" title="statement not covered" >this.props.description = description;}</span>
+&nbsp;
+<span class="fstat-no" title="function not covered" >  get a</span>menities() {<span class="cstat-no" title="statement not covered" >return this.props.amenities;}</span>
+<span class="fstat-no" title="function not covered" >  set a</span>menities(amenities) {<span class="cstat-no" title="statement not covered" >this.props.amenities = amenities;}</span>
+&nbsp;
+<span class="fstat-no" title="function not covered" >  get a</span>dditionalAmenities() { <span class="cstat-no" title="statement not covered" >return new MongoosePropArray(this.props.additionalAmenities,AdditionalAmenityDomainAdapter); </span>}
+&nbsp;
+<span class="fstat-no" title="function not covered" >  get i</span>mages() {<span class="cstat-no" title="statement not covered" >return this.props.images;}</span>
+<span class="fstat-no" title="function not covered" >  set i</span>mages(images) {<span class="cstat-no" title="statement not covered" >this.props.images = images;}</span>
+&nbsp;
+<span class="fstat-no" title="function not covered" >  get v</span>ideo() {<span class="cstat-no" title="statement not covered" >return this.props.video;}</span>
+<span class="fstat-no" title="function not covered" >  set v</span>ideo(video) {<span class="cstat-no" title="statement not covered" >this.props.video = video;}</span>
+&nbsp;
+<span class="fstat-no" title="function not covered" >  get f</span>loorPlan() {<span class="cstat-no" title="statement not covered" >return this.props.floorPlan;}</span>
+<span class="fstat-no" title="function not covered" >  set f</span>loorPlan(floorPlan) {<span class="cstat-no" title="statement not covered" >this.props.floorPlan = floorPlan;}</span>
+&nbsp;
+<span class="fstat-no" title="function not covered" >  get f</span>loorPlanImages() {<span class="cstat-no" title="statement not covered" >return this.props.floorPlanImages;}</span>
+<span class="fstat-no" title="function not covered" >  set f</span>loorPlanImages(floorPlanImages) {<span class="cstat-no" title="statement not covered" >this.props.floorPlanImages = floorPlanImages;}</span>
+&nbsp;
+<span class="fstat-no" title="function not covered" >  get l</span>istingAgent() {<span class="cstat-no" title="statement not covered" >return this.props.listingAgent;}</span>
+<span class="fstat-no" title="function not covered" >  set l</span>istingAgent(listingAgent) {<span class="cstat-no" title="statement not covered" >this.props.listingAgent = listingAgent;}</span>
+&nbsp;
+<span class="fstat-no" title="function not covered" >  get l</span>istingAgentPhone() {<span class="cstat-no" title="statement not covered" >return this.props.listingAgentPhone;}</span>
+<span class="fstat-no" title="function not covered" >  set l</span>istingAgentPhone(listingAgentPhone) {<span class="cstat-no" title="statement not covered" >this.props.listingAgentPhone = listingAgentPhone;}</span>
+&nbsp;
+<span class="fstat-no" title="function not covered" >  get l</span>istingAgentEmail() {<span class="cstat-no" title="statement not covered" >return this.props.listingAgentEmail;}</span>
+<span class="fstat-no" title="function not covered" >  set l</span>istingAgentEmail(listingAgentEmail) {<span class="cstat-no" title="statement not covered" >this.props.listingAgentEmail = listingAgentEmail;}</span>
+&nbsp;
+<span class="fstat-no" title="function not covered" >  get l</span>istingAgentWebsite() {<span class="cstat-no" title="statement not covered" >return this.props.listingAgentWebsite;}</span>
+<span class="fstat-no" title="function not covered" >  set l</span>istingAgentWebsite(listingAgentWebsite) {<span class="cstat-no" title="statement not covered" >this.props.listingAgentWebsite = listingAgentWebsite;}</span>
+&nbsp;
+<span class="fstat-no" title="function not covered" >  get l</span>istingAgentCompany() {<span class="cstat-no" title="statement not covered" >return this.props.listingAgentCompany;}</span>
+<span class="fstat-no" title="function not covered" >  set l</span>istingAgentCompany(listingAgentCompany) {<span class="cstat-no" title="statement not covered" >this.props.listingAgentCompany = listingAgentCompany;}</span>
+&nbsp;
+<span class="fstat-no" title="function not covered" >  get l</span>istingAgentCompanyPhone() {<span class="cstat-no" title="statement not covered" >return this.props.listingAgentCompanyPhone;}</span>
+<span class="fstat-no" title="function not covered" >  set l</span>istingAgentCompanyPhone(listingAgentCompanyPhone) {<span class="cstat-no" title="statement not covered" >this.props.listingAgentCompanyPhone = listingAgentCompanyPhone;}</span>
+&nbsp;
+<span class="fstat-no" title="function not covered" >  get l</span>istingAgentCompanyEmail() {<span class="cstat-no" title="statement not covered" >return this.props.listingAgentCompanyEmail;}</span>
+<span class="fstat-no" title="function not covered" >  set l</span>istingAgentCompanyEmail(listingAgentCompanyEmail) {<span class="cstat-no" title="statement not covered" >this.props.listingAgentCompanyEmail = listingAgentCompanyEmail;}</span>
+&nbsp;
+<span class="fstat-no" title="function not covered" >  get l</span>istingAgentCompanyWebsite() {<span class="cstat-no" title="statement not covered" >return this.props.listingAgentCompanyWebsite;}</span>
+<span class="fstat-no" title="function not covered" >  set l</span>istingAgentCompanyWebsite(listingAgentCompanyWebsite) {<span class="cstat-no" title="statement not covered" >this.props.listingAgentCompanyWebsite = listingAgentCompanyWebsite;}</span>
+&nbsp;
+<span class="fstat-no" title="function not covered" >  get l</span>istingAgentCompanyAddress() {<span class="cstat-no" title="statement not covered" >return this.props.listingAgentCompanyAddress;}</span>
+<span class="fstat-no" title="function not covered" >  set l</span>istingAgentCompanyAddress(listingAgentCompanyAddress) {<span class="cstat-no" title="statement not covered" >this.props.listingAgentCompanyAddress = listingAgentCompanyAddress;}</span>
+&nbsp;
+}
+&nbsp;
+<span class="cstat-no" title="statement not covered" >export class B</span>edroomDetailDomainAdapter implements BedroomDetailProps {
+<span class="fstat-no" title="function not covered" >  constructor(public readonly <span class="cstat-no" title="statement not covered" >p</span>rops: BedroomDetail)</span> {}
+<span class="fstat-no" title="function not covered" >  public get i</span>d(): string { <span class="cstat-no" title="statement not covered" >return this.props.id.valueOf() as string; </span>}
+&nbsp;
+<span class="fstat-no" title="function not covered" >  get r</span>oomName() {<span class="cstat-no" title="statement not covered" >return this.props.roomName;}</span>
+<span class="fstat-no" title="function not covered" >  set r</span>oomName(roomName) {<span class="cstat-no" title="statement not covered" >this.props.roomName = roomName;}</span>
+&nbsp;
+<span class="fstat-no" title="function not covered" >  get b</span>edDescriptions() {<span class="cstat-no" title="statement not covered" >return this.props.bedDescriptions;}</span>
+<span class="fstat-no" title="function not covered" >  set b</span>edDescriptions(bedDescriptions) {<span class="cstat-no" title="statement not covered" >this.props.bedDescriptions = bedDescriptions;}</span>
+}
+&nbsp;
+<span class="cstat-no" title="statement not covered" >export class A</span>dditionalAmenityDomainAdapter implements AdditionalAmenityProps {
+<span class="fstat-no" title="function not covered" >  constructor(public readonly <span class="cstat-no" title="statement not covered" >p</span>rops: AdditionalAmenity)</span> {}
+<span class="fstat-no" title="function not covered" >  public get i</span>d(): string { <span class="cstat-no" title="statement not covered" >return this.props.id.valueOf() as string; </span>}
+&nbsp;
+<span class="fstat-no" title="function not covered" >  get c</span>ategory() {<span class="cstat-no" title="statement not covered" >return this.props.category;}</span>
+<span class="fstat-no" title="function not covered" >  set c</span>ategory(category) {<span class="cstat-no" title="statement not covered" >this.props.category = category;}</span>
+&nbsp;
+<span class="fstat-no" title="function not covered" >  get a</span>menities() {<span class="cstat-no" title="statement not covered" >return this.props.amenities;}</span>
+<span class="fstat-no" title="function not covered" >  set a</span>menities(amenities) {<span class="cstat-no" title="statement not covered" >this.props.amenities = amenities;}</span>
+}</pre></td></tr></table></pre>
+
+                <div class='push'></div><!-- for sticky footer -->
+            </div><!-- /wrapper -->
+            <div class='footer quiet pad2 space-top1 center small'>
+                Code coverage generated by
+                <a href="https://istanbul.js.org/" target="_blank" rel="noopener noreferrer">istanbul</a>
+                at Fri May 06 2022 09:55:41 GMT-0400 (Eastern Daylight Time)
+            </div>
+        <script src="../../../../../prettify.js"></script>
+        <script>
+            window.onload = function () {
+                prettyPrint();
+            };
+        </script>
+        <script src="../../../../../sorter.js"></script>
+        <script src="../../../../../block-navigation.js"></script>
+    </body>
+</html>
+    

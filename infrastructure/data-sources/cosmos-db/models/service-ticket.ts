@@ -3,6 +3,7 @@ import { Base, BaseOptions, EmbeddedBase } from './interfaces/base';
 import * as Community from './community';
 import * as Property from './property';
 import * as Member from './member';
+import { ObjectID } from 'graphql-scalars/mocks';
 
 export interface ActivityDetail extends EmbeddedBase {
   id: ObjectId;
@@ -24,11 +25,63 @@ export interface ServiceTicket extends Base {
   assignedTo?: PopulatedDoc<Member.Member>;
   title: string;
   description: string;
+  requestBundle?: Types.DocumentArray<HVACMaintenance|ApplianceMaintenance>;
   status: string;
   priority: number;
   activityLog: Types.DocumentArray<ActivityDetail>;
   photos:Types.DocumentArray<Photo>
 }
+
+export interface Request extends EmbeddedBase {
+  id: ObjectId;
+  requestInfo: string;
+  kind: string;
+}
+
+export const RequestModel = model<Request>('Request', new Schema<Request, Model<Request>, Request>(
+  {
+    id:ObjectID,    
+    requestInfo: {
+      type: String,
+      required: true,
+    },
+  },
+  {
+    discriminatorKey: 'kind',
+  } 
+));
+
+export interface HVACMaintenance extends Request {
+  hvacBrand: string;
+}
+export const HVACMaintenanceModel = RequestModel.discriminator<HVACMaintenance>('HVACMaintenance', new Schema<HVACMaintenance, Model<HVACMaintenance>, HVACMaintenance>(
+  {
+    hvacBrand: {
+      type: String,
+      required: true,
+    },
+  }
+));
+
+export interface ApplianceMaintenance extends Request {
+  applianceType: string;
+  applianceBrand: string;
+}
+export const ApplianceMaintenanceModel = RequestModel.discriminator<ApplianceMaintenance>('ApplianceMaintenance', new Schema<ApplianceMaintenance, Model<ApplianceMaintenance>, ApplianceMaintenance>(
+  {
+    applianceType: {
+      type: String,
+      required: true,
+    },
+    applianceBrand: {
+      type: String,
+      required: true,
+    },
+  }
+));
+
+
+
 
 export const ServiceTicketModel = model<ServiceTicket>('ServiceTicket', new Schema<ServiceTicket, Model<ServiceTicket>, ServiceTicket>(
   {
@@ -51,6 +104,7 @@ export const ServiceTicketModel = model<ServiceTicket>('ServiceTicket', new Sche
       required: true,
       maxlength: 2000,
     },
+    requestBundle: [RequestModel.schema],
     status: { 
       type: String, 
       enum: ['DRAFT','SUBMITTED','ASSIGNED','INPROGRESS','COMPLETED','CLOSED'],
@@ -95,3 +149,18 @@ export const ServiceTicketModel = model<ServiceTicket>('ServiceTicket', new Sche
     shardKey: {community:1} 
   }
 ));
+
+/*
+var x = await ServiceTicketModel.findById('5c8f8f8f8f8f8f8f8f8f8f8').exec();
+x.requestBundle.push( new HVACMaintenanceModel(
+  {requestInfo: 'test',
+  hvacBrand: 'test'}
+  ));
+x.requestBundle.push( new ApplianceMaintenanceModel(
+  {requestInfo: 'test',
+  applianceType: 'test',
+  applianceBrand: 'test'}
+  ));
+
+x.save();
+*/

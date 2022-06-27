@@ -1,6 +1,6 @@
 import { Base } from '../../../infrastructure/data-sources/cosmos-db/models/interfaces/base';
 import { Entity, EntityProps } from '../../shared/entity';
-import { PropArray } from '../../shared/prop-array';
+import { PropArray, VariableTypePropArray } from '../../shared/prop-array';
 import mongoose, {ObjectId} from 'mongoose';
 import { PropertyType } from '../../contexts/property/property-value-objects';
 
@@ -40,6 +40,37 @@ export class MongoosePropArray<propType extends EntityProps, docType extends mon
   }
   get items(): ReadonlyArray<propType> {
     return this.docArray.map((doc) => new this.adapter(doc));
+  }
+}
+
+export interface AdapterFactory<propType extends EntityProps, docType extends mongoose.Document> {
+  getInstance(doc:docType): propType;
+  getNewInstance(kind:string): propType;
+}
+
+export class MongooseVariableTypePropArray<propType extends EntityProps, docType extends mongoose.Document> implements VariableTypePropArray<propType> {
+  constructor(protected docArray:mongoose.Types.DocumentArray<docType>, protected adapterFactory:AdapterFactory<propType,docType>) {}
+  addItem(item: propType): propType {
+    var itemId = this.docArray.push(item['props']);
+    return this.docArray[itemId] as any as propType;
+  }
+  removeItem(item: propType): void {
+    this.docArray.pull({_id:item['props']['_id'] } );
+  }
+  removeAll(): void {
+    var ids = this.docArray.map((doc) => doc._id);
+    ids.forEach((id) => this.docArray.pull({_id: id}));
+  }
+  getNewItem(kind:string): propType {
+    if(!this.docArray) {
+      this.docArray = new mongoose.Types.DocumentArray<docType>([]);
+    }
+    var item = this.adapterFactory.getNewInstance(kind);
+    this.docArray.push(item['props']);
+    return item;
+  }
+  get items(): ReadonlyArray<propType> {
+    return this.docArray.map((doc) => this.adapterFactory.getInstance(doc));
   }
 }
 

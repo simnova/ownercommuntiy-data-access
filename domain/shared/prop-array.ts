@@ -7,3 +7,11 @@ export interface PropArray<propType extends EntityProps> {
   removeItem(item: propType): void;
   removeAll(): void;
 }
+
+export interface VariableTypePropArray<propType extends EntityProps> {
+  get items(): ReadonlyArray<propType>;
+  addItem(item: propType): void;
+  getNewItem(kind:string): propType;
+  removeItem(item: propType): void;
+  removeAll(): void;
+}

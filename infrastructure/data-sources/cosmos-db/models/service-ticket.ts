@@ -3,7 +3,6 @@ import { Base, BaseOptions, EmbeddedBase } from './interfaces/base';
 import * as Community from './community';
 import * as Property from './property';
 import * as Member from './member';
-import { ObjectID } from 'graphql-scalars/mocks';
 
 export interface ActivityDetail extends EmbeddedBase {
   id: ObjectId;
@@ -40,7 +39,6 @@ export interface Request extends EmbeddedBase {
 
 export const RequestModel = model<Request>('Request', new Schema<Request, Model<Request>, Request>(
   {
-    id:ObjectID,    
     requestInfo: {
       type: String,
       required: true,

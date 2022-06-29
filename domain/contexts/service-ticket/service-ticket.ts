@@ -6,10 +6,13 @@ import { AggregateRoot } from '../../shared/aggregate-root';
 import { DomainExecutionContext } from '../context';
 import * as ActivityDetailValueObjects from './activity-detail-value-objects';
 import * as ValueObjects from './service-ticket-value-objects';
-import { PropArray } from '../../shared/prop-array';
+import { PropArray, VariableTypePropArray } from '../../shared/prop-array';
 import { ActivityDetail, ActivityDetailEntityReference, ActivityDetailProps } from './activity-detail';
 import { Photo, PhotoEntityReference, PhotoProps } from './photo';
 import { ServiceTicketVisa } from '../iam/service-ticket-visa';
+import { RequestEntityReference } from './request';
+import { HVACMaintenanceEntityReference, HVACMaintenanceProps } from './hvac-maintenance';
+import { ApplianceMaintenance, ApplianceMaintenanceEntityReference, ApplianceMaintenanceProps } from './appliance-maintenance';
 
 export interface ServiceTicketProps extends EntityProps {
   readonly community: CommunityProps;
@@ -20,6 +23,8 @@ export interface ServiceTicketProps extends EntityProps {
   setRequestorRef (requestor: MemberEntityReference) :void;
   readonly assignedTo: MemberProps; 
   setAssignedToRef(assignedTo: MemberEntityReference) : void;
+  readonly requestBundle: VariableTypePropArray<HVACMaintenanceEntityReference|ApplianceMaintenanceEntityReference>
+
   title: string;
   description: string;
   status: string;
@@ -38,6 +43,7 @@ export interface ServiceTicketEntityReference extends Readonly<Omit<ServiceTicke
   'requestor' | 'setRequestorRef' |
   'assignedTo' | 'setAssignedToRef' | 
   'activityLog' |
+  'requestBundle' | 
   'photos' >>{
   readonly community: CommunityEntityReference;
   readonly property: PropertyEntityReference;
@@ -212,7 +218,18 @@ export class ServiceTicket<props extends ServiceTicketProps> extends AggregateRo
     activityDetail.requestSetActivityType(this.statusMappings.get(newStatus.valueOf()));
     activityDetail.requestSetActivityBy(by);
   }
-
+  public requestAddRequestItem(item: HVACMaintenanceProps | ApplianceMaintenanceProps): void {
+      this.props.requestBundle.addItem(item);
+  }
+  public requestRemoveRequestItem(item: HVACMaintenanceProps | ApplianceMaintenanceProps): void {
+      this.props.requestBundle.removeItem(item);
+  }
+  public requestNewHVACMaintenanceRequestItem(): HVACMaintenanceEntityReference {
+      return this.props.requestBundle.getNewItem('HVACMaintenance') as HVACMaintenanceEntityReference;
+  }
+  public requestNewApplianceMaintenanceRequestItem(): ApplianceMaintenanceEntityReference {
+      return this.props.requestBundle.getNewItem('ApplianceMaintenance') as ApplianceMaintenanceEntityReference;
+  }
 }
 
 export interface ServiceTicketPermissions {

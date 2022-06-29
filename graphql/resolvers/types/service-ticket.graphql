@@ -5,6 +5,7 @@ type ServiceTicket implements MongoBase {
   assignedTo: Member
   title: String!
   description: String!
+  requestBundle: [RequestItem]
   status: String!
   priority: Int!
   photos: [ServiceTicketPhoto]
@@ -75,10 +76,28 @@ input ServiceTicketCreateInput {
 input ServiceTicketUpdateInput {
   serviceTicketId: ObjectID!
   propertyId: ObjectID
-  title: String!
-  description: String!
-  priority: Int!
+  title: String
+  description: String
+  priority: Int
+  requestBundle: [ServiceTicketHVACMaintenanceRequestInput | ServiceTicketApplianceMaintenanceRequestInput]
 }
+
+input ServiceTicketHVACMaintenanceRequestInput{
+  id: ObjectID
+  kind: String!
+  requestInfo: String
+  hvacBrand: String
+}
+
+input ServiceTicketApplianceMaintenanceRequestInput {
+  id: ObjectID
+  kind: String!
+  requestInfo: String
+  applianceType: String
+  applianceBrand: String
+}
+
+# union RequestItemInput = ServiceTicketHVACMaintenanceRequestInput | ServiceTicketApplianceMaintenanceRequestInput
 
 input ServiceTicketAddPhotoInput {
   serviceTicketId: ObjectID!
@@ -117,3 +136,24 @@ input ServiceTicketChangeStatusInput {
   status: String!
   activityDescription: String
 }
+
+type HVACMaintenance implements MongoEmbeddedBase {
+  id: ObjectID!
+  createdAt: DateTime
+  updatedAt: DateTime
+  kind: String!
+  requestInfo: String
+  hvacBrand: String
+}
+
+type ApplianceMaintenance implements MongoEmbeddedBase {
+  id: ObjectID!
+  createdAt: DateTime
+  updatedAt: DateTime
+  kind: String!
+  requestInfo: String
+  applianceType: String
+  applianceBrand: String
+}
+
+union RequestItem = HVACMaintenance | ApplianceMaintenance

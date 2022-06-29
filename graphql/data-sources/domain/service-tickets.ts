@@ -61,9 +61,10 @@ export class ServiceTickets extends DomainDataSource<Context,ServiceTicket,PropT
         let propertyDo = new PropertyConverter().toDomain(property,{passport:ReadOnlyPassport.GetInstance()});
         serviceTicket.requestSetProperty(propertyDo);
       }
-      serviceTicket.requestSetTitle(input.title);
-      serviceTicket.requestSetDescription(input.description);
-      serviceTicket.requestSetPriority(input.priority);
+      if(input.title !== undefined) serviceTicket.requestSetTitle(input.title);
+      if(input.description !== undefined) serviceTicket.requestSetDescription(input.description);
+      if(input.priority !== undefined) serviceTicket.requestSetPriority(input.priority);
+      if(input)
       serviceTicketToReturn = new ServiceTicketConverter().toMongo(await repo.save(serviceTicket));
     });
     return serviceTicketToReturn;

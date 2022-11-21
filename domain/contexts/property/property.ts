@@ -34,6 +34,7 @@ export interface PropertyProps extends EntityProps {
   hash: string;
   lastIndexed: Date; // success
   updateIndexFailedDate: Date; // failure
+  dummyData: boolean; // Added
 }
 
 export interface PropertyEntityReference extends Readonly<Omit<PropertyProps, 'community' | 'setCommunityRef' | 'location' | 'owner' | 'setOwnerRef' | 'listingDetail'>> {
@@ -116,6 +117,10 @@ export class Property<props extends PropertyProps> extends AggregateRoot<props> 
 
   get updateIndexFailedDate() {
     return this.props.updateIndexFailedDate;
+  }
+
+  get dummyData() {
+    return this.props.dummyData;
   }
 
   private MarkAsNew(): void {
@@ -209,6 +214,13 @@ export class Property<props extends PropertyProps> extends AggregateRoot<props> 
       throw new Error('Unauthorized');
     }
     this.props.updateIndexFailedDate = updateIndexFailedDate;
+  }
+
+  public requestSetDummyData(dummyData: boolean): void {
+    if (!this.visa.determineIf((permissions) => permissions.isSystemAccount || permissions.canManageProperties || (permissions.canEditOwnProperty && permissions.isEditingOwnProperty))) {
+      throw new Error('Unauthorized');
+    }
+    this.props.dummyData = dummyData;
   }
 
   public override onSave(isModified: boolean): void {

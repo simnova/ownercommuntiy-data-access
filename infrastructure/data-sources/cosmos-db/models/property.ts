@@ -114,6 +114,7 @@ export interface Property extends Base {
   hash: string;
   lastIndexed: Date;
   updateIndexFailedDate: Date;
+  dummyData: boolean; // Added 
 }
 const schema = new Schema<Property, Model<Property>, Property>(
   {
@@ -198,11 +199,13 @@ const schema = new Schema<Property, Model<Property>, Property>(
     hash: { type: String, required: false, maxlength: 100 },
     lastIndexed: { type: Date, required: false },
     updateIndexFailedDate: { type: Date, required: false },
+    dummyData: { type: Boolean, required: false, default: false }, // Added 
   },
   {
     ...BaseOptions,
     shardKey: { community: 1 },
   }
+  
 ).index({ community: 1, propertyName: 1 }, { unique: true });
 /*
 schema.path('listingDetails.additionalAmenities').validate(function(additionalAmenities) {

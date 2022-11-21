@@ -56,6 +56,7 @@ export class Properties extends DomainDataSource<Context, Property, PropType, Do
         if (input.listingDetail.lease !== undefined) property.listingDetail.requestSetLease(input.listingDetail.lease);
         if (input.listingDetail.maxGuests !== undefined) property.listingDetail.requestSetMaxGuests(input.listingDetail.maxGuests);
         if (input.listingDetail.bedrooms !== undefined) property.listingDetail.requestSetBedrooms(input.listingDetail.bedrooms);
+
         if (input.listingDetail.bedroomDetails !== undefined) {
           let systemBedroomDetails = property.listingDetail.bedroomDetails;
           let updatedBedroomDetails = input.listingDetail.bedroomDetails;
@@ -119,6 +120,7 @@ export class Properties extends DomainDataSource<Context, Property, PropType, Do
         if (input.listingDetail.listingAgentCompanyWebsite !== undefined) property.listingDetail.requestSetListingAgentCompanyWebsite(input.listingDetail.listingAgentCompanyWebsite);
         if (input.listingDetail.listingAgentCompanyAddress !== undefined) property.listingDetail.requestSetListingAgentCompanyAddress(input.listingDetail.listingAgentCompanyAddress);
       }
+      if (input.dummyData !== undefined) property.requestSetDummyData(input.dummyData);
 
       if (input.location !== undefined) {
         if (input.location.address !== undefined) {

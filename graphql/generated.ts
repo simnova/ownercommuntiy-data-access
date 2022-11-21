@@ -766,6 +766,7 @@ export type Property = MongoBase & {
   __typename?: 'Property';
   community?: Maybe<Community>;
   createdAt?: Maybe<Scalars['DateTime']>;
+  dummyData?: Maybe<Scalars['Boolean']>;
   id: Scalars['ObjectID'];
   listedForLease: Scalars['Boolean'];
   listedForRent: Scalars['Boolean'];
@@ -881,6 +882,7 @@ export type PropertySearchResult = {
 };
 
 export type PropertyUpdateInput = {
+  dummyData?: InputMaybe<Scalars['Boolean']>;
   id: Scalars['ObjectID'];
   listedForLease?: InputMaybe<Scalars['Boolean']>;
   listedForRent?: InputMaybe<Scalars['Boolean']>;
@@ -2158,6 +2160,7 @@ export interface PostalCodeScalarConfig extends GraphQLScalarTypeConfig<Resolver
 export type PropertyResolvers<ContextType = Context, ParentType extends ResolversParentTypes['Property'] = ResolversParentTypes['Property']> = ResolversObject<{
   community?: Resolver<Maybe<ResolversTypes['Community']>, ParentType, ContextType>;
   createdAt?: Resolver<Maybe<ResolversTypes['DateTime']>, ParentType, ContextType>;
+  dummyData?: Resolver<Maybe<ResolversTypes['Boolean']>, ParentType, ContextType>;
   id?: Resolver<ResolversTypes['ObjectID'], ParentType, ContextType>;
   listedForLease?: Resolver<ResolversTypes['Boolean'], ParentType, ContextType>;
   listedForRent?: Resolver<ResolversTypes['Boolean'], ParentType, ContextType>;

@@ -19,6 +19,7 @@ type Property implements MongoBase {
   schemaVersion: String
   createdAt: DateTime
   updatedAt: DateTime
+  dummyData: Boolean
 
   tags: [String]
 }
@@ -250,6 +251,7 @@ input PropertyUpdateInput {
   listingDetail: ListingDetailsInput
   location: LocationInput
   tags: [String]
+  dummyData: Boolean
 }
 
 input PropertyOwnerInput {

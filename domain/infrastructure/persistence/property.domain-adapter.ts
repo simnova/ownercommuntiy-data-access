@@ -134,6 +134,14 @@ export class PropertyDomainAdapter extends MongooseDomainAdapter<Property> imple
   set updateIndexFailedDate(updateIndexFailedDate) {
     this.doc.updateIndexFailedDate = updateIndexFailedDate;
   }
+
+  get dummyData() {
+    return this.doc.dummyData;
+  }
+
+  set dummyData(dummyData) {
+    this.doc.dummyData = dummyData;
+  }
 }
 
 export class ListingDetailDomainAdapter implements ListingDetailProps {

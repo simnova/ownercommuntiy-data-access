@@ -5,6 +5,7 @@ import { CommunityVisa } from "../iam/community-visa";
 import { AggregateRoot } from '../../shared/aggregate-root';
 import { DomainExecutionContext } from "../context";
 import { RoleDeletedReassignEvent } from "../../events/role-deleted-reassign";
+import { and, hasPermission, isField, validate } from "../iam/validate-passport";
 
 export interface RoleProps extends EntityProps {
   roleName: string;
@@ -51,9 +52,10 @@ export class Role<props extends RoleProps> extends AggregateRoot<props> implemen
   }
 
   private requestSetCommunity(community:CommunityEntityReference): void {
-    if(
-      !this.isNew &&
-      !this.visa.determineIf((permissions) => permissions.canManageRolesAndPermissions)) { throw new Error('You do not have permission to update this role'); }
+    // if(
+    //   !this.isNew &&
+    //   !this.visa.determineIf((permissions) => permissions.canManageRolesAndPermissions)) { throw new Error('You do not have permission to update this role'); }
+    validate(and(isField.new(this.isNew), hasPermission.canManageRolesAndPermissions(this.visa)));
     this.props.setCommunityRef(community);
   }
 

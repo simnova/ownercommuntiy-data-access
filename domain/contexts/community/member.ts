@@ -9,6 +9,7 @@ import { DomainExecutionContext } from '../context';
 import { Profile, ProfileEntityReference, ProfileProps } from './profile';
 import { CommunityVisa } from '../iam/community-visa';
 import { CustomView, CustomViewEntityReference, CustomViewProps } from './custom-view';
+import { and, validate, hasPermission, isField, or } from '../iam/validate-passport';
 
 export interface MemberProps extends EntityProps {
   memberName: string;
@@ -81,51 +82,44 @@ export class Member<props extends MemberProps> extends AggregateRoot<props> impl
     return member;
   }
 
+  private validateVisa(): void {
+    // if (!this.isNew && !this.visa.determineIf((permissions) => permissions.canManageMembers || permissions.isSystemAccount)) {
+    //   throw new Error('Cannot set this field');
+    // }
+    validate(and(isField.new(this.isNew), or(hasPermission.canManageMembers(this.visa), hasPermission.isSystemAccount(this.visa))));
+  }
+
   public requestSetMemberName(memberName: ValueObjects.MemberName): void {
-    if (!this.isNew && !this.visa.determineIf((permissions) => permissions.canManageMembers || permissions.isSystemAccount)) {
-      throw new Error('Cannot set member name');
-    }
+    this.validateVisa();
     this.props.memberName = memberName.valueOf();
   }
   private requestSetCommunity(community: CommunityEntityReference): void {
     this.props.setCommunityRef(community);
   }
   public requestSetRole(role: RoleEntityReference): void {
-    if (!this.isNew && !this.visa.determineIf((permissions) => permissions.canManageMembers || permissions.isSystemAccount)) {
-      throw new Error('Cannot set role');
-    }
+    this.validateVisa();
     this.props.setRoleRef(role);
   }
   public requestNewAccount(): Account {
-    if (!this.isNew && !this.visa.determineIf((permissions) => permissions.canManageMembers || permissions.isSystemAccount)) {
-      throw new Error('Cannot set role');
-    }
+    this.validateVisa();
     return new Account(this.props.accounts.getNewItem(), this.context, this.visa);
   }
   public requestAddAccount(accountRef: AccountProps): void {
-    if (!this.isNew && !this.visa.determineIf((permissions) => permissions.canManageMembers || permissions.isSystemAccount)) {
-      throw new Error('Cannot set role');
-    }
+    this.validateVisa();
     this.props.accounts.addItem(accountRef);
   }
   public requestRemoveAccount(accountRef: AccountProps): void {
-    if (!this.isNew && !this.visa.determineIf((permissions) => permissions.canManageMembers || permissions.isSystemAccount)) {
-      throw new Error('Cannot set role');
-    }
+    this.validateVisa();
     this.props.accounts.removeItem(accountRef);
   }
   // CustomViews
   public requestNewCustomView(): CustomView {
-    if (!this.isNew && !this.visa.determineIf((permissions) => permissions.canManageMembers || permissions.isSystemAccount)) {
-      throw new Error('Cannot set custom view');
-    }
+    this.validateVisa();
     return new CustomView(this.props.customViews.getNewItem(), this.context, this.visa);
   }
 
   public requestRemoveCustomView(customView: CustomView): void {
-    if (!this.isNew && !this.visa.determineIf((permissions) => permissions.canManageMembers || permissions.isSystemAccount)) {
-      throw new Error('Cannot set custom view');
-    }
+    this.validateVisa();
     console.log(customView.name);
     this.props.customViews.removeItem(customView.props);
   }

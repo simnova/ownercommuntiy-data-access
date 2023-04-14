@@ -1,6 +1,7 @@
 import { Entity, EntityProps } from '../../shared/entity';
 import { DomainExecutionContext } from '../context';
 import { CommunityVisa } from '../iam/community-visa';
+import { and, hasPermission, or, validate } from '../iam/validate-passport';
 import * as ValueObjects from './custom-view.value-objects';
 
 export interface CustomViewPropValues extends EntityProps {
@@ -37,9 +38,10 @@ export class CustomView extends Entity<CustomViewProps> implements CustomViewEnt
   }
 
   private validateVisa() {
-    if (!this.visa.determineIf((permissions) => permissions.isSystemAccount || permissions.canManageMembers || (permissions.canEditOwnMemberAccounts && permissions.isEditingOwnMemberAccount))) {
-      throw new Error('You do not have permission to update this account');
-    }
+    // if (!this.visa.determineIf((permissions) => permissions.isSystemAccount || permissions.canManageMembers || (permissions.canEditOwnMemberAccounts && permissions.isEditingOwnMemberAccount))) {
+    //   throw new Error('You do not have permission to update this account');
+    // }
+    validate(or(hasPermission.isSystemAccount(this.visa), hasPermission.canManageMembers(this.visa), and(hasPermission.canEditOwnMemberAccounts(this.visa), hasPermission.isEditingOwnMemberAccount(this.visa))));
   }
 
   requestSetName(name: ValueObjects.CustomViewName) {

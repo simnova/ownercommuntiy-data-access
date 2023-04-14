@@ -3,6 +3,7 @@ import { DomainExecutionContext } from '../context';
 import { CommunityVisa } from '../iam/community-visa';
 import { User, UserEntityReference, UserProps } from '../user/user';
 import * as ValueObjects from './account.value-objects';
+import { validate, and, or, not, hasPermission, isField } from '../iam/validate-passport';
 
 export interface AccountPropValues extends EntityProps {
   firstName: string;
@@ -34,12 +35,14 @@ export class Account extends Entity<AccountProps> implements AccountEntityRefere
 
 
   private validateVisa(){
-    if(!this.visa.determineIf((permissions) => 
-      permissions.isSystemAccount || 
-      permissions.canManageMembers ||
-      (permissions.canEditOwnMemberAccounts && permissions.isEditingOwnMemberAccount))) {
-      throw new Error('You do not have permission to update this account');
-    }
+    // if(!this.visa.determineIf((permissions) => 
+    //   permissions.isSystemAccount || 
+    //   permissions.canManageMembers ||
+    //   (permissions.canEditOwnMemberAccounts && permissions.isEditingOwnMemberAccount))) {
+    //     throw new Error('You do not have permission to update this account');
+    // }
+    validate(or(hasPermission.isSystemAccount(this.visa), hasPermission.canManageMembers(this.visa), and(hasPermission.canEditOwnMemberAccounts(this.visa), hasPermission.isEditingOwnMemberAccount(this.visa)))
+    )
   }
 
   requestSetFirstName(firstName: ValueObjects.FirstName) {
@@ -54,8 +57,9 @@ export class Account extends Entity<AccountProps> implements AccountEntityRefere
     this.validateVisa();
     this.props.setUserRef(user);
   }
-  requestSetStatusCode(statusCode: ValueObjects.AccountStatusCode) { 
-    if(!this.visa.determineIf((permissions) => permissions.isSystemAccount || permissions.canManageMembers)) { throw new Error('You do not have permission to update this account'); }
+  requestSetStatusCode(statusCode: ValueObjects.AccountStatusCode) {
+    // if(!this.visa.determineIf((permissions) => permissions.isSystemAccount || permissions.canManageMembers)) { throw new Error('You do not have permission to update this account'); } 
+    validate(or(hasPermission.isSystemAccount(this.visa), hasPermission.canManageMembers(this.visa)));
     this.props.statusCode = statusCode.valueOf();
   }
   requestSetCreatedBy(createdBy: UserProps) {

@@ -1,6 +1,7 @@
 import { ValueObject, ValueObjectProps } from '../../shared/value-object';
 import { DomainExecutionContext } from '../context';
 import { CommunityVisa } from '../iam/community-visa';
+import { and, hasPermission, or, validate } from '../iam/validate-passport';
 import * as ValueObjects from './profile.value-objects';
 
 export interface ProfileProps extends ValueObjectProps {
@@ -33,11 +34,12 @@ export class Profile extends ValueObject<ProfileProps> implements ProfileEntityR
   get showProperties() {return this.props.showProperties;}
 
   private validateVisa(){
-    if(!this.visa.determineIf((permissions) => 
-      permissions.canManageMembers ||
-      (permissions.canEditOwnMemberProfile && permissions.isEditingOwnMemberAccount))) {
-      throw new Error('You do not have permission to update this profile');
-    }
+    // if(!this.visa.determineIf((permissions) => 
+    //   permissions.canManageMembers ||
+    //   (permissions.canEditOwnMemberProfile && permissions.isEditingOwnMemberAccount))) {
+    //   throw new Error('You do not have permission to update this profile');
+    // }
+    validate(or(hasPermission.canManageMembers(this.visa), and(hasPermission.canEditOwnMemberProfile(this.visa), hasPermission.isEditingOwnMemberAccount(this.visa))));
   }
 
   requestSetName(name: ValueObjects.Name) {

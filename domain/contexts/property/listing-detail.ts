@@ -6,6 +6,7 @@ import * as ValueObjects from './listing-detail.value-objects';
 import { PropertyVisa } from '../iam/property-visa';
 import { Images } from './listing-detail.value-objects';
 import { BookingConfig, BookingConfigProps } from './booking-config';
+import { BookingProps, BookingReference } from './booking';
 
 export interface ListingDetailProps extends ValueObjectProps {
   price: number;
@@ -36,12 +37,14 @@ export interface ListingDetailProps extends ValueObjectProps {
   listingAgentCompanyWebsite: string;
   listingAgentCompanyAddress: string;
   readonly bookingConfig: BookingConfigProps
+  readonly bookings: PropArray<BookingProps>;
 }
 
-export interface ListingDetailsEntityReference extends Readonly<Omit<ListingDetailProps, 'bedroomDetails' | 'additionalAmenities' | 'bookingConfig'>> {
+export interface ListingDetailsEntityReference extends Readonly<Omit<ListingDetailProps, 'bedroomDetails' | 'additionalAmenities' | 'bookingConfig'|'bookings'>> {
   bedroomDetails: ReadonlyArray<BedroomDetailReference>;
   additionalAmenities: ReadonlyArray<AdditionalAmenityReference>;
   readonly bookingConfig: BookingConfig;
+  readonly bookings: ReadonlyArray<BookingReference>;
 }
 
 export class ListingDetails extends ValueObject<ListingDetailProps> implements ListingDetailsEntityReference {
@@ -132,6 +135,9 @@ export class ListingDetails extends ValueObject<ListingDetailProps> implements L
   }
   get bookingConfig() {
     return new BookingConfig(this.props.bookingConfig, this.visa);
+  }
+  get bookings(): ReadonlyArray<BookingReference> {
+    return this.props.bookings.items.map((booking) => new Booking(booking, this.visa));
   }
 
   private validateVisa() {
@@ -267,7 +273,7 @@ export class ListingDetails extends ValueObject<ListingDetailProps> implements L
     this.validateVisa();
     this.props.listingAgentCompanyAddress = listingAgentCompanyAddress?.valueOf();
   }
-  //
+  
 
   requestRemoveBedroomDetails(bedroomDetails: BedroomDetail): void {
     this.validateVisa();

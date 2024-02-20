@@ -5,6 +5,7 @@ import { AdditionalAmenity, AdditionalAmenityProps, AdditionalAmenityReference }
 import * as ValueObjects from './listing-detail.value-objects';
 import { PropertyVisa } from '../iam/property-visa';
 import { Images } from './listing-detail.value-objects';
+import { BookingConfig, BookingConfigProps } from './booking-config';
 
 export interface ListingDetailProps extends ValueObjectProps {
   price: number;
@@ -34,11 +35,13 @@ export interface ListingDetailProps extends ValueObjectProps {
   listingAgentCompanyEmail: string;
   listingAgentCompanyWebsite: string;
   listingAgentCompanyAddress: string;
+  readonly bookingConfig: BookingConfigProps
 }
 
-export interface ListingDetailsEntityReference extends Readonly<Omit<ListingDetailProps, 'bedroomDetails' | 'additionalAmenities'>> {
+export interface ListingDetailsEntityReference extends Readonly<Omit<ListingDetailProps, 'bedroomDetails' | 'additionalAmenities' | 'bookingConfig'>> {
   bedroomDetails: ReadonlyArray<BedroomDetailReference>;
   additionalAmenities: ReadonlyArray<AdditionalAmenityReference>;
+  readonly bookingConfig: BookingConfig;
 }
 
 export class ListingDetails extends ValueObject<ListingDetailProps> implements ListingDetailsEntityReference {
@@ -126,6 +129,9 @@ export class ListingDetails extends ValueObject<ListingDetailProps> implements L
   }
   get listingAgentCompanyAddress() {
     return this.props.listingAgentCompanyAddress;
+  }
+  get bookingConfig() {
+    return new BookingConfig(this.props.bookingConfig, this.visa);
   }
 
   private validateVisa() {

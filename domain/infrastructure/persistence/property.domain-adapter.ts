@@ -1,4 +1,4 @@
-import { Property, ListingDetail, BedroomDetail, AdditionalAmenity, Location } from '../../../infrastructure/data-sources/cosmos-db/models/property';
+import { Property, ListingDetail, BedroomDetail, AdditionalAmenity, Location, BookingConfig, MaxNumberOfBookingsPolicy } from '../../../infrastructure/data-sources/cosmos-db/models/property';
 import { CommunityEntityReference } from '../../contexts/community/community';
 import { MemberEntityReference } from '../../contexts/community/member';
 import { DomainExecutionContext } from '../../contexts/context';
@@ -13,6 +13,8 @@ import { BedroomDetailProps } from '../../contexts/property/bedroom-detail';
 import { AdditionalAmenityProps } from '../../contexts/property/additional-amenity';
 import { AddressProps } from '../../contexts/property/address';
 import { PositionProps } from '../../contexts/property/position';
+import { BookingConfigProps } from '../../contexts/property/booking-config';
+import { MaxNumberOfBookingsPolicyProps } from '../../contexts/property/max-number-of-bookings-policy';
 
 export class PropertyConverter extends MongoTypeConverter<DomainExecutionContext, Property, PropertyDomainAdapter, PropertyDO<PropertyDomainAdapter>> {
   constructor() {
@@ -317,6 +319,13 @@ export class ListingDetailDomainAdapter implements ListingDetailProps {
   set listingAgentCompanyAddress(listingAgentCompanyAddress) {
     this.props.listingAgentCompanyAddress = listingAgentCompanyAddress;
   }
+
+  get bookingConfig() {
+    if (!this.props.bookingConfig) {
+      this.props.set('bookingConfig', {});
+    }
+    return new BookingConfigDomainAdapter(this.props.bookingConfig);
+  }
 }
 
 export class BedroomDetailDomainAdapter implements BedroomDetailProps {
@@ -525,5 +534,84 @@ export class PositionDomainAdapter implements PositionProps {
   }
   set coordinates(value: number[]) {
     this.props.coordinates = value;
+  }
+}
+
+export class BookingConfigDomainAdapter implements BookingConfigProps {
+  constructor(public readonly props: BookingConfig) {}
+
+  get price() {
+    return this.props.price;
+  }
+  set price(price) {
+    this.props.price = price;
+  }
+
+  get maxGuests() {
+    return this.props.maxGuests;
+  }
+  set maxGuests(maxGuests) {
+    this.props.maxGuests = maxGuests;
+  }
+
+  get pricePerNight() {
+    return this.props.pricePerNight;
+  }
+  set pricePerNight(pricePerNight) {
+    this.props.pricePerNight = pricePerNight;
+  }
+
+  get minStay() {
+    return this.props.minStay;
+  }
+  set minStay(minStay) {
+    this.props.minStay = minStay;
+  }
+
+  get maxStay() {
+    return this.props.maxStay;
+  }
+  set maxStay(maxStay) {
+    this.props.maxStay = maxStay;
+  }
+
+  get petAllowed() {
+    return this.props.petAllowed;
+  }
+  set petAllowed(petAllowed) {
+    this.props.petAllowed = petAllowed;
+  }
+
+  get maxNumberOfBookingsPolicy() {
+    if (!this.props.maxNumberOfBookingsPolicy) {
+      this.props.set('maxNumberOfBookingsPolicy', {});
+    }
+
+    return new MaxNumberOfBookingsPolicyDomainAdapter(this.props.maxNumberOfBookingsPolicy);
+  }
+}
+
+export class MaxNumberOfBookingsPolicyDomainAdapter implements MaxNumberOfBookingsPolicyProps {
+  constructor(public readonly props: MaxNumberOfBookingsPolicy) {}
+
+  get numberOfBookings() {
+    return this.props.numberOfBookings;
+  }
+  set numberOfBookings(numberOfBookings) {
+    this.props.numberOfBookings = numberOfBookings;
+  }
+
+  get periodType() {
+    return this.props.periodType;
+  }
+  set periodType(periodType) {
+    this.props.periodType = periodType;
+  }
+
+  get numberOfPeriods() {
+    return this.props.numberOfPeriods;
+  }
+  set numberOfPeriods(numberOfPeriods) {
+    this.props.numberOfPeriods = numberOfPeriods;
   }
 }

@@ -21,7 +21,10 @@ type Property implements MongoBase {
   updatedAt: DateTime
 
   tags: [String]
+
+  
 }
+
 type ListingDetails {
   price: Float
   rentHigh: Float
@@ -48,7 +51,50 @@ type ListingDetails {
   listingAgentCompanyEmail: String
   listingAgentCompanyWebsite: String
   listingAgentCompanyAddress: String
+
+  bookingConfig: {
+		availabilities: [
+			{
+				startDateTime: DateTime
+				endDateTime: DateTime
+			}
+		]
+		pricePerNight: number
+		maxGuests: Int
+		lastDateTimeToCancel: DateTime
+		minStay: Int # number of days
+		maxStay: Int # number of days
+		petAllowed: Boolean
+		maxNumberOfBookingsPolicy: {
+			numberOfBookings: Int
+			periodType: String
+			numberOfPeriods: Int
+		}
+	}
+
+  bookings: [
+		{
+      id: ObjectID!
+			checkIn: DateTime
+			checkOut: DateTime	
+			guests: Int
+			totalCost: Int
+			createdAt: DateTime
+			updatedAt: DateTime
+			status: BookingStatus
+			firstName: String
+			lastName: String
+			email: String
+			phoneNumber: String	
+		}		
+	]
 }
+
+enum BookingStatus {
+ 	CONFIRMED
+  CANCELLED
+}
+
 input ListingDetailsInput {
   price: Float
   rentHigh: Float
@@ -75,6 +121,42 @@ input ListingDetailsInput {
   listingAgentCompanyEmail: String
   listingAgentCompanyWebsite: String
   listingAgentCompanyAddress: String
+
+  bookingConfig: {
+		availabilities: [
+			{
+				startTime: DateTime
+				endTime: DateTime
+			}
+		]
+		pricePerNight: number
+		maxGuests: Int
+		lastDateTimeToCancel: DateTime
+		minStay: Int # number of days
+		maxStay: Int # number of days
+		petAllowed: Boolean
+		maxNumberOfBookingsPolicy: {
+			numberOfBookings: Int
+			periodType: String
+			numberOfPeriods: Int
+		}
+	}
+
+  bookings: [
+		{
+			checkIn: DateTime
+			checkOut: DateTime	
+			guests: Int
+			totalCost: Int
+			createdAt: DateTime
+			updatedAt: DateTime
+			status: BookingStatus
+			firstName: String
+			lastName: String
+			email: String
+			phoneNumber: String	
+		}		
+	]
 }
 
 type BedroomDetails implements MongoSubdocument {

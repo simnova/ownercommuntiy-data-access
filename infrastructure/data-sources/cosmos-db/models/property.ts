@@ -52,9 +52,10 @@ export interface ListingDetail extends NestedPath {
 
 export interface BookingConfig extends NestedPath {
   id: ObjectId;
-  // availabilities: BookingAvailability[];
+  availabilities: BookingAvailability[];
   price: number;
   maxGuests: number;
+  lastDateTimeToAllowCancel: Date;
   pricePerNight: number;
   minStay: number;
   maxStay: number;
@@ -62,11 +63,11 @@ export interface BookingConfig extends NestedPath {
   maxNumberOfBookingsPolicy: MaxNumberOfBookingsPolicy;
 }
 
-// export interface BookingAvailability extends NestedPath {
-//   id: ObjectId;
-//   startDateTime: Date;
-//   endDateTime: Date;
-// }
+export interface BookingAvailability extends NestedPath {
+  id: ObjectId;
+  startDateTime: Date;
+  endDateTime: Date;
+}
 
 export interface MaxNumberOfBookingsPolicy extends NestedPath {
   id: ObjectId;
@@ -79,28 +80,38 @@ export interface Booking extends SubdocumentBase {
   id: ObjectId;
   checkIn: Date;
   checkOut: Date;
-  guests: number;
+  numberOfGuests: number;
   totalCost: number;
   createdAt: Date;
   updatedAt: Date;
-  status: string;
   firstName: string;
   lastName: string;
   email: string
   phoneNumber: string
+  isPaid: boolean;
+  paidAt: Date;
+  isRefunded: boolean;
+  refundedAt: Date;
+  isCancelled: boolean
+  cancelledAt: Date;
 }
 
 const BookingSchema = new Schema<Booking, Model<Booking>, Booking>(
   {
     checkIn: { type: Date, required: true },
     checkOut: { type: Date, required: true },
-    guests: { type: Number, required: true },
+    numberOfGuests: { type: Number, required: true },
     totalCost: { type: Number, required: true },
-    status: { type: String, required: true, enum: ['CONFIRMED', 'CANCELLED'] },
     firstName: { type: String, required: true, maxlength: 100 },
     lastName: { type: String, required: true, maxlength: 100 },
     email: { type: String, match: Patterns.EMAIL_PATTERN, required: true, maxlength: 254 },
     phoneNumber: { type: String, required: true, maxlength: 100 },
+    isPaid: { type: Boolean, required: false, default: false },
+    paidAt: { type: Date, required: false },
+    isRefunded: { type: Boolean, required: false, default: false },
+    refundedAt: { type: Date, required: false },
+    isCancelled: { type: Boolean, required: false, default: false },
+    cancelledAt: { type: Date, required: false },
   },
   {
     timestamps: true,
@@ -274,7 +285,7 @@ const schema = new Schema<Property, Model<Property>, Property>(
         // ],
         price: { type: Number, required: false },
         maxGuests: { type: Number, required: false },
-        pricePerNight: { type: Number, required: false },
+        lastDateTimeToAllowCancel: { type: Date, required: false },
         minStay: { type: Number, required: false },
         maxStay: { type: Number, required: false },
         petAllowed: { type: Boolean, required: false },

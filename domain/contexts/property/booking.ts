@@ -4,15 +4,20 @@ export interface BookingProps extends EntityProps {
   // Fields
   checkIn: Date;
   checkOut: Date;
-  guests: number;
+  numberOfGuests: number;
   totalCost: number;
   createdAt: Date;
   updatedAt: Date;
-  status: string;
   firstName: string;
   lastName: string;
   email: string;
   phoneNumber: string
+  isPaid: boolean;
+  paidAt: Date;
+  isRefunded: boolean;
+  refundedAt: Date;
+  isCancelled: boolean;
+  cancelledAt: Date;
 }
 export interface BookingReference extends Readonly<Omit<BookingProps, ''>> {}
 export class Booking extends Entity<BookingProps> implements BookingReference {
@@ -26,8 +31,8 @@ export class Booking extends Entity<BookingProps> implements BookingReference {
   get checkOut() {
     return this.props.checkOut;
   }
-  get guests() {
-    return this.props.guests;
+  get numberOfGuests() {
+    return this.props.numberOfGuests;
   }
   get totalCost() {
     return this.props.totalCost;
@@ -37,9 +42,6 @@ export class Booking extends Entity<BookingProps> implements BookingReference {
   }
   get updatedAt() {
     return this.props.updatedAt;
-  }
-  get status() {
-    return this.props.status;
   }
   get firstName() {
     return this.props.firstName;
@@ -52,6 +54,24 @@ export class Booking extends Entity<BookingProps> implements BookingReference {
   }
   get phoneNumber() {
     return this.props.phoneNumber;
+  }
+  get isPaid() {
+    return this.props.isPaid;
+  }
+  get paidAt() {
+    return this.props.paidAt;
+  }
+  get isRefunded() {
+    return this.props.isRefunded;
+  }
+  get refundedAt() {
+    return this.props.refundedAt;
+  }
+  get isCancelled() {
+    return this.props.isCancelled;
+  }
+  get cancelledAt() {
+    return this.props.cancelledAt;
   }
 
   private validateVisa() {
@@ -66,18 +86,15 @@ export class Booking extends Entity<BookingProps> implements BookingReference {
     this.validateVisa();
     this.props.checkOut = checkOut;
   }
-  set Guests(guests: number) {
+  set NumberOfGuests(numberOfGuests: number) {
     this.validateVisa();
-    this.props.guests = guests;
+    this.props.numberOfGuests = numberOfGuests;
   }
   set TotalCost(totalCost: number) {
     this.validateVisa();
     this.props.totalCost = totalCost;
   }
-  set Status(status: string) {
-    this.validateVisa();
-    this.props.status = status;
-  }
+
   set FirstName(firstName: string) {
     this.validateVisa();
     this.props.firstName = firstName;
@@ -94,5 +111,30 @@ export class Booking extends Entity<BookingProps> implements BookingReference {
     this.validateVisa();
     this.props.phoneNumber = phoneNumber;
   }
+  set IsPaid(isPaid: boolean) {
+    this.validateVisa();
+    this.props.isPaid = isPaid;
+  }
+  set PaidAt(paidAt: Date) {
+    this.validateVisa();
+    this.props.paidAt = paidAt;
+  }
+  set IsRefunded(isRefunded: boolean) {
+    this.validateVisa();
+    this.props.isRefunded = isRefunded;
+  }
+  set RefundedAt(refundedAt: Date) {
+    this.validateVisa();
+    this.props.refundedAt = refundedAt;
+  }
+  set IsCancelled(isCancelled: boolean) {
+    this.validateVisa();
+    this.props.isCancelled = isCancelled;
+  }
+  set CancelledAt(cancelledAt: Date) {
+    this.validateVisa();
+    this.props.cancelledAt = cancelledAt;
+  }
+
  
 }

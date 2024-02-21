@@ -15,6 +15,7 @@ import { AddressProps } from '../../contexts/property/address';
 import { PositionProps } from '../../contexts/property/position';
 import { BookingConfigProps } from '../../contexts/property/booking-config';
 import { MaxNumberOfBookingsPolicyProps } from '../../contexts/property/max-number-of-bookings-policy';
+import { BookingProps } from '../../contexts/property/booking';
 
 export class PropertyConverter extends MongoTypeConverter<DomainExecutionContext, Property, PropertyDomainAdapter, PropertyDO<PropertyDomainAdapter>> {
   constructor() {
@@ -326,6 +327,10 @@ export class ListingDetailDomainAdapter implements ListingDetailProps {
     }
     return new BookingConfigDomainAdapter(this.props.bookingConfig);
   }
+
+  get bookings() {
+    return new MongoosePropArray(this.props.bookings, BookingDomainAdapter);
+  }
 }
 
 export class BedroomDetailDomainAdapter implements BedroomDetailProps {
@@ -554,11 +559,11 @@ export class BookingConfigDomainAdapter implements BookingConfigProps {
     this.props.maxGuests = maxGuests;
   }
 
-  get pricePerNight() {
-    return this.props.pricePerNight;
+  get lastDateTimeToAllowCancel() {
+    return this.props.lastDateTimeToAllowCancel;
   }
-  set pricePerNight(pricePerNight) {
-    this.props.pricePerNight = pricePerNight;
+  set lastDateTimeToAllowCancel(lastDateTimeToAllowCancel) {
+    this.props.lastDateTimeToAllowCancel = lastDateTimeToAllowCancel;
   }
 
   get minStay() {
@@ -614,4 +619,127 @@ export class MaxNumberOfBookingsPolicyDomainAdapter implements MaxNumberOfBookin
   set numberOfPeriods(numberOfPeriods) {
     this.props.numberOfPeriods = numberOfPeriods;
   }
+}
+
+export class BookingDomainAdapter implements BookingProps{
+  constructor(public readonly props: Property['listingDetail']['bookings'][0]) {}
+
+  public get id(): string {
+    return this.props.id.valueOf() as string;
+  }
+
+  get checkIn() {
+    return this.props.checkIn;
+  }
+  set checkIn(checkIn) {
+    this.props.checkIn = checkIn;
+  }
+
+  get checkOut() {
+    return this.props.checkOut;
+  }
+  set checkOut(checkOut) {
+    this.props.checkOut = checkOut;
+  }
+
+  get numberOfGuests() {
+    return this.props.numberOfGuests;
+  }
+  set numberOfGuests(numberOfGuests) {
+    this.props.numberOfGuests = numberOfGuests;
+  }
+
+  get totalCost() {
+    return this.props.totalCost;
+  }
+  set totalCost(totalCost) {
+    this.props.totalCost = totalCost;
+  }
+
+  get createdAt() {
+    return this.props.createdAt;
+  }
+  set createdAt(createdAt) {
+    this.props.createdAt = createdAt;
+  }
+
+  get updatedAt() {
+    return this.props.updatedAt;
+  }
+  set updatedAt(updatedAt) {
+    this.props.updatedAt = updatedAt;
+  }
+
+  get firstName() {
+    return this.props.firstName;
+  }
+  set firstName(firstName) {
+    this.props.firstName = firstName;
+  }
+
+  get lastName() {
+    return this.props.lastName;
+  }
+  set lastName(lastName) {
+    this.props.lastName = lastName;
+  }
+
+  get email() {
+    return this.props.email;
+  }
+  set email(email) {
+    this.props.email = email;
+  }
+
+  get phoneNumber() {
+    return this.props.phoneNumber;
+  }
+  set phoneNumber(phoneNumber) {
+    this.props.phoneNumber = phoneNumber;
+  }
+
+  get isPaid() {
+    return this.props.isPaid;
+  }
+  set isPaid(isPaid) {
+    this.props.isPaid = isPaid;
+  }
+
+  get paidAt() {
+    return this.props.paidAt;
+  }
+  set paidAt(paidAt) {
+    this.props.paidAt = paidAt;
+  }
+
+  get isRefunded() {
+    return this.props.isRefunded;
+  }
+  set isRefunded(isRefunded) {
+    this.props.isRefunded = isRefunded;
+  }
+
+  get refundedAt() {
+    return this.props.refundedAt;
+  }
+  set refundedAt(refundedAt) {
+    this.props.refundedAt = refundedAt;
+  }
+
+  get isCancelled() {
+    return this.props.isCancelled;
+  }
+  set isCancelled(isCancelled) {
+    this.props.isCancelled = isCancelled;
+  }
+
+  get cancelledAt() {
+    return this.props.cancelledAt;
+  }
+  set cancelledAt(cancelledAt) {
+    this.props.cancelledAt = cancelledAt;
+  }
+
+
+
 }

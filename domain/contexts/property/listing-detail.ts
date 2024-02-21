@@ -6,7 +6,7 @@ import * as ValueObjects from './listing-detail.value-objects';
 import { PropertyVisa } from '../iam/property-visa';
 import { Images } from './listing-detail.value-objects';
 import { BookingConfig, BookingConfigProps } from './booking-config';
-import { BookingProps, BookingReference } from './booking';
+import { Booking, BookingProps, BookingReference } from './booking';
 
 export interface ListingDetailProps extends ValueObjectProps {
   price: number;
@@ -306,4 +306,20 @@ export class ListingDetails extends ValueObject<ListingDetailProps> implements L
       this.Images = new Images(newImages);
     }
   }
+
+  // Booking
+  requestNewBooking(): Booking {
+    this.validateVisa();
+    return new Booking(this.props.bookings.getNewItem(), this.visa);
+  }
+  requestRemoveBooking(booking: Booking): void {
+    this.validateVisa();
+    this.props.bookings.removeItem(booking.props);
+  }
+  requestAddBooking(booking: Booking): void {
+    this.validateVisa();
+    this.props.bookings.addItem(booking.props);
+  }
+
+
 }

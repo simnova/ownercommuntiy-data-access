@@ -59,9 +59,9 @@ type ListingDetails {
 				endDateTime: DateTime
 			}
 		]
-		pricePerNight: number
+		price: number
 		maxGuests: Int
-		lastDateTimeToCancel: DateTime
+		lastDateTimeToAllowCancel: DateTime # updated
 		minStay: Int # number of days
 		maxStay: Int # number of days
 		petAllowed: Boolean
@@ -77,22 +77,22 @@ type ListingDetails {
       id: ObjectID!
 			checkIn: DateTime
 			checkOut: DateTime	
-			guests: Int
-			totalCost: Int
+			numberOfGuests: Int #updated
+			totalCost: Int 
 			createdAt: DateTime
 			updatedAt: DateTime
-			status: BookingStatus
 			firstName: String
 			lastName: String
 			email: String
 			phoneNumber: String	
+      paidAt: Boolean # updated
+      paidDateTime: DateTime # updated
+      isRefunded: Boolean # updated
+      refundedAt: DateTime # updated
+      isCancelled: Boolean# updated
+      cancelledAt: DateTime# updated
 		}		
 	]
-}
-
-enum BookingStatus {
- 	CONFIRMED
-  CANCELLED
 }
 
 input ListingDetailsInput {

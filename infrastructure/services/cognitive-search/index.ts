@@ -24,15 +24,12 @@ export class CognitiveSearch implements ICognitiveSearch {
     
     if(process.env.NODE_ENV === "development" || process.env.NODE_ENV === "test"){
       credentials = new DefaultAzureCredential();
-      console.log('Using AzureCliCredential');
-      console.log('stringified credentials', JSON.stringify(credentials));
     } else if (process.env.MANAGED_IDENTITY_CLIENT_ID !== undefined) {
       credentials = new DefaultAzureCredential({ ManangedIdentityClientId: process.env.MANAGED_IDENTITY_CLIENT_ID } as DefaultAzureCredentialOptions);
     } else {
       credentials = new DefaultAzureCredential();
     }
 
-    //const credentials = new AzureKeyCredential(searchKey);
     this.client = new SearchIndexClient(endpoint, credentials);
   }
 

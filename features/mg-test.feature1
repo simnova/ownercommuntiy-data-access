@@ -1,0 +1,3 @@
+Feature: Test MG
+  Scenario: Testing MG
+    Given MgTheTest is on the MG page

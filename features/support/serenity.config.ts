@@ -1,4 +1,4 @@
-import { AfterAll, BeforeAll, setDefaultTimeout, defineParameterType, Before } from '@cucumber/cucumber';
+import { AfterAll, BeforeAll, setDefaultTimeout, defineParameterType, Before, After } from '@cucumber/cucumber';
 import { ConsoleReporter } from '@serenity-js/console-reporter';
 import { actorCalled, actorInTheSpotlight, ArtifactArchiver, configure, Duration } from '@serenity-js/core';
 import { SerenityBDDReporter } from '@serenity-js/serenity-bdd';
@@ -29,7 +29,12 @@ const timeouts = {
 // let browser: playwright.Browser;
 
 Before(() => {
+    console.log(`%%%%% BEFORE Scenario`);
     InteractWithTheDomain.init();
+});
+
+After(() => {
+    console.log(`%%%%% AFTER Scenario`);
 });
 
 BeforeAll(async () => {
@@ -69,10 +74,21 @@ BeforeAll(async () => {
     });
 });
 
-// AfterAll(async () => {
+AfterAll(async () => {
 //     // Close the browser after all the tests are finished
 //     if (browser) {
 //         await browser.close();
 //     }
-// })
+InteractWithTheDomain.asReadOnly().logDatabase();
+InteractWithTheDomain.asReadOnly().logSearchDatabase();
+})
 
+const { AfterStep, BeforeStep } = require('@cucumber/cucumber');
+
+BeforeStep(async function logStepNameBefore(step) {
+    console.log(`Starting step: ${step.pickleStep.text}`);
+});
+
+AfterStep(async function logStepNameAfter(step) {
+    console.log(`Finished step: ${step.pickleStep.text}`);
+});

@@ -25,6 +25,7 @@ export class MemoryRepositoryBase<
   get(id: string): Promise<DomainType> {
     
     const item = this.memoryStore.get(id);
+    console.log('###> MemoryRepositoryBase.get: ', this.memoryStore.getAll());
     if (item) {
       return Promise.resolve(new this.domainClass(item, this.context));
     } else {

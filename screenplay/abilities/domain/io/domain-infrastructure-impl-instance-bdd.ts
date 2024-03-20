@@ -20,7 +20,7 @@ class DomainInfrastructureImplBDD implements DomainInfrastructureBDD{
   private _cognitiveSearch: CognitiveSearchInfrastructure;
   // private _blobStorage: IBlobStorage;
   private _dataStore: DataStoreInfrastructure
-  private _database: IMemoryDatabase;
+  // private _database: IMemoryDatabase;
   private constructor(
     database: IMemoryDatabase,
     cognitiveSearch: CognitiveSearchInfrastructure
@@ -30,8 +30,8 @@ class DomainInfrastructureImplBDD implements DomainInfrastructureBDD{
     // this._cognitiveSearch = this.InitCognitiveSearch();
     this._cognitiveSearch = cognitiveSearch;
     // this._blobStorage = this.InitBlobStorage();
-    this._database = database;
-    this._dataStore = this.InitDataStore();
+    // this._database = database;
+    this._dataStore = this.InitDataStore(database);
   }
 
   /*
@@ -78,7 +78,7 @@ class DomainInfrastructureImplBDD implements DomainInfrastructureBDD{
   public get cognitiveSearch(): CognitiveSearchInfrastructure {
     return this._cognitiveSearch;
   }
-
+  /*
   public get communityUnitOfWork(): CommunityUnitOfWork {
     return this._database.CommunityUnitOfWork;
   }
@@ -105,6 +105,17 @@ class DomainInfrastructureImplBDD implements DomainInfrastructureBDD{
       propertyUnitOfWork: this.propertyUnitOfWork,
       serviceUnitOfWork: this.serviceUnitOfWork,
       serviceTicketUnitOfWork: this.serviceTicketUnitOfWork
+    }
+  }
+  */
+  private InitDataStore(database: IMemoryDatabase): DataStoreInfrastructure {
+    return {
+      communityUnitOfWork: database.CommunityUnitOfWork as CommunityUnitOfWork,
+      memberUnitOfWork: database.MemberUnitOfWork as MemberUnitOfWork,
+      roleUnitOfWork: database.RoleUnitOfWork as RoleUnitOfWork,
+      propertyUnitOfWork: database.PropertyUnitOfWork as PropertyUnitOfWork,
+      serviceUnitOfWork: database.ServiceUnitOfWork as ServiceUnitOfWork,
+      serviceTicketUnitOfWork: database.ServiceTicketUnitOfWork as ServiceTicketUnitOfWork,
     }
   }
   public get dataStore(): DataStoreInfrastructure {

@@ -1,10 +1,15 @@
-import { Given, When, DataTable } from '@cucumber/cucumber';
+import { Given, When, DataTable, Before } from '@cucumber/cucumber';
 import { Actor } from '@serenity-js/core';
 import { CreateRole } from '../../screenplay/tasks/create-role';
 import { CreateCommunity } from '../../screenplay/tasks/create-community';
 import { Register } from '../../screenplay/tasks/register';
 import { CreateProperty } from '../../screenplay/tasks/create-property';
 import { LogDataSources } from '../../screenplay/tasks/log-data-sources';
+import { InteractWithTheDomain } from '../../screenplay/abilities/domain/interact-with-the-domain';
+
+// Before(() => {
+//   InteractWithTheDomain.init();
+// });
 
 Given('test setup', async function(){});
 
@@ -12,7 +17,7 @@ Given('{actor} creates {word} community', async function(actor: Actor, community
   await actor
     .attemptsTo(
         Register.asUser()
-        , CreateCommunity.named(communityName)
+        , await CreateCommunity.named(communityName)
         // , LogDataSources()
     );
   });

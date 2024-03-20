@@ -69,6 +69,10 @@ export class InteractWithTheDomain extends Ability
   // and instantiate the ability, for example:
   //   actorCalled('Phil').whoCan(MakePhoneCalls.using(phone))
   public static init() {
+    console.log('===> BEFORE InteractWithTheDomain.init() ************');
+    InteractWithTheDomain.asReadOnly().logDatabase();
+    InteractWithTheDomain.asReadOnly().logSearchDatabase();
+    console.log('===> NOW InteractWithTheDomain.init() ************');
     // if(this._initialized === false) {
       this.startWithEmptyDatabase();
       this.startWithEmptySearchDatabase();
@@ -221,6 +225,9 @@ export class InteractWithTheDomain extends Ability
         const user: UserEntityReference = await this.getOrCreateUserForActor(actorInTheSpotlight());
         const communityToBeSaved = await repo.getNewInstance(communityName, user);
         const savedCommunity = await repo.save(communityToBeSaved);
+        console.log('***************> savedCommunity: START : ', savedCommunity);
+        await InteractWithTheDomain.asReadOnly().logDatabase();
+        console.log('***************> savedCommunity: END : ');
          community  = savedCommunity['props'] as CommunityProps;
     });
     return community;
@@ -277,7 +284,7 @@ export class InteractWithTheDomain extends Ability
 
   public async logSearchDatabase() {
     console.log('===> Memory Search Database ************');
-    InteractWithTheDomain._searchDatabase.logSearchCollectionIndexMap();
+    InteractWithTheDomain._searchDatabase?.logSearchCollectionIndexMap();
   }
 
   public async logDatabase() {

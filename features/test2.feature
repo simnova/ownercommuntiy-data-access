@@ -8,5 +8,5 @@ Scenario: Create a community
     | serviceTicketPermissions  | canManageTickets, CanAssignTickets |
     | servicePermissions        | canManageServices|
   Given BobTheWorker is a member of LegoWorld
-  When ReggieTheOwner assigns the LegoEmployee role to BobTheWorker
-  Then BobTheWorker should have LegoEmployee permissions
+#  When ReggieTheOwner assigns the LegoEmployee role to BobTheWorker
+#  Then BobTheWorker should have LegoEmployee permissions

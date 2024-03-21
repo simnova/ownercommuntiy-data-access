@@ -1,0 +1,5 @@
+Feature: Test IW
+  Scenario: Test IW
+    Given IwTheTest not working
+    When IwTheTest is not working
+    Then IwTheTest does not work

@@ -5,7 +5,7 @@ import { CommunityProps } from '../../domain/contexts/community/community';
 export const CommunityInDb = async (communityName: string) => Question.about(`read ${communityName} community`, async (actor) => {
    let community: CommunityProps;
    await InteractWithTheDomain.asReadOnly().readCommunityDb(async (db) => {
-      community = (await db.getAll()).find((c) => c.name === communityName);
+      community = (await db?.getAll())?.find((c) => c.name === communityName);
    });
     return community;
  });

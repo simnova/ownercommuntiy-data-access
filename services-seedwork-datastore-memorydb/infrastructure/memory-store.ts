@@ -19,6 +19,7 @@ export class MemoryStore<PropType extends EntityProps>  implements ReadOnlyMemor
       this.memoryStore[index] = item;
     } else {
       this.memoryStore.push(item);
+      console.log(`new item added to memory store -> updated : ${JSON.stringify(this.memoryStore)}`)
     }
     return item;
   }

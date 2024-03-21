@@ -23,6 +23,9 @@ import { MemoryCognitiveSearchImpl } from '../../../infrastructure-impl/cognitiv
 import { PropertyRepository } from '../../../domain/contexts/property/property.repository';
 import { PropertyProps } from '../../../domain/contexts/property/property';
 import { NodeEventBusInstance } from '../../../event-bus-seedwork-node';
+import { ServiceRepository } from '../../../domain/contexts/service-ticket/service.repository';
+import { ServiceProps } from '../../../domain/contexts/service-ticket/service';
+
 
 export interface InteractWithTheDomainAsUnregisteredUser {
   registerAsUser: (actor: Actor) => Promise<InteractWithTheDomainAsRegisteredUser>;
@@ -44,6 +47,8 @@ export interface InteractWithTheDomainAsCommunityMember {
   readUserDb: (func:(db: ReadOnlyMemoryStore<UserProps>) => Promise<void>) => Promise<void>;
   actOnProperty: (func:(repo:PropertyRepository<PropertyProps>) => Promise<void>) => Promise<void>;
   readPropertyDb: (func:(db: ReadOnlyMemoryStore<PropertyProps>) => Promise<void>) => Promise<void>;
+  actOnServiceTicket: (func:(repo:ServiceRepository<ServiceProps>) => Promise<void>) => Promise<void>;
+  readServiceTicketDb: (func:(db: ReadOnlyMemoryStore<ServiceProps>) => Promise<void>) => Promise<void>;
 }
 
 export interface InteractWithTheDomainAsReadOnly {
@@ -280,10 +285,21 @@ export class InteractWithTheDomain extends Ability
     return await func(InteractWithTheDomain._database.PropertyMemoryStore);
   }
 
+  // service ticket
+  public async actOnServiceTicket(func:(repo:ServiceRepository<ServiceProps>) => Promise<void>): Promise<void> {
+    InteractWithTheDomain._database.ServiceUnitOfWork.withTransaction(this.context, async (repo) => {
+      await func(repo);
+    });
+  }
+  public async readServiceTicketDb(func:(db: ReadOnlyMemoryStore<ServiceProps>) => Promise<void>): Promise<void> {
+    return await func(InteractWithTheDomain._database.ServiceMemoryStore);
+  }
+
   public async logSearchDatabase() {
     console.log('===> Memory Search Database ************');
     InteractWithTheDomain._searchDatabase.logSearchCollectionIndexMap();
   }
+  
 
   public async logDatabase() {
     console.log('===> Memory Database ************');

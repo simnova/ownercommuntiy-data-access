@@ -3,6 +3,7 @@ import { CustomDomainEvent, DomainEvent } from '../domain-seedwork/domain-event'
 import { EventBus } from '../domain-seedwork/event-bus';
 import api, { trace,TimeInput, SpanStatusCode } from '@opentelemetry/api';
 import { SemanticAttributes } from "@opentelemetry/semantic-conventions";
+import { off } from 'process';
 
 class BroadCaster {
   private eventEmitter: EventEmitter;
@@ -18,6 +19,11 @@ class BroadCaster {
   public on(event: string, listener: any) {
     this.eventEmitter.on(event, listener);
   }
+
+  public removeAllListeners() {
+    this.eventEmitter.removeAllListeners();
+    console.log(`pending listeners: ${this.eventEmitter.eventNames()}`)
+  }
 }
 
 class NodeEventBusImpl implements EventBus {
@@ -26,6 +32,12 @@ class NodeEventBusImpl implements EventBus {
 
   private constructor() {
     this.broadcaster = new BroadCaster();
+  }
+
+  removeAllListeners() {
+    console.log('Removing all listeners');
+    this.broadcaster.removeAllListeners();
+    console.log('All listeners removed');
   }
 
   async dispatch<T extends DomainEvent>(event: new(...args:any) => T, data: any): Promise<void> {
@@ -52,7 +64,7 @@ class NodeEventBusImpl implements EventBus {
       }
     });
   }
- 
+
   register<EventProps,T extends CustomDomainEvent<EventProps>>(event:new(...args:any) => T, func:(payload:T['payload']) => Promise<void>): void {
     console.log(`Registering node event handler for: ${event.name}`);
 
@@ -84,7 +96,7 @@ class NodeEventBusImpl implements EventBus {
           } catch(e) {
             span.recordException(e);
             span.setStatus({code: SpanStatusCode.ERROR, message: `NodeEventBus: Error executing ${event.name}`});
-            console.error(`Error handling node event ${event.name} with data ${rawPayload}`);
+            console.error(`Error handling node event ${event.name} with data ${JSON.stringify(rawPayload)}`);
             console.error(e);
           } finally {
             span.end();

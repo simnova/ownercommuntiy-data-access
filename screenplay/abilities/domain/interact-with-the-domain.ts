@@ -11,7 +11,8 @@ import { RoleProps } from '../../../domain/contexts/community/role';
 import { MemberRepository } from '../../../domain/contexts/community/member.repository';
 import { Member, MemberEntityReference, MemberProps } from '../../../domain/contexts/community/member';
 import { DomainExecutionContext } from '../../../domain/contexts/execution-context';
-import { getDomainInfrastructureImplInstanceBDD } from './io/domain-infrastructure-impl-instance-bdd';
+// import { getDomainInfrastructureImplInstanceBDD } from './io/domain-infrastructure-impl-instance-bdd';
+import { DomainInfrastructureImplBDD } from './io/domain-infrastructure-impl-instance-bdd';
 import InitializeDomainBDD from './io/test/initialize-domain-bdd';
 import { ReadOnlyContext, SystemExecutionContext } from '../../../domain/contexts/execution-context';
 import { PassportImpl } from '../../../domain/contexts/iam/passport';
@@ -22,6 +23,7 @@ import { NotepadType } from '../../actors';
 import { MemoryCognitiveSearchImpl } from '../../../infrastructure-impl/cognitive-search/in-memory/infrastructure';
 import { PropertyRepository } from '../../../domain/contexts/property/property.repository';
 import { PropertyProps } from '../../../domain/contexts/property/property';
+import { InProcEventBusInstance, NodeEventBusInstance } from '../../../event-bus-seedwork-node';
 
 export interface InteractWithTheDomainAsUnregisteredUser {
   registerAsUser: (actor: Actor) => Promise<InteractWithTheDomainAsRegisteredUser>;
@@ -51,8 +53,8 @@ export interface InteractWithTheDomainAsReadOnly {
   readMemberDb: (func:(db: ReadOnlyMemoryStore<MemberProps>) => Promise<void>) => Promise<void>;
   readUserDb: (func:(db: ReadOnlyMemoryStore<UserProps>) => Promise<void>) => Promise<void>;
   readPropertyDb: (func:(db: ReadOnlyMemoryStore<PropertyProps>) => Promise<void>) => Promise<void>;
-  logSearchDatabase: () => Promise<void>;
-  logDatabase: () => Promise<void>;
+  logSearchDatabase: (description: string) => Promise<void>;
+  logDatabase: (description: string) => Promise<void>;
 }
 
 export class InteractWithTheDomain extends Ability 
@@ -72,12 +74,20 @@ export class InteractWithTheDomain extends Ability
     // if(this._initialized === false) {
       this.startWithEmptyDatabase();
       this.startWithEmptySearchDatabase();
-      InitializeDomainBDD(getDomainInfrastructureImplInstanceBDD(
+      InitializeDomainBDD(new DomainInfrastructureImplBDD(
         InteractWithTheDomain._database,
         InteractWithTheDomain._searchDatabase
       ));
+      // InitializeDomainBDD(getDomainInfrastructureImplInstanceBDD(
+      //   InteractWithTheDomain._database,
+      //   InteractWithTheDomain._searchDatabase
+      // ));
       // this._initialized = true;
     // }
+  }
+
+  public static close() {
+    NodeEventBusInstance.removeAllListeners();
   }
 
   private static using(context: DomainExecutionContext) {
@@ -217,7 +227,7 @@ export class InteractWithTheDomain extends Ability
 
   public async createCommunity(communityName: string): Promise<CommunityProps> {
     let community: CommunityProps;
-    InteractWithTheDomain._database.CommunityUnitOfWork.withTransaction(this.context, async (repo) => {
+    await InteractWithTheDomain._database.CommunityUnitOfWork.withTransaction(this.context, async (repo) => {
         const user: UserEntityReference = await this.getOrCreateUserForActor(actorInTheSpotlight());
         const communityToBeSaved = await repo.getNewInstance(communityName, user);
         const savedCommunity = await repo.save(communityToBeSaved);
@@ -275,13 +285,13 @@ export class InteractWithTheDomain extends Ability
     return await func(InteractWithTheDomain._database.PropertyMemoryStore);
   }
 
-  public async logSearchDatabase() {
-    console.log('===> Memory Search Database ************');
+  public async logSearchDatabase(description: string) {
+    console.log(`===> Memory Search Database : ${description} ************`);
     InteractWithTheDomain._searchDatabase.logSearchCollectionIndexMap();
   }
 
-  public async logDatabase() {
-    console.log('===> Memory Database ************');
+  public async logDatabase(description: string) {
+    console.log(`===> Memory Database : ${description} ************`);
     await InteractWithTheDomain.asReadOnly().readCommunityDb(async (db) => {
       console.log('===> database > community : ', JSON.stringify(db));
     });

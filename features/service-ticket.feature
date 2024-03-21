@@ -1,8 +1,8 @@
 Feature: Create a service ticket
 
-Background: 
-  Given OwenTheOwner creates Atlantis community
-  And he creates CommunityManager role in Atlantis community with following permissions:
+  Background: 
+    Given OwenTheOwner creates Atlantis community
+    And he creates CommunityManager role in Atlantis community with following permissions:
     | communityPermissions      | canManageRolesAndPermissions, canManageSiteContent, canManageMembers |
     | serviceTicketPermissions  | canManageTickets |
     | servicePermissions        | canManageServices |
@@ -41,8 +41,8 @@ Background:
 
 
 
-Scenario: Setup
-  Given test setup
+  Scenario: Setup Service Ticket
+    Given test setup
   # Given SamTheSystem creates community Palms
   # And SamTheSystem creates property Cottage in Atlantis
   # And he creates property Villa in Atlantis

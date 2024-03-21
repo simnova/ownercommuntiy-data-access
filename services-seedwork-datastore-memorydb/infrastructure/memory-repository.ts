@@ -39,6 +39,7 @@ export class MemoryRepositoryBase<
     this.dispatchDomainEvents(item);
     this.itemsInTransaction.push(item);
     const existingItem = this.memoryStore.get(item.id);
+    console.log(`MemoryRepositoryBase.save: existingItem: ${JSON.stringify(existingItem)}`);
     if (existingItem) {
       if(item.isDeleted){
         this.memoryStore.delete(item.id);
@@ -47,6 +48,7 @@ export class MemoryRepositoryBase<
       }
     } else {
       this.memoryStore.save(item.props);
+      console.log(`mem-repo::saved new item`)
     }
     return Promise.resolve(item);
   }

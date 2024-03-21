@@ -21,11 +21,13 @@ export class MemoryUnitOfWork<
       await func(repo);
       // console.log('func done');
     }catch(e){
-      console.log('func failed'); 
+      console.log('func failed: ', e); 
       throw e;
     }
     repoEvents = await repo.getIntegrationEvents();
     for await(let event of repoEvents){
+      // wait for 2 secs
+      await new Promise((resolve) => setTimeout(resolve, 2000));
       await this.integrationEventBus.dispatch(event as any,event['payload'])
     }
   }

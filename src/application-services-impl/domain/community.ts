@@ -43,10 +43,10 @@ export class CommunityDomainApplicationServiceImpl<Context extends BaseApplicati
       if(!domainObject) {
         throw new Error('invalid id');
       }
-      domainObject.Name=(input.communityName);
-      domainObject.Domain=(input.domain);
-      domainObject.WhiteLabelDomain=(input.whiteLabelDomain);
-      domainObject.Handle=(input.handle);
+      if(input.communityName) domainObject.Name=(input.communityName);
+      if(input.domain) domainObject.Domain=(input.domain);
+      if(input.whiteLabelDomain) domainObject.WhiteLabelDomain=(input.whiteLabelDomain);
+      if(input.handle) domainObject.Handle=(input.handle);
       communityToReturn = await repo.save(domainObject);
     });
     return communityToReturn;

@@ -2,8 +2,9 @@ import { Community, Member, Property, Resolvers,Service, ServiceTicket, ServiceT
 import { getMemberForCurrentUser } from '../resolver-helper';
 import { isValidObjectId } from 'mongoose';
 import { ServiceTicket as ServiceTicketDo } from '../../../infrastructure-services-impl/datastore/mongodb/models/service-ticket';
+import { ServiceTicketDataStructure } from '../../../app/application-services/datastore';
 
-const ServiceTicketMutationResolver = async (getServiceTicket: Promise<ServiceTicketDo>): Promise<ServiceTicketMutationResult> => {
+const ServiceTicketMutationResolver = async (getServiceTicket: Promise<ServiceTicketDataStructure>): Promise<ServiceTicketMutationResult> => {
   try {
     return {
       status: { success: true },
@@ -61,7 +62,7 @@ const serviceTicket: Resolvers = {
   },
   Query: {
     serviceTicket: async (_parent, args, context, _info) => {
-      return (await context.dataSources.serviceTicketCosmosdbApi.findOneById(args.id)) as ServiceTicket;
+      return (await context.dataSources.serviceTicketCosmosdbApi.getServiceTicketById(args.id)) as ServiceTicket;
     },
     serviceTicketsOpenByCommunity: async (_parent, _args, context, _info) => {
       return (await context.dataSources.serviceTicketCosmosdbApi.getServiceTicketsByCommunityId(context.community)) as ServiceTicket[];

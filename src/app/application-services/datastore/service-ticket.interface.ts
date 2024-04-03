@@ -5,4 +5,5 @@ export interface ServiceTicketDatastoreApplicationService {
   getServiceTicketsOpenByRequestor(memberId: string): Promise<ServiceTicketDataStructure[]>;
   getServiceTicketsClosedByRequestor(memberId: string): Promise<ServiceTicketDataStructure[]>;
   getServiceTicketsByAssignedTo(communityId: string, memberId: string): Promise<ServiceTicketDataStructure[]>; 
+  getServiceTicketById(id: string): Promise<ServiceTicketDataStructure>;
 }

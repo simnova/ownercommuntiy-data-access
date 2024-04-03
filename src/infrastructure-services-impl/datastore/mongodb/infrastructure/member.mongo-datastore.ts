@@ -38,8 +38,9 @@ export class MongoMemberDatastore
         $replaceWith: '$m',
       },
     ]).exec();
-    console.log(`getMembersAssignableToTickets`, result);
-    return result;
+    return result.map((r) => MemberModel.hydrate(r));
+    // console.log(`getMembersAssignableToTickets`, result);
+    // return result;
     // return result.map((r) => new MemberConverter().toDomain(r, ReadOnlyContext()));
   }
 

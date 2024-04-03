@@ -8,6 +8,15 @@ export class ServiceTicketDatastoreApplicationServiceImpl
   extends DatastoreApplicationServiceImpl<AppContext> 
   implements ServiceTicketDatastoreApplicationService
 {
+
+  async getServiceTicketById(id: string): Promise<ServiceTicketDataStructure> {
+    let serviceTicketToReturn: ServiceTicketDataStructure;
+    await this.withDatastore(async (_passport, datastore) => {
+      serviceTicketToReturn = await datastore.serviceTicketDatastore.findOneById(id);
+    });
+    return this.applyPermissionFilter([serviceTicketToReturn], this.context)[0];
+  }
+  
   async getServiceTicketsByCommunityId(communityId: string): Promise<ServiceTicketDataStructure[]> {
     let serviceTicketToReturn: ServiceTicketDataStructure[];
     await this.withDatastore(async (_passport, datastore) => {

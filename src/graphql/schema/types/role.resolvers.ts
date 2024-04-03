@@ -1,8 +1,9 @@
 import { Resolvers, Role, Community, RoleMutationResult } from '../builder/generated';
 import { isValidObjectId } from 'mongoose';
 import { Role as RoleDo } from '../../../infrastructure-services-impl/datastore/mongodb/models/role';
+import { RoleDataStructure } from '../../../app/application-services/datastore';
 
-const RoleMutationResolver = async (getRole: Promise<RoleDo>): Promise<RoleMutationResult> => {
+const RoleMutationResolver = async (getRole: Promise<RoleDataStructure>): Promise<RoleMutationResult> => {
   try {
     return {
       status: { success: true },

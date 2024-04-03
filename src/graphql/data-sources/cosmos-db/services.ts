@@ -1,19 +1,15 @@
-import { Service } from "../../../infrastructure-services-impl/datastore/mongodb/models/service";
+import { ServiceDataStructure } from "../../../app/application-services/datastore";
 import { GraphqlContext } from "../../graphql-context";
-import { CosmosDataSource } from "./cosmos-data-source";
+import { DataSource } from "../data-source";
 
-export class Services extends CosmosDataSource<Service, GraphqlContext> {
-  async getServiceById(id: string): Promise<Service> {
-    return (
-      await this.findByFields({ id: id, community: this.context.community })
-    )?.[0];
+export class Services extends DataSource<GraphqlContext> {
+  async getServiceById(id: string): Promise<ServiceDataStructure> {
+    return this.context.applicationServices.serviceDatastoreApi.getServiceById(id);
   }
-
-  async getServices(): Promise<Service[]> {
-    return this.findByFields({ community: this.context.community });
+  async getServices(): Promise<ServiceDataStructure[]> {
+    return this.context.applicationServices.serviceDatastoreApi.getServices();
   }
-
-  async getServicesByCommunityId(communityId: string): Promise<Service[]> {
-    return this.findByFields({ community: communityId });
+  async getServicesByCommunityId(communityId: string): Promise<ServiceDataStructure[]> {
+    return this.context.applicationServices.serviceDatastoreApi.getServicesByCommunityId(communityId);
   }
 }

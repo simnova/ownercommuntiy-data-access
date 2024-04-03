@@ -1,5 +1,5 @@
 import { ServiceTicket as ServiceTicketDO } from '../../../app/domain/contexts/service-ticket/service-ticket';
-import { Service as ServiceDO } from '../../../app/domain/contexts/service-ticket/service';
+import { Service as ServiceDO, ServiceEntityReference } from '../../../app/domain/contexts/service-ticket/service';
 import { Member as MemberDO, MemberEntityReference } from '../../../app/domain/contexts/community/member';
 import { ServiceTicketConverter, ServiceTicketDomainAdapter } from '../../../infrastructure-services-impl/datastore/mongodb/infrastructure/service-ticket.domain-adapter';
 import { MongoServiceTicketRepository } from '../../../infrastructure-services-impl/datastore/mongodb/infrastructure/service-ticket.mongo-repository';
@@ -46,10 +46,10 @@ export class ServiceTickets extends DomainDataSource<GraphqlContext, ServiceTick
     }
     let memberDo = member as MemberEntityReference; //new MemberConverter().toDomain(member, { passport: ReadOnlyPassport.GetInstance() });
 
-    let serviceDo : ServiceDO<ServiceDomainAdapter> | undefined = undefined;
+    let serviceDo : ServiceEntityReference; //ServiceDO<ServiceDomainAdapter> | undefined = undefined;
     if(input.serviceId) {
-      let service = await this.context.dataSources.serviceCosmosdbApi.findOneById(input.serviceId);
-      serviceDo = new ServiceConverter().toDomain(service,{passport:ReadOnlyPassport.GetInstance()});
+      let service = await this.context.applicationServices.serviceDatastoreApi.getServiceById(input.serviceId);
+      serviceDo = service as ServiceEntityReference; // new ServiceConverter().toDomain(service,{passport:ReadOnlyPassport.GetInstance()});
     }
 
     console.log(`serviceTicketCreate:memberDO`,memberDo);
@@ -72,10 +72,10 @@ export class ServiceTickets extends DomainDataSource<GraphqlContext, ServiceTick
   async serviceTicketUpdate(input: ServiceTicketUpdateInput) : Promise<ServiceTicket> {
     let serviceTicketToReturn : ServiceTicket;
 
-    let serviceDo : ServiceDO<ServiceDomainAdapter> | undefined = undefined;
+    let serviceDo : ServiceEntityReference; //ServiceDO<ServiceDomainAdapter> | undefined = undefined;
     if(input.serviceId) {
-      let service = await this.context.dataSources.serviceCosmosdbApi.findOneById(input.serviceId);
-      serviceDo = new ServiceConverter().toDomain(service,{passport:ReadOnlyPassport.GetInstance()});
+      let service = await this.context.applicationServices.serviceDatastoreApi.getServiceById(input.serviceId);
+      serviceDo = service as ServiceEntityReference; // new ServiceConverter().toDomain(service,{passport:ReadOnlyPassport.GetInstance()});
     }
 
     await this.withTransaction(async (repo) => {

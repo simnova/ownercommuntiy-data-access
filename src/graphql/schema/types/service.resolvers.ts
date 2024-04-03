@@ -30,7 +30,7 @@ const service : Resolvers = {
   },
   Query: {
     service: async (_parent, args, context, _info) => {
-      return (await context.dataSources.serviceCosmosdbApi.findOneById(args.id)) as Service;
+      return (await context.dataSources.serviceCosmosdbApi.getServiceById(args.id)) as Service;
     },
     servicesByCommunityId: async (_parent, {communityId}, context, _info) => {
       return (await context.dataSources.serviceCosmosdbApi.getServicesByCommunityId(communityId)) as Service[];

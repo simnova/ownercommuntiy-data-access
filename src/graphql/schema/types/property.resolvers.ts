@@ -3,8 +3,9 @@ import { isValidObjectId } from 'mongoose';
 import { Property as PropertyDo } from '../../../infrastructure-services-impl/datastore/mongodb/models/property';
 import { getMemberForCurrentUser } from '../resolver-helper';
 import { trace } from "@opentelemetry/api";
+import { PropertyDataStructure } from '../../../app/application-services/datastore';
 
-const PropertyMutationResolver = async (getProperty: Promise<PropertyDo>): Promise<PropertyMutationResult> => {
+const PropertyMutationResolver = async (getProperty: Promise<PropertyDataStructure>): Promise<PropertyMutationResult> => {
   try {
     const temp: PropertyMutationResult = {
       status: { success: true },
@@ -42,7 +43,7 @@ const property: Resolvers = {
   Query: {
     property: async (_parent, args, {dataSources}, _info) => {
       if (args.id && isValidObjectId(args.id)) {
-        return (await dataSources.propertyCosmosdbApi.findOneById(args.id)) as Property;
+        return (await dataSources.propertyCosmosdbApi.getPropertyById(args.id)) as Property;
       }
       return null;
     },
@@ -105,7 +106,7 @@ const property: Resolvers = {
       const member = await getMemberForCurrentUser(context, context.community);
       const result = await context.dataSources.propertyBlobAPI.propertyListingImageCreateAuthHeader(input.propertyId, input.fileName, member.id, input.contentType, input.contentLength);
       if (result.status.success) {
-        let propertyDbObj = (await (await context.dataSources.propertyCosmosdbApi.findOneById(input.propertyId)).populate('owner')) as PropertyUpdateInput;
+        let propertyDbObj = (await context.dataSources.propertyCosmosdbApi.getPropertyByIdWithCommunityOwner(input.propertyId)) as PropertyUpdateInput;
         propertyDbObj.listingDetail.images.push(result.authHeader.blobName);
         result.property = (await context.dataSources.propertyDomainAPI.propertyUpdate(propertyDbObj)) as Property;
       }
@@ -116,7 +117,7 @@ const property: Resolvers = {
       const member = await getMemberForCurrentUser(context, context.community);
       const result = await context.dataSources.propertyBlobAPI.propertyFloorPlanImageCreateAuthHeader(input.propertyId, input.fileName, member.id, input.contentType, input.contentLength);
       if (result.status.success) {
-        let propertyDbObj = (await (await context.dataSources.propertyCosmosdbApi.findOneById(input.propertyId)).populate('owner')) as PropertyUpdateInput;
+        let propertyDbObj = (await context.dataSources.propertyCosmosdbApi.getPropertyByIdWithCommunityOwner(input.propertyId)) as PropertyUpdateInput;
         propertyDbObj.listingDetail.floorPlanImages.push(result.authHeader.blobName);
         result.property = (await context.dataSources.propertyDomainAPI.propertyUpdate(propertyDbObj)) as Property;
       }

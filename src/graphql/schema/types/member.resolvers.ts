@@ -2,8 +2,9 @@ import { Resolvers, Member, Community, Role, User, MemberMutationResult } from '
 import { isValidObjectId } from 'mongoose';
 import { getMemberForCurrentUser } from '../resolver-helper';
 import { Member as MemberDo } from '../../../infrastructure-services-impl/datastore/mongodb/models/member';
+import { MemberDataStructure } from '../../../app/application-services/datastore';
 
-const MemberMutationResolver = async (getMember: Promise<MemberDo>): Promise<MemberMutationResult> => {
+const MemberMutationResolver = async (getMember: Promise<MemberDataStructure>): Promise<MemberMutationResult> => {
   try {
     const temp = { status: { success: true }, member: await getMember } as MemberMutationResult;
     return temp;

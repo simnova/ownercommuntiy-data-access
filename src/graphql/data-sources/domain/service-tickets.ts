@@ -15,6 +15,7 @@ import { ServiceConverter, ServiceDomainAdapter } from '../../../infrastructure-
 import { PropertyConverter } from '../../../infrastructure-services-impl/datastore/mongodb/infrastructure/property.domain-adapter';
 import { CommunityEntityReference } from '../../../app/domain/contexts/community/community';
 import { MemberDataStructure } from '../../../app/application-services/datastore';
+import { PropertyEntityReference } from '../../../app/domain/contexts/property/property';
 
 type PropType = ServiceTicketDomainAdapter;
 type DomainType = ServiceTicketDO<PropType>;
@@ -31,8 +32,8 @@ export class ServiceTickets extends DomainDataSource<GraphqlContext, ServiceTick
     let community = await this.context.dataSources.communityCosmosdbApi.getCommunityById(this.context.community);
     let communityDo = community as CommunityEntityReference; //new CommunityConverter().toDomain(community, { passport: ReadOnlyPassport.GetInstance() });
 
-    let property = await this.context.dataSources.propertyCosmosdbApi.findOneById(input.propertyId);
-    let propertyDo = new PropertyConverter().toDomain(property, { passport: ReadOnlyPassport.GetInstance() });
+    let property = await this.context.dataSources.propertyCosmosdbApi.getPropertyById(input.propertyId);
+    let propertyDo = property as PropertyEntityReference; //new PropertyConverter().toDomain(property, { passport: ReadOnlyPassport.GetInstance() });
 
     let member: MemberDataStructure;
     if (input.requestorId === undefined) {
@@ -80,8 +81,8 @@ export class ServiceTickets extends DomainDataSource<GraphqlContext, ServiceTick
     await this.withTransaction(async (repo) => {
       let serviceTicket = await repo.getById(input.serviceTicketId);
       if (serviceTicket.property.id !== input.propertyId) {
-        let property = await this.context.dataSources.propertyCosmosdbApi.findOneById(input.propertyId);
-        let propertyDo = new PropertyConverter().toDomain(property, { passport: ReadOnlyPassport.GetInstance() });
+        let property = await this.context.dataSources.propertyCosmosdbApi.getPropertyById(input.propertyId);
+        let propertyDo = property as PropertyEntityReference; //new PropertyConverter().toDomain(property, { passport: ReadOnlyPassport.GetInstance() });
         serviceTicket.Property=(propertyDo);
       }
       serviceTicket.Title=(input.title);

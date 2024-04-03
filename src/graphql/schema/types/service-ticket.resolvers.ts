@@ -28,7 +28,7 @@ const serviceTicket: Resolvers = {
     },
     property: async (parent, args, context, info) => {
       if (parent.property && isValidObjectId(parent.property.toString())) {
-        return (await context.dataSources.propertyCosmosdbApi.findOneById(parent.property.toString())) as Property;
+        return (await context.dataSources.propertyCosmosdbApi.getPropertyById(parent.property.toString())) as Property;
       }
       return parent.property;
     },

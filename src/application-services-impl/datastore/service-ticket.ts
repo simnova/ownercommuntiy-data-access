@@ -14,7 +14,8 @@ export class ServiceTicketDatastoreApplicationServiceImpl
     await this.withDatastore(async (_passport, datastore) => {
       serviceTicketToReturn = await datastore.serviceTicketDatastore.findOneById(id);
     });
-    return this.applyPermissionFilter([serviceTicketToReturn], this.context)[0];
+    return serviceTicketToReturn;
+    // return this.applyPermissionFilter([serviceTicketToReturn], this.context)[0];
   }
   
   async getServiceTicketsByCommunityId(communityId: string): Promise<ServiceTicketDataStructure[]> {

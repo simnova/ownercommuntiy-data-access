@@ -7,6 +7,7 @@ import { DomainDataSource } from './domain-data-source';
 import { Service } from '../../../infrastructure-services-impl/datastore/mongodb/models/service';
 import { CommunityConverter } from '../../../infrastructure-services-impl/datastore/mongodb/infrastructure/community.domain-adapter';
 import { ReadOnlyPassport } from '../../../app/domain/contexts/iam/passport';
+import { CommunityEntityReference } from '../../../app/domain/contexts/community/community';
 
 type PropType = ServiceDomainAdapter;
 type DomainType = ServiceDO<PropType>;
@@ -22,7 +23,7 @@ export class Services extends DomainDataSource<GraphqlContext,Service,PropType,D
     
     let serviceToReturn : Service;
     let community = await this.context.dataSources.communityCosmosdbApi.getCommunityById(this.context.community);
-    let communityDo = new CommunityConverter().toDomain(community,{passport:ReadOnlyPassport.GetInstance()});
+    let communityDo = community as CommunityEntityReference; //new CommunityConverter().toDomain(community,{passport:ReadOnlyPassport.GetInstance()});
 
     await this.withTransaction(async (repo) => {
       let newService = await repo.getNewInstance(

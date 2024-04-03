@@ -10,6 +10,8 @@ import { ReadOnlyPassport } from '../../../app/domain/contexts/iam/passport';
 import { MemberConverter } from '../../../infrastructure-services-impl/datastore/mongodb/infrastructure/member.domain-adapter';
 import { Amenities, Images } from '../../../app/domain/contexts/property/listing-detail.value-objects';
 import { BedDescriptions } from '../../../app/domain/contexts/property/bedroom-detail.value-objects';
+import { CommunityEntityReference } from '../../../app/domain/contexts/community/community';
+import { MemberEntityReference } from '../../../app/domain/contexts/community/member';
 
 type PropType = PropertyDomainAdapter;
 type DomainType = PropertyDO<PropType>;
@@ -24,7 +26,7 @@ export class Properties extends DomainDataSource<GraphqlContext, Property, PropT
 
     let propertyToReturn: Property;
     let community = await this.context.dataSources.communityCosmosdbApi.getCommunityById(this.context.community);
-    let communityDo = new CommunityConverter().toDomain(community, { passport: ReadOnlyPassport.GetInstance() });
+    let communityDo = community as CommunityEntityReference; //new CommunityConverter().toDomain(community, { passport: ReadOnlyPassport.GetInstance() });
 
     await this.withTransaction(async (repo) => {
       let newProperty = await repo.getNewInstance(input.propertyName, communityDo);
@@ -36,8 +38,8 @@ export class Properties extends DomainDataSource<GraphqlContext, Property, PropT
   async propertyUpdate(input: PropertyUpdateInput): Promise<Property> {
     let propertyToReturn: Property;
 
-    let mongoMember = await this.context.dataSources.memberCosmosdbApi.findOneById(input.owner?.id);
-    let memberDo = new MemberConverter().toDomain(mongoMember, { passport: ReadOnlyPassport.GetInstance() });
+    let member = await this.context.applicationServices.memberDatastoreApi.getMemberById(input.owner?.id);
+    let memberDo = member as MemberEntityReference; //new MemberConverter().toDomain(member, { passport: ReadOnlyPassport.GetInstance() });
 
     await this.withTransaction(async (repo) => {
       let property = await repo.getById(input.id);
@@ -145,8 +147,8 @@ export class Properties extends DomainDataSource<GraphqlContext, Property, PropT
 
   async propertyAssignOwner(input: PropertyAssignOwnerInput): Promise<Property> {
     let propertyToReturn: Property;
-    let mongoMember = await this.context.dataSources.memberCosmosdbApi.findOneById(input.ownerId);
-    let memberDo = new MemberConverter().toDomain(mongoMember, { passport: ReadOnlyPassport.GetInstance() });
+    let member = await this.context.applicationServices.memberDatastoreApi.getMemberById(input.ownerId);
+    let memberDo = member as MemberEntityReference; //new MemberConverter().toDomain(member, { passport: ReadOnlyPassport.GetInstance() });
     await this.withTransaction(async (repo) => {
       let property = await repo.getById(input.id);
       property.Owner=(memberDo);

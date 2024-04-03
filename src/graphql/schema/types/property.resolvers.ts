@@ -28,13 +28,13 @@ const property: Resolvers = {
     },
     community: async (parent, _args, {dataSources}, _info) => {
       if (parent.community && isValidObjectId(parent.community.toString())) {
-        return (await dataSources.communityCosmosdbApi.findOneById(parent.community.toString())) as Community;
+        return (await dataSources.communityCosmosdbApi.getCommunityById(parent.community.toString())) as Community;
       }
       return parent.community;
     },
     owner: async (parent, _args, {dataSources}, _info) => {
       if (parent.owner && isValidObjectId(parent.owner.toString())) {
-        return (await dataSources.memberCosmosdbApi.findOneById(parent.owner.toString())) as Member;
+        return (await dataSources.memberCosmosdbApi.getMemberById(parent.owner.toString())) as Member;
       }
       return parent.owner;
     },

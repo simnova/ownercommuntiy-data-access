@@ -20,7 +20,7 @@ const member: Resolvers = {
   Member: {
     community: async (parent, _args, context) => {
       if (parent.community && isValidObjectId(parent.community.toString())) {
-        return (await context.dataSources.communityCosmosdbApi.findOneById(parent.community.toString())) as Community;
+        return (await context.dataSources.communityCosmosdbApi.getCommunityById(parent.community.toString())) as Community;
       }
       return parent.community;
     },
@@ -48,7 +48,7 @@ const member: Resolvers = {
   Query: {
     member: async (_parent, {id}, context) => {
       if (id && isValidObjectId(id)) {
-        return (await context.dataSources.memberCosmosdbApi.findOneById(id)) as Member;
+        return (await context.dataSources.memberCosmosdbApi.getMemberById(id)) as Member;
       }
       return null;
     },

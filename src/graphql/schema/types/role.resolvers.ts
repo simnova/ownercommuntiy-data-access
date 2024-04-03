@@ -21,7 +21,7 @@ const role: Resolvers = {
   Role: {
     community: async (parent, _args, context, _info) => {
       if (parent.community && isValidObjectId(parent.community.toString())) {
-        return (await context.dataSources.communityCosmosdbApi.findOneById(parent.community.toString())) as Community;
+        return (await context.dataSources.communityCosmosdbApi.getCommunityById(parent.community.toString())) as Community;
       }
       return parent.community;
     },

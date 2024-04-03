@@ -39,8 +39,8 @@ export class DataSourceBuilder {
     this.roleCosmosdbApi = new RoleDatastoreDatasource({ modelOrCollection: RoleModel, context });
     this.serviceCosmosdbApi = new ServiceCosmosdbAPI({ modelOrCollection: ServiceModel, context });
     this.serviceTicketCosmosdbApi = new ServiceTicketCosmosdbAPI({ modelOrCollection: ServiceTicketModel, context });
-    this.memberCosmosdbApi = new MemberCosmosdbAPI({ modelOrCollection: MemberModel, context });
-    this.communityCosmosdbApi = new CommunityCosmosdbAPI({ modelOrCollection: CommunityModel, context });
+    this.memberCosmosdbApi = new MemberCosmosdbAPI({ context });//modelOrCollection: MemberModel, 
+    this.communityCosmosdbApi = new CommunityCosmosdbAPI({  context });//modelOrCollection: CommunityModel,
     this.propertyCosmosdbApi = new PropertyCosmosdbAPI({ modelOrCollection: PropertyModel, context });
     this.userDomainAPI = new UserDomainAPI({ unitOfWork: UserUnitOfWork, context });
     this.communityDomainAPI = new CommunityDomainAPI({ unitOfWork: CommunityUnitOfWork, context });

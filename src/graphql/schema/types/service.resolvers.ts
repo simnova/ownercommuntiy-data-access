@@ -23,7 +23,7 @@ const service : Resolvers = {
   Service: {
     community: async (parent, args, context, info) => {
       if(parent.community && isValidObjectId(parent.community.toString())){
-        return (await context.dataSources.communityCosmosdbApi.findOneById(parent.community.toString())) as Community;
+        return (await context.dataSources.communityCosmosdbApi.getCommunityById(parent.community.toString())) as Community;
       }
       return parent.community;
     },

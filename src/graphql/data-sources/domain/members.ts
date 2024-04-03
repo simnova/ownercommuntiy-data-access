@@ -11,6 +11,7 @@ import { RoleConverter } from '../../../infrastructure-services-impl/datastore/m
 import { UserConverter } from '../../../infrastructure-services-impl/datastore/mongodb/infrastructure/user.domain-adapter';
 import { Interests } from '../../../app/domain/contexts/community/profile.value-objects';
 import { CustomViewColumnsToDisplay, CustomViewFilters } from '../../../app/domain/contexts/community/custom-view.value-objects';
+import { CommunityEntityReference } from '../../../app/domain/contexts/community/community';
 
 type PropType = MemberDomainAdapter;
 type DomainType = MemberDO<PropType>;
@@ -25,7 +26,7 @@ export class Members extends DomainDataSource<GraphqlContext, Member, PropType, 
 
     let memberToReturn: Member;
     let community = await this.context.dataSources.communityCosmosdbApi.getCommunityById(this.context.community);
-    let communityDo = new CommunityConverter().toDomain(community, { passport: ReadOnlyPassport.GetInstance() });
+    let communityDo = community as CommunityEntityReference; //new CommunityConverter().toDomain(community, { passport: ReadOnlyPassport.GetInstance() });
 
     await this.withTransaction(async (repo) => {
       let newMember = await repo.getNewInstance(input.memberName, communityDo);

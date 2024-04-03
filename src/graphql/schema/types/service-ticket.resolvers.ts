@@ -22,7 +22,7 @@ const serviceTicket: Resolvers = {
   ServiceTicket: {
     community: async (parent, args, context, info) => {
       if (parent.community && isValidObjectId(parent.community.toString())) {
-        return (await context.dataSources.communityCosmosdbApi.findOneById(parent.community.toString())) as Community;
+        return (await context.dataSources.communityCosmosdbApi.getCommunityById(parent.community.toString())) as Community;
       }
       return parent.community;
     },
@@ -34,13 +34,13 @@ const serviceTicket: Resolvers = {
     },
     requestor: async (parent, args, context, info) => {
       if (parent.requestor && isValidObjectId(parent.requestor.toString())) {
-        return (await context.dataSources.memberCosmosdbApi.findOneById(parent.requestor.toString())) as Member;
+        return (await context.dataSources.memberCosmosdbApi.getMemberById(parent.requestor.toString())) as Member;
       }
       return parent.requestor;
     },
     assignedTo: async (parent, args, context, info) => {
       if (parent.assignedTo && isValidObjectId(parent.assignedTo.toString())) {
-        return (await context.dataSources.memberCosmosdbApi.findOneById(parent.assignedTo.toString())) as Member;
+        return (await context.dataSources.memberCosmosdbApi.getMemberById(parent.assignedTo.toString())) as Member;
       }
       return parent.assignedTo;
     },
@@ -54,7 +54,7 @@ const serviceTicket: Resolvers = {
   ServiceTicketActivityDetail: {
     activityBy: async (parent, args, context, info) => {
       if (parent.activityBy && isValidObjectId(parent.activityBy.toString())) {
-        return (await context.dataSources.memberCosmosdbApi.findOneById(parent.activityBy.toString())) as Member;
+        return (await context.dataSources.memberCosmosdbApi.getMemberById(parent.activityBy.toString())) as Member;
       }
       return parent.activityBy;
     },

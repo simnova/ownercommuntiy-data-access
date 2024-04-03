@@ -7,6 +7,10 @@ export interface DataSourceConfig<TContext> {
 export abstract class DataSource<TContext = any> {
   protected _context: TContext;
 
+  get context(): TContext {
+    return this._context;
+  }
+
   constructor({ context, cache }: DataSourceConfig<TContext>) {
     if (context) {
       this._context = context;

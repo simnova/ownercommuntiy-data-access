@@ -22,7 +22,7 @@ export class RoleDomainApplicationServiceImpl<Context extends BaseApplicationSer
     }
     
     let roleToReturn : Root;
-    let community = await this.context.applicationServices.communityDataApi.getCommunityById(this.context.communityId);
+    let community = await this.context.applicationServices.communityDatastoreApi.getCommunityById(this.context.communityId);
     let communityDo = community as CommunityEntityReference; // new CommunityConverter().toDomain(community,{passport:ReadOnlyPassport.GetInstance()});
 
     await this.withTransaction(async (repo) => {
@@ -88,7 +88,7 @@ export class RoleDomainApplicationServiceImpl<Context extends BaseApplicationSer
       throw new Error('Unauthorized:roleDeleteAndReassign');
     }
 
-    let newRole = await this.context.applicationServices.roleDataApi.getRoleById(input.roleToReassignTo);
+    let newRole = await this.context.applicationServices.roleDatastoreApi.getRoleById(input.roleToReassignTo);
     let newRoleDo = newRole as RoleEntityReference; // new RoleConverter().toDomain(mongoNewRole,{passport:ReadOnlyPassport.GetInstance()});
     let roleToReturn : Root;
     await this.withTransaction(async (repo) => {

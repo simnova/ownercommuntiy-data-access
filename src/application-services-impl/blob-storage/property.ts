@@ -18,7 +18,7 @@ export class PropertyBlobStorageApplicationServiceImpl extends BlobStorageApplic
 	public async propertyPublicFileRemove(propertyId: string,memberId: string, fileName: string): Promise<void> {
 		const blobName = `public-files/${fileName}`;
 		await this.withStorage(async (passport, blobStorage) => {
-			let property = await(await this.context.applicationServices.propertyDataApi.getPropertyByIdWithCommunityOwner(propertyId));
+			let property = await(await this.context.applicationServices.propertyDatastoreApi.getPropertyByIdWithCommunityOwner(propertyId));
 			if (!property) {
 				return;
 			}
@@ -67,7 +67,7 @@ export class PropertyBlobStorageApplicationServiceImpl extends BlobStorageApplic
 	public async propertyListingImageRemove(propertyId: string, memberId: string, blobName: string): Promise<MutationStatus> {
 		let mutationResult: MutationStatus;
 		await this.withStorage(async (passport, blobStorage) => {
-			let property = await (await this.context.applicationServices.propertyDataApi.getPropertyByIdWithCommunityOwner(propertyId));
+			let property = await (await this.context.applicationServices.propertyDatastoreApi.getPropertyByIdWithCommunityOwner(propertyId));
 			if (!property) {
 				mutationResult = { success: false, errorMessage: `Property not found: ${propertyId}` } as MutationStatus;
 				return;
@@ -92,7 +92,7 @@ export class PropertyBlobStorageApplicationServiceImpl extends BlobStorageApplic
 		let headerResult: PropertyBlobFileAuthHeaderResult;
 		const { fileName, contentType, contentLength, maxSizeBytes } = fileInfo;
 		await this.withStorage(async (passport, blobStorage) => {
-			let property = await (await this.context.applicationServices.propertyDataApi.getPropertyByIdWithCommunityOwner(propertyId));
+			let property = await (await this.context.applicationServices.propertyDatastoreApi.getPropertyByIdWithCommunityOwner(propertyId));
 			if (!property) {
 				headerResult = { status: { success: false, errorMessage: `Property not found: ${propertyId}` } } as PropertyBlobFileAuthHeaderResult;
 				return;

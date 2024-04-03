@@ -15,9 +15,9 @@ import { Communities } from './communities';
 import { Properties } from './properties';
 
 export {
-  Users as UserCosmosdbAPI,
+  Users as UserDatastoreDatasource,
   UserModel,
-  Roles as RoleCosmosdbAPI,
+  Roles as RoleDatastoreDatasource,
   RoleModel,
   Services as ServiceCosmosdbAPI,
   ServiceModel,

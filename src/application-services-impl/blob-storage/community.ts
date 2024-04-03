@@ -13,7 +13,7 @@ export class CommunityBlobStorageApplicationServiceImpl extends BlobStorageAppli
   public async communityPublicFilesList(communityId: string): Promise<FileInfo[]> {
     let result: FileInfo[] = [];
     await this.withStorage(async (passport, blobStorage) => {
-      let community = await this.context.applicationServices.communityDataApi.getCommunityById(communityId);
+      let community = await this.context.applicationServices.communityDatastoreApi.getCommunityById(communityId);
       let communityDO = community as CommunityEntityReference; //new CommunityConverter().toDomain(community, { passport: passport });
       if (!passport.forCommunity(communityDO).determineIf((permissions) => permissions.canManageSiteContent)) {
         return;
@@ -57,7 +57,7 @@ export class CommunityBlobStorageApplicationServiceImpl extends BlobStorageAppli
   public async communityPublicFileRemove(communityId: string, fileName: string): Promise<void> {
     const blobName = `public-files/${fileName}`;
     await this.withStorage(async (passport, blobStorage) => {
-      let community = await this.context.applicationServices.communityDataApi.getCommunityById(communityId);
+      let community = await this.context.applicationServices.communityDatastoreApi.getCommunityById(communityId);
       if (!community) {
         return;
       }
@@ -88,7 +88,7 @@ export class CommunityBlobStorageApplicationServiceImpl extends BlobStorageAppli
   ) {
     let headerResult: CommunityBlobContentAuthHeaderResult;
     await this.withStorage(async (passport, blobStorage) => {
-      let community = await this.context.applicationServices.communityDataApi.getCommunityById(communityId);
+      let community = await this.context.applicationServices.communityDatastoreApi.getCommunityById(communityId);
       if (!community) {
         headerResult = { status: { success: false, errorMessage: `Community not found: ${communityId}` } } as CommunityBlobContentAuthHeaderResult;
         return;

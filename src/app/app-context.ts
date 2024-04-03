@@ -34,12 +34,10 @@ export class AppContextImpl implements AppContext {
   constructor(
     verifiedUser: VerifiedUser, 
     communityHeader: string,
-    // applicationServices: ApplicationServices,
     infrastructureServices: InfrastructureServices
     ) {
       this._verifiedUser = verifiedUser;
       this._communityHeader = communityHeader;
-      // this._applicationServices = applicationServices;
       this._applicationServices = new ApplicationServicesBuilder(this);
       this._infrastructureServices = infrastructureServices;
   }
@@ -65,11 +63,11 @@ export class AppContextImpl implements AppContext {
   }
 
   async init(): Promise<void> {
-    console.log(' initializing app context ...')
     await this.setDefaultPassport();
     await this.setCommunityData();
     await this.setPassport();
     await this.initializeDomain();
+    console.log('AppContext initialized...');
   }
 
   private async initializeDomain() {
@@ -87,24 +85,19 @@ export class AppContextImpl implements AppContext {
   }
   
   private async setCommunityData(): Promise<void>{
-    console.log(' == ERROR == communityHeader: ', this._communityHeader);
     if (this._communityHeader) {
-      this._communityData = await this._applicationServices.communityDataApi.getCommunityByHeader(this._communityHeader);
+      this._communityData = await this._applicationServices.communityDatastoreApi.getCommunityByHeader(this._communityHeader);
     }
-    console.log(' == ERROR == communityData: ', this._communityData);
-    // this._communityData = null;
   }
 
   private async setPassport(): Promise<void> {
     let userExternalId = this._verifiedUser.verifiedJWT.sub;
     if(userExternalId && this._communityData) {
-      let userData = await this._applicationServices.userDataApi.getByExternalId(userExternalId);
-      let memberData = await this._applicationServices.memberDataApi.getMemberByCommunityAccountWithCommunityAccountRole(this._communityData.id, userData.id);
+      let userData = await this._applicationServices.userDatastoreApi.getByExternalId(userExternalId);
+      let memberData = await this._applicationServices.memberDatastoreApi.getMemberByCommunityAccountWithCommunityAccountRole(this._communityData.id, userData.id);
       if(memberData && userData) {
         this._passport = new PassportImpl(userData as UserEntityReference, memberData as MemberEntityReference, this._communityData as CommunityEntityReference);
       }
     }
-    // console.log(' == ERROR == verifiedUser: ', this._verifiedUser, ' community: ', this._communityData);
-    // this._passport = ReadOnlyPassport.GetInstance();
   }
 }

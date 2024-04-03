@@ -24,7 +24,7 @@ export class MemberDomainApplicationServiceImpl<Context extends BaseApplicationS
     }
 
     let memberToReturn: Root;
-    let community = await this.context.applicationServices.communityDataApi.getCommunityById(this.context.communityId);
+    let community = await this.context.applicationServices.communityDatastoreApi.getCommunityById(this.context.communityId);
     let communityDo = community as CommunityEntityReference; //new CommunityConverter().toDomain(community, { passport: ReadOnlyPassport.GetInstance() });
 
     await this.withTransaction(async (repo) => {
@@ -38,7 +38,7 @@ export class MemberDomainApplicationServiceImpl<Context extends BaseApplicationS
     let memberToReturn: Root;
     let roleDo;
     if (input.role !== undefined) {
-      let role = await this.context.applicationServices.roleDataApi.getRoleById(input.role);
+      let role = await this.context.applicationServices.roleDatastoreApi.getRoleById(input.role);
       roleDo = role as RoleEntityReference; //new RoleConverter().toDomain(mongoRole, { passport: ReadOnlyPassport.GetInstance() });
     }
     await this.withTransaction(async (repo) => {
@@ -84,10 +84,10 @@ export class MemberDomainApplicationServiceImpl<Context extends BaseApplicationS
   async memberAccountAdd(input: MemberAccountAddInput): Promise<Root> {
     let memberToReturn: Root;
 
-    let accountUser = await this.context.applicationServices.userDataApi.getUserById(input.account.user);
+    let accountUser = await this.context.applicationServices.userDatastoreApi.getUserById(input.account.user);
     let accountUserDo = accountUser as UserEntityReference; //new UserConverter().toDomain(mongoUser, { passport: ReadOnlyPassport.GetInstance() });
 
-    let currentUser = await this.context.applicationServices.userDataApi.getByExternalId(this.context.verifiedUser.verifiedJWT.sub);
+    let currentUser = await this.context.applicationServices.userDatastoreApi.getByExternalId(this.context.verifiedUser.verifiedJWT.sub);
     let currentUserDo = currentUser as UserEntityReference; //new UserConverter().toDomain(currentMongoUser, { passport: ReadOnlyPassport.GetInstance() });
 
     await this.withTransaction(async (repo) => {

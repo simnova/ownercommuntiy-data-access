@@ -9,7 +9,7 @@ export class MemberBlobStorageApplicationServiceImpl extends BlobStorageApplicat
   async memberProfileAvatarRemove(memberId: string): Promise<MutationStatus> {
     let mutationResult: MutationStatus;
     await this.withStorage(async (passport, blobStorage) => {
-      let member = await (await this.context.applicationServices.memberDataApi.getMemberByIdWithCommunity(memberId));
+      let member = await (await this.context.applicationServices.memberDatastoreApi.getMemberByIdWithCommunity(memberId));
       if (!member) {
         mutationResult = { success: false, errorMessage: `Member not found: ${memberId}` } as MutationStatus;
       }
@@ -35,7 +35,7 @@ export class MemberBlobStorageApplicationServiceImpl extends BlobStorageApplicat
 
     let headerResult: MemberAvatarImageAuthHeaderResult;
     await this.withStorage(async (passport, blobStorage) => {
-      let member = await (await this.context.applicationServices.memberDataApi.getMemberByIdWithCommunity(memberId));
+      let member = await (await this.context.applicationServices.memberDatastoreApi.getMemberByIdWithCommunity(memberId));
       if (!member) {
         headerResult = { status: { success: false, errorMessage: `Member not found: ${memberId}` } } as MemberAvatarImageAuthHeaderResult;
         return;

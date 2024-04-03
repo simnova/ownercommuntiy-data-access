@@ -21,18 +21,18 @@ import { ServiceTicketDatastoreApplicationService } from './service-ticket.inter
 import { ServiceTicketDataStructure } from '../../../infrastructure-services-impl/datastore/data-structures/service-ticket';
 
 export {
-  UserDatastoreApplicationService as UserDataAPI,
+  UserDatastoreApplicationService as UserDatastoreAPI,
   UserDataStructure,
-  CommunityDatastoreApplicationService as CommunityDataAPI,
+  CommunityDatastoreApplicationService as CommunityDatastoreAPI,
   CommunityDataStructure,
-  MemberDatastoreApplicationService as MemberDataAPI,
+  MemberDatastoreApplicationService as MemberDatastoreAPI,
   MemberDataStructure,
-  RoleDatastoreApplicationService as RoleDataAPI,
+  RoleDatastoreApplicationService as RoleDatastoreAPI,
   RoleDataStructure,
-  PropertyDatastoreApplicationService as PropertyDataAPI,
+  PropertyDatastoreApplicationService as PropertyDatastoreAPI,
   PropertyDataStructure,
-  ServiceDatastoreApplicationService as ServiceDataAPI,
+  ServiceDatastoreApplicationService as ServiceDatastoreAPI,
   ServiceDataStructure,
-  ServiceTicketDatastoreApplicationService as ServiceTicketDataAPI,
+  ServiceTicketDatastoreApplicationService as ServiceTicketDatastoreAPI,
   ServiceTicketDataStructure,
 }

@@ -27,7 +27,7 @@ const member: Resolvers = {
     },
     role: async (parent, _args, context) => {
       if (parent.role && isValidObjectId(parent.role.toString())) {
-        return (await context.dataSources.roleCosmosdbApi.findOneById(parent.role.toString())) as Role;
+        return (await context.dataSources.roleCosmosdbApi.getRoleById(parent.role.toString())) as Role;
       }
       return parent.role;
     },

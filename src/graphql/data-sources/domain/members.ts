@@ -12,6 +12,7 @@ import { UserConverter } from '../../../infrastructure-services-impl/datastore/m
 import { Interests } from '../../../app/domain/contexts/community/profile.value-objects';
 import { CustomViewColumnsToDisplay, CustomViewFilters } from '../../../app/domain/contexts/community/custom-view.value-objects';
 import { CommunityEntityReference } from '../../../app/domain/contexts/community/community';
+import { RoleEntityReference } from '../../../app/domain/contexts/community/role';
 
 type PropType = MemberDomainAdapter;
 type DomainType = MemberDO<PropType>;
@@ -39,8 +40,8 @@ export class Members extends DomainDataSource<GraphqlContext, Member, PropType, 
     let memberToReturn: Member;
     let roleDo;
     if (input.role !== undefined) {
-      let mongoRole = await this.context.dataSources.roleCosmosdbApi.findOneById(input.role);
-      roleDo = new RoleConverter().toDomain(mongoRole, { passport: ReadOnlyPassport.GetInstance() });
+      let role = await this.context.dataSources.roleCosmosdbApi.getRoleById(input.role);
+      roleDo = role as RoleEntityReference; //new RoleConverter().toDomain(role, { passport: ReadOnlyPassport.GetInstance() });
     }
     await this.withTransaction(async (repo) => {
       let member = await repo.getById(input.id);

@@ -1,4 +1,4 @@
-import { Role as RoleDO } from '../../../app/domain/contexts/community/role';
+import { Role as RoleDO, RoleEntityReference } from '../../../app/domain/contexts/community/role';
 import { RoleConverter, RoleDomainAdapter }from '../../../infrastructure-services-impl/datastore/mongodb/infrastructure/role.domain-adapter';
 import { MongoRoleRepository } from '../../../infrastructure-services-impl/datastore/mongodb/infrastructure/role.mongo-repository';
 import { GraphqlContext } from '../../graphql-context';
@@ -88,8 +88,8 @@ export class Roles extends DomainDataSource<GraphqlContext,Role,PropType,DomainT
       throw new Error('Unauthorized:roleDeleteAndReassign');
     }
 
-    let mongoNewRole = await this.context.dataSources.roleCosmosdbApi.getRoleById(input.roleToReassignTo);
-    let newROleDo = new RoleConverter().toDomain(mongoNewRole,{passport:ReadOnlyPassport.GetInstance()});
+    let newRole = await this.context.dataSources.roleCosmosdbApi.getRoleById(input.roleToReassignTo);
+    let newROleDo = newRole as RoleEntityReference; //new RoleConverter().toDomain(newRole,{passport:ReadOnlyPassport.GetInstance()});
     let roleToReturn : Role;
     await this.withTransaction(async (repo) => {
       let roleDo = await repo.getById(input.roleToDelete);

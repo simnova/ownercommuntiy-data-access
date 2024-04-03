@@ -7,6 +7,7 @@ import { DomainDataSource } from './domain-data-source';
 import { Community } from '../../../infrastructure-services-impl/datastore/mongodb/models/community';
 import { UserConverter } from '../../../infrastructure-services-impl/datastore/mongodb/infrastructure/user.domain-adapter';
 import { ReadOnlyContext } from '../../../app/domain/contexts/domain-execution-context';
+import { UserEntityReference } from '../../../app/domain/contexts/user/user';
 
 type PropType = CommunityDomainAdapter;
 type DomainType = CommunityDO<PropType>;
@@ -19,8 +20,8 @@ export class Communities extends DomainDataSource<GraphqlContext,Community,PropT
     if(this.context.verifiedUser.openIdConfigKey !== 'AccountPortal') {
       throw new Error('Unauthorized:communityCreate');
     }
-    let mongoUser = await this.context.dataSources.userCosmosdbApi.getByExternalId(this.context.verifiedUser.verifiedJWT.sub);
-    let userDo = new UserConverter().toDomain(mongoUser,ReadOnlyContext());
+    let user = await this.context.dataSources.userCosmosdbApi.getByExternalId(this.context.verifiedUser.verifiedJWT.sub);
+    let userDo = user as UserEntityReference; // new UserConverter().toDomain(mongoUser,ReadOnlyContext());
 
     let communityToReturn : Community;
     await this.withTransaction(async (repo) => {

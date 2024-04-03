@@ -35,13 +35,13 @@ const member: Resolvers = {
   MemberAccount: {
     user: async (parent, _args, context) => {
       if (parent.user && isValidObjectId(parent.user.toString())) {
-        return (await context.dataSources.userCosmosdbApi.findOneById(parent.user.toString())) as User;
+        return (await context.dataSources.userCosmosdbApi.getUserById(parent.user.toString())) as User;
       }
       return parent.user;
     },
     createdBy: async (parent, _args, context) => {
       if (parent.createdBy && isValidObjectId(parent.createdBy.toString())) {
-        return (await context.dataSources.userCosmosdbApi.findOneById(parent.createdBy.toString())) as User;
+        return (await context.dataSources.userCosmosdbApi.getUserById(parent.createdBy.toString())) as User;
       }
       return parent.createdBy;
     },

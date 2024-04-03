@@ -13,6 +13,7 @@ import { Interests } from '../../../app/domain/contexts/community/profile.value-
 import { CustomViewColumnsToDisplay, CustomViewFilters } from '../../../app/domain/contexts/community/custom-view.value-objects';
 import { CommunityEntityReference } from '../../../app/domain/contexts/community/community';
 import { RoleEntityReference } from '../../../app/domain/contexts/community/role';
+import { UserEntityReference } from '../../../app/domain/contexts/user/user';
 
 type PropType = MemberDomainAdapter;
 type DomainType = MemberDO<PropType>;
@@ -86,11 +87,11 @@ export class Members extends DomainDataSource<GraphqlContext, Member, PropType, 
   async memberAccountAdd(input: MemberAccountAddInput): Promise<Member> {
     let memberToReturn: Member;
 
-    let mongoUser = await this.context.dataSources.userCosmosdbApi.findOneById(input.account.user);
-    let userDo = new UserConverter().toDomain(mongoUser, { passport: ReadOnlyPassport.GetInstance() });
+    let user = await this.context.dataSources.userCosmosdbApi.getUserById(input.account.user);
+    let userDo = user as UserEntityReference; // new UserConverter().toDomain(mongoUser, { passport: ReadOnlyPassport.GetInstance() });
 
-    let currentMongoUser = await this.context.dataSources.userCosmosdbApi.getByExternalId(this.context.verifiedUser.verifiedJWT.sub);
-    let currentUserDo = new UserConverter().toDomain(currentMongoUser, { passport: ReadOnlyPassport.GetInstance() });
+    let currentUser = await this.context.dataSources.userCosmosdbApi.getByExternalId(this.context.verifiedUser.verifiedJWT.sub);
+    let currentUserDo = currentUser as UserEntityReference; //new UserConverter().toDomain(currentMongoUser, { passport: ReadOnlyPassport.GetInstance() });
 
     await this.withTransaction(async (repo) => {
       let member = await repo.getById(input.memberId);

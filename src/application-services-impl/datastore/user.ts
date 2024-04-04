@@ -16,7 +16,7 @@ export class UserDatastoreApplicationServiceImpl
     return userToReturn;
   }
 
-  async getByExternalId(externalId : string): Promise<UserDataStructure> {
+  async getUserByExternalId(externalId : string): Promise<UserDataStructure> {
     let userToReturn: UserDataStructure;
     await this.withDatastore(async (_passport, datastore) => {
       userToReturn = (await datastore.userDatastore.findByFields({externalId: externalId}))?.[0];

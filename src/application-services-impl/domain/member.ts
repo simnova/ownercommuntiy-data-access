@@ -87,7 +87,7 @@ export class MemberDomainApplicationServiceImpl<Context extends BaseApplicationS
     let accountUser = await this.context.applicationServices.userDataApi.getUserById(input.account.user);
     let accountUserDo = accountUser as UserEntityReference; //new UserConverter().toDomain(mongoUser, { passport: ReadOnlyPassport.GetInstance() });
 
-    let currentUser = await this.context.applicationServices.userDataApi.getByExternalId(this.context.verifiedUser.verifiedJWT.sub);
+    let currentUser = await this.context.applicationServices.userDataApi.getUserByExternalId(this.context.verifiedUser.verifiedJWT.sub);
     let currentUserDo = currentUser as UserEntityReference; //new UserConverter().toDomain(currentMongoUser, { passport: ReadOnlyPassport.GetInstance() });
 
     await this.withTransaction(async (repo) => {

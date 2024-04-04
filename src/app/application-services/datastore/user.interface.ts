@@ -2,6 +2,6 @@ import { UserDataStructure } from "../../../infrastructure-services-impl/datasto
 
 export interface UserDatastoreApplicationService {
   getUserById(userId : string): Promise<UserDataStructure>;
-  getByExternalId(externalId : string): Promise<UserDataStructure>;
+  getUserByExternalId(externalId : string): Promise<UserDataStructure>;
   getUsers(): Promise<UserDataStructure[]>;
 }

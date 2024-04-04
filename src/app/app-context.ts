@@ -98,7 +98,7 @@ export class AppContextImpl implements AppContext {
   private async setPassport(): Promise<void> {
     let userExternalId = this._verifiedUser.verifiedJWT.sub;
     if(userExternalId && this._communityData) {
-      let userData = await this._applicationServices.userDataApi.getByExternalId(userExternalId);
+      let userData = await this._applicationServices.userDataApi.getUserByExternalId(userExternalId);
       let memberData = await this._applicationServices.memberDataApi.getMemberByCommunityAccountWithCommunityAccountRole(this._communityData.id, userData.id);
       if(memberData && userData) {
         this._passport = new PassportImpl(userData as UserEntityReference, memberData as MemberEntityReference, this._communityData as CommunityEntityReference);

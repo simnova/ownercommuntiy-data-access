@@ -35,7 +35,7 @@ export class ServiceTicketDomainApplicationServiceImpl<Context extends BaseAppli
     let member: MemberDataStructure;
     if (input.requestorId === undefined) {
       //assume requestor is the verified user
-      let user = await this.context.applicationServices.userDataApi.getByExternalId(this.context.verifiedUser.verifiedJWT.sub);
+      let user = await this.context.applicationServices.userDataApi.getUserByExternalId(this.context.verifiedUser.verifiedJWT.sub);
       member = await this.context.applicationServices.memberDataApi.getMemberByCommunityIdUserId(this.context.communityId, user.id);
     } else {
       //use the supplied requestorId - TODO: check that the current user is an admin
@@ -122,7 +122,7 @@ export class ServiceTicketDomainApplicationServiceImpl<Context extends BaseAppli
   }
 
   async serviceTicketAddUpdateActivity(input: ServiceTicketAddUpdateActivityInput): Promise<Root> {
-    let user = await this.context.applicationServices.userDataApi.getByExternalId(this.context.verifiedUser.verifiedJWT.sub);
+    let user = await this.context.applicationServices.userDataApi.getUserByExternalId(this.context.verifiedUser.verifiedJWT.sub);
     let member = await this.context.applicationServices.memberDataApi.getMemberByCommunityIdUserId(this.context.communityId, user.id);
     let memberDo = member as MemberEntityReference; //new MemberConverter().toDomain(member, { passport: ReadOnlyPassport.GetInstance() });
     let serviceTicketToReturn: Root;
@@ -135,7 +135,7 @@ export class ServiceTicketDomainApplicationServiceImpl<Context extends BaseAppli
   }
 
   async serviceTicketChangeStatus(input: ServiceTicketChangeStatusInput): Promise<Root> {
-    let user = await this.context.applicationServices.userDataApi.getByExternalId(this.context.verifiedUser.verifiedJWT.sub);
+    let user = await this.context.applicationServices.userDataApi.getUserByExternalId(this.context.verifiedUser.verifiedJWT.sub);
     let member = await this.context.applicationServices.memberDataApi.getMemberByCommunityIdUserId(this.context.communityId, user.id);
     let memberDo = member as MemberEntityReference; //new MemberConverter().toDomain(member, { passport: ReadOnlyPassport.GetInstance() });
     let serviceTicketToReturn: Root;

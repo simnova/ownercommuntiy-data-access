@@ -42,7 +42,8 @@ export class RoleDomainAdapter extends MongooseDomainAdapter<Role> implements Ro
     }
   }
   setCommunityRef(community: CommunityProps) {
-    this.doc.set('community', community['props']['doc']);
+    // this.doc.set('community', community['props']['doc']);
+    this.doc.set('community', community);
   }
 
   get isDefault() {

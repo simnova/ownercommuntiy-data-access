@@ -1,9 +1,9 @@
 import { Community, Resolvers, Service, ServiceMutationResult } from '../builder/generated';
 import { isValidObjectId } from 'mongoose';
-import { Service as ServiceDo } from '../../../infrastructure-services-impl/datastore/mongodb/models/service';
+import { ServiceData } from '../../../startup/execution-types-builder';
 
 
-const ServiceMutationResolver = async (getService:Promise<ServiceDo>): Promise<ServiceMutationResult> => {
+const ServiceMutationResolver = async (getService:Promise<ServiceData>): Promise<ServiceMutationResult> => {
   try {
     return {
       status : { success: true },
@@ -23,14 +23,14 @@ const service : Resolvers = {
   Service: {
     community: async (parent, args, context, info) => {
       if(parent.community && isValidObjectId(parent.community.toString())){
-        return (await context.dataSources.communityCosmosdbApi.findOneById(parent.community.toString())) as Community;
+        return (await context.dataSources.communityCosmosdbApi.getCommunityById(parent.community.toString())) as Community;
       }
       return parent.community;
     },
   },
   Query: {
     service: async (_parent, args, context, _info) => {
-      return (await context.dataSources.serviceCosmosdbApi.findOneById(args.id)) as Service;
+      return (await context.dataSources.serviceCosmosdbApi.getServiceById(args.id)) as Service;
     },
     servicesByCommunityId: async (_parent, {communityId}, context, _info) => {
       return (await context.dataSources.serviceCosmosdbApi.getServicesByCommunityId(communityId)) as Service[];

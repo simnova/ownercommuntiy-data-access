@@ -151,7 +151,6 @@ export class MongoCommunityDatastore
         $replaceWith: '$c',
       },
     ]).exec();
-    // return result.map((r) => this.model.hydrate(r));
-    return result.map((r) => new CommunityConverter().toDomain(r,ReadOnlyContext()));
+    return result.map((r) => CommunityModel.hydrate(r));
   }
 }

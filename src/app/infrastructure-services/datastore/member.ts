@@ -1,9 +1,7 @@
 import { FindQueries } from "./_base";
-import { MemberDataStructure } from "../../application-services/datastore";
 
-type PropType = MemberDataStructure;
-export interface MemberDatastoreInfrastructureService extends FindQueries<PropType> {
-  getMembersAssignableToTickets(communityId: string): Promise<PropType[]>;
-  getMemberByIdWithCommunity(memberId: string): Promise<PropType>;
-  getMemberByCommunityAccountWithCommunityAccountRole(communityId: string, userId: string): Promise<MemberDataStructure>;
+export interface MemberDatastoreInfrastructureService<TDataMember> extends FindQueries<TDataMember> {
+  getMembersAssignableToTickets(communityId: string): Promise<TDataMember[]>;
+  getMemberByIdWithCommunity(memberId: string): Promise<TDataMember>;
+  getMemberByCommunityAccountWithCommunityAccountRole(communityId: string, userId: string): Promise<TDataMember>;
 }

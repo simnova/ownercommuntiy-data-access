@@ -1,7 +1,5 @@
-import { ServiceDataStructure } from "../../../infrastructure-services-impl/datastore/data-structures/service";
-
-export interface ServiceDatastoreApplicationService {
-  getServiceById(id: string): Promise<ServiceDataStructure>;
-  getServices(): Promise<ServiceDataStructure[]>;
-  getServicesByCommunityId(communityId: string): Promise<ServiceDataStructure[]>;
+export interface ServiceDatastoreApplicationService<TDataService> {
+  getServiceById(id: string): Promise<TDataService>;
+  getServices(): Promise<TDataService[]>;
+  getServicesByCommunityId(communityId: string): Promise<TDataService[]>;
 }

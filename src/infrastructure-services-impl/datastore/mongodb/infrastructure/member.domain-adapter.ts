@@ -88,7 +88,7 @@ export class AccountDomainAdapter implements AccountProps {
     }
   }
   setUserRef(user: UserEntityReference) {
-    this.doc.set('user', user['props']['doc']);
+    this.doc.set('user', user.id);
   }
 
   get statusCode() {

@@ -1,6 +1,6 @@
 import { ServiceTicket as ServiceTicketDO } from '../../../app/domain/contexts/service-ticket/service-ticket';
-import { Service as ServiceDO } from '../../../app/domain/contexts/service-ticket/service';
-import { Member as MemberDO } from '../../../app/domain/contexts/community/member';
+import { Service as ServiceDO, ServiceEntityReference } from '../../../app/domain/contexts/service-ticket/service';
+import { Member as MemberDO, MemberEntityReference } from '../../../app/domain/contexts/community/member';
 import { ServiceTicketConverter, ServiceTicketDomainAdapter } from '../../../infrastructure-services-impl/datastore/mongodb/infrastructure/service-ticket.domain-adapter';
 import { MongoServiceTicketRepository } from '../../../infrastructure-services-impl/datastore/mongodb/infrastructure/service-ticket.mongo-repository';
 import { GraphqlContext } from '../../graphql-context';
@@ -13,6 +13,9 @@ import { ReadOnlyPassport } from '../../../app/domain/contexts/iam/passport';
 import { MemberConverter } from '../../../infrastructure-services-impl/datastore/mongodb/infrastructure/member.domain-adapter';
 import { ServiceConverter, ServiceDomainAdapter } from '../../../infrastructure-services-impl/datastore/mongodb/infrastructure/service.domain-adapter';
 import { PropertyConverter } from '../../../infrastructure-services-impl/datastore/mongodb/infrastructure/property.domain-adapter';
+import { CommunityEntityReference } from '../../../app/domain/contexts/community/community';
+import { MemberDataStructure } from '../../../app/application-services/datastore';
+import { PropertyEntityReference } from '../../../app/domain/contexts/property/property';
 
 type PropType = ServiceTicketDomainAdapter;
 type DomainType = ServiceTicketDO<PropType>;
@@ -27,26 +30,26 @@ export class ServiceTickets extends DomainDataSource<GraphqlContext, ServiceTick
 
     let serviceTicketToReturn: ServiceTicket;
     let community = await this.context.dataSources.communityCosmosdbApi.getCommunityById(this.context.community);
-    let communityDo = new CommunityConverter().toDomain(community, { passport: ReadOnlyPassport.GetInstance() });
+    let communityDo = community as CommunityEntityReference; //new CommunityConverter().toDomain(community, { passport: ReadOnlyPassport.GetInstance() });
 
-    let property = await this.context.dataSources.propertyCosmosdbApi.findOneById(input.propertyId);
-    let propertyDo = new PropertyConverter().toDomain(property, { passport: ReadOnlyPassport.GetInstance() });
+    let property = await this.context.dataSources.propertyCosmosdbApi.getPropertyById(input.propertyId);
+    let propertyDo = property as PropertyEntityReference; //new PropertyConverter().toDomain(property, { passport: ReadOnlyPassport.GetInstance() });
 
-    let member: Member;
+    let member: MemberDataStructure;
     if (input.requestorId === undefined) {
       //assume requestor is the verified user
       let user = await this.context.dataSources.userCosmosdbApi.getByExternalId(this.context.verifiedUser.verifiedJWT.sub);
       member = await this.context.dataSources.memberCosmosdbApi.getMemberByCommunityIdUserId(this.context.community, user.id);
     } else {
       //use the supplied requestorId - TODO: check that the current user is an admin
-      member = await this.context.dataSources.memberCosmosdbApi.findOneById(input.requestorId);
+      member = await this.context.applicationServices.memberDatastoreApi.getMemberById(input.requestorId);
     }
-    let memberDo = new MemberConverter().toDomain(member, { passport: ReadOnlyPassport.GetInstance() });
+    let memberDo = member as MemberEntityReference; //new MemberConverter().toDomain(member, { passport: ReadOnlyPassport.GetInstance() });
 
-    let serviceDo : ServiceDO<ServiceDomainAdapter> | undefined = undefined;
+    let serviceDo : ServiceEntityReference; //ServiceDO<ServiceDomainAdapter> | undefined = undefined;
     if(input.serviceId) {
-      let service = await this.context.dataSources.serviceCosmosdbApi.findOneById(input.serviceId);
-      serviceDo = new ServiceConverter().toDomain(service,{passport:ReadOnlyPassport.GetInstance()});
+      let service = await this.context.applicationServices.serviceDatastoreApi.getServiceById(input.serviceId);
+      serviceDo = service as ServiceEntityReference; // new ServiceConverter().toDomain(service,{passport:ReadOnlyPassport.GetInstance()});
     }
 
     console.log(`serviceTicketCreate:memberDO`,memberDo);
@@ -69,17 +72,17 @@ export class ServiceTickets extends DomainDataSource<GraphqlContext, ServiceTick
   async serviceTicketUpdate(input: ServiceTicketUpdateInput) : Promise<ServiceTicket> {
     let serviceTicketToReturn : ServiceTicket;
 
-    let serviceDo : ServiceDO<ServiceDomainAdapter> | undefined = undefined;
+    let serviceDo : ServiceEntityReference; //ServiceDO<ServiceDomainAdapter> | undefined = undefined;
     if(input.serviceId) {
-      let service = await this.context.dataSources.serviceCosmosdbApi.findOneById(input.serviceId);
-      serviceDo = new ServiceConverter().toDomain(service,{passport:ReadOnlyPassport.GetInstance()});
+      let service = await this.context.applicationServices.serviceDatastoreApi.getServiceById(input.serviceId);
+      serviceDo = service as ServiceEntityReference; // new ServiceConverter().toDomain(service,{passport:ReadOnlyPassport.GetInstance()});
     }
 
     await this.withTransaction(async (repo) => {
       let serviceTicket = await repo.getById(input.serviceTicketId);
       if (serviceTicket.property.id !== input.propertyId) {
-        let property = await this.context.dataSources.propertyCosmosdbApi.findOneById(input.propertyId);
-        let propertyDo = new PropertyConverter().toDomain(property, { passport: ReadOnlyPassport.GetInstance() });
+        let property = await this.context.dataSources.propertyCosmosdbApi.getPropertyById(input.propertyId);
+        let propertyDo = property as PropertyEntityReference; //new PropertyConverter().toDomain(property, { passport: ReadOnlyPassport.GetInstance() });
         serviceTicket.Property=(propertyDo);
       }
       serviceTicket.Title=(input.title);
@@ -108,10 +111,10 @@ export class ServiceTickets extends DomainDataSource<GraphqlContext, ServiceTick
 
   async serviceTicketAssign(input: ServiceTicketAssignInput): Promise<ServiceTicket> {
     let serviceTicketToReturn: ServiceTicket;
-    let memberDo: MemberDO<any> | undefined = undefined;
+    let memberDo: MemberEntityReference; //MemberDO<any> | undefined = undefined;
     if (input.assignedToId) {
-      let member = await this.context.dataSources.memberCosmosdbApi.findOneById(input.assignedToId);
-      memberDo = new MemberConverter().toDomain(member, { passport: ReadOnlyPassport.GetInstance() });
+      let member = await this.context.applicationServices.memberDatastoreApi.getMemberById(input.assignedToId);
+      memberDo = member as MemberEntityReference; //new MemberConverter().toDomain(member, { passport: ReadOnlyPassport.GetInstance() });
     }
     await this.withTransaction(async (repo) => {
       let serviceTicket = await repo.getById(input.serviceTicketId);
@@ -124,7 +127,7 @@ export class ServiceTickets extends DomainDataSource<GraphqlContext, ServiceTick
   async serviceTicketAddUpdateActivity(input: ServiceTicketAddUpdateActivityInput): Promise<ServiceTicket> {
     let user = await this.context.dataSources.userCosmosdbApi.getByExternalId(this.context.verifiedUser.verifiedJWT.sub);
     let member = await this.context.dataSources.memberCosmosdbApi.getMemberByCommunityIdUserId(this.context.community, user.id);
-    let memberDo = new MemberConverter().toDomain(member, { passport: ReadOnlyPassport.GetInstance() });
+    let memberDo = member as MemberEntityReference; //new MemberConverter().toDomain(member, { passport: ReadOnlyPassport.GetInstance() });
     let serviceTicketToReturn: ServiceTicket;
     await this.withTransaction(async (repo) => {
       let serviceTicket = await repo.getById(input.serviceTicketId);
@@ -137,7 +140,7 @@ export class ServiceTickets extends DomainDataSource<GraphqlContext, ServiceTick
   async serviceTicketChangeStatus(input: ServiceTicketChangeStatusInput): Promise<ServiceTicket> {
     let user = await this.context.dataSources.userCosmosdbApi.getByExternalId(this.context.verifiedUser.verifiedJWT.sub);
     let member = await this.context.dataSources.memberCosmosdbApi.getMemberByCommunityIdUserId(this.context.community, user.id);
-    let memberDo = new MemberConverter().toDomain(member, { passport: ReadOnlyPassport.GetInstance() });
+    let memberDo = member as MemberEntityReference; //new MemberConverter().toDomain(member, { passport: ReadOnlyPassport.GetInstance() });
     let serviceTicketToReturn: ServiceTicket;
     await this.withTransaction(async (repo) => {
       let serviceTicket = await repo.getById(input.serviceTicketId);

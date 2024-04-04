@@ -1,22 +1,15 @@
-import { User } from '../../../infrastructure-services-impl/datastore/mongodb/models/user';
 import { GraphqlContext } from '../../graphql-context';
-import { CosmosDataSource } from './cosmos-data-source';
+import { DataSource } from '../data-source';
 
-export class Users extends CosmosDataSource<User, GraphqlContext> {
-  
-  async getUser(userId : string): Promise<User> {
-    return this.findOneById(userId);
-  }
+export class Users<TData> extends DataSource<GraphqlContext> {
 
-  async getByExternalId(externalId : string): Promise<User> {
-    return (await this.findByFields({externalId: externalId}))[0];
+  async getUserById(userId : string): Promise<TData> {
+    return this.context.applicationServices.userDatastoreApi.getUserById(userId);
   }
-
-  async getUsers(): Promise<User[]> {
-    console.log(`getUsers:context${JSON.stringify(this.context.verifiedUser)}`);
-    return this.model
-      .find({})
-      .exec();
+  async getByExternalId(externalId : string): Promise<TData> {
+    return this.context.applicationServices.userDatastoreApi.getByExternalId(externalId);
   }
-  
+  async getUsers(): Promise<TData[]> {
+    return this.context.applicationServices.userDatastoreApi.getUsers();
+  }
 }

@@ -1,9 +1,9 @@
 import { Resolvers, Member, Community, Role, User, MemberMutationResult } from '../builder/generated';
 import { isValidObjectId } from 'mongoose';
 import { getMemberForCurrentUser } from '../resolver-helper';
-import { Member as MemberDo } from '../../../infrastructure-services-impl/datastore/mongodb/models/member';
+import { MemberData } from '../../../startup/execution-types-builder';
 
-const MemberMutationResolver = async (getMember: Promise<MemberDo>): Promise<MemberMutationResult> => {
+const MemberMutationResolver = async (getMember: Promise<MemberData>): Promise<MemberMutationResult> => {
   try {
     const temp = { status: { success: true }, member: await getMember } as MemberMutationResult;
     return temp;
@@ -20,13 +20,13 @@ const member: Resolvers = {
   Member: {
     community: async (parent, _args, context) => {
       if (parent.community && isValidObjectId(parent.community.toString())) {
-        return (await context.dataSources.communityCosmosdbApi.findOneById(parent.community.toString())) as Community;
+        return (await context.dataSources.communityCosmosdbApi.getCommunityById(parent.community.toString())) as Community;
       }
       return parent.community;
     },
     role: async (parent, _args, context) => {
       if (parent.role && isValidObjectId(parent.role.toString())) {
-        return (await context.dataSources.roleCosmosdbApi.findOneById(parent.role.toString())) as Role;
+        return (await context.dataSources.roleCosmosdbApi.getRoleById(parent.role.toString())) as Role;
       }
       return parent.role;
     },
@@ -34,13 +34,13 @@ const member: Resolvers = {
   MemberAccount: {
     user: async (parent, _args, context) => {
       if (parent.user && isValidObjectId(parent.user.toString())) {
-        return (await context.dataSources.userCosmosdbApi.findOneById(parent.user.toString())) as User;
+        return (await context.dataSources.userCosmosdbApi.getUserById(parent.user.toString())) as User;
       }
       return parent.user;
     },
     createdBy: async (parent, _args, context) => {
       if (parent.createdBy && isValidObjectId(parent.createdBy.toString())) {
-        return (await context.dataSources.userCosmosdbApi.findOneById(parent.createdBy.toString())) as User;
+        return (await context.dataSources.userCosmosdbApi.getUserById(parent.createdBy.toString())) as User;
       }
       return parent.createdBy;
     },
@@ -48,7 +48,7 @@ const member: Resolvers = {
   Query: {
     member: async (_parent, {id}, context) => {
       if (id && isValidObjectId(id)) {
-        return (await context.dataSources.memberCosmosdbApi.findOneById(id)) as Member;
+        return (await context.dataSources.memberCosmosdbApi.getMemberById(id)) as Member;
       }
       return null;
     },

@@ -37,12 +37,15 @@ export class CommunityPermissions extends Entity<CommunityPermissionsProps> impl
   // using setters from TS 5.1
 
   set canManageRolesAndPermissions(value: boolean) {
-    if (
-      !this.visa.determineIf((permissions) => {
-        const value = permissions.canManageRolesAndPermissions || permissions.isSystemAccount;
-        return value;
-      })
-    ) {
+    // if (
+    //   !this.visa.determineIf((permissions) => {
+    //     const value = permissions.canManageRolesAndPermissions || permissions.isSystemAccount;
+    //     return value;
+    //   })
+    // ) {
+    //   throw new Error('Cannot set permission1');
+    // }
+    if (!this.visa.determineIf((permissions) => permissions.canManageRolesAndPermissions || permissions.isSystemAccount)) {
       throw new Error('Cannot set permission1');
     }
     this.props.canManageRolesAndPermissions = value;

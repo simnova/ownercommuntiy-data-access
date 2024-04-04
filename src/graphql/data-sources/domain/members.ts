@@ -11,6 +11,9 @@ import { RoleConverter } from '../../../infrastructure-services-impl/datastore/m
 import { UserConverter } from '../../../infrastructure-services-impl/datastore/mongodb/infrastructure/user.domain-adapter';
 import { Interests } from '../../../app/domain/contexts/community/profile.value-objects';
 import { CustomViewColumnsToDisplay, CustomViewFilters } from '../../../app/domain/contexts/community/custom-view.value-objects';
+import { CommunityEntityReference } from '../../../app/domain/contexts/community/community';
+import { RoleEntityReference } from '../../../app/domain/contexts/community/role';
+import { UserEntityReference } from '../../../app/domain/contexts/user/user';
 
 type PropType = MemberDomainAdapter;
 type DomainType = MemberDO<PropType>;
@@ -25,7 +28,7 @@ export class Members extends DomainDataSource<GraphqlContext, Member, PropType, 
 
     let memberToReturn: Member;
     let community = await this.context.dataSources.communityCosmosdbApi.getCommunityById(this.context.community);
-    let communityDo = new CommunityConverter().toDomain(community, { passport: ReadOnlyPassport.GetInstance() });
+    let communityDo = community as CommunityEntityReference; //new CommunityConverter().toDomain(community, { passport: ReadOnlyPassport.GetInstance() });
 
     await this.withTransaction(async (repo) => {
       let newMember = await repo.getNewInstance(input.memberName, communityDo);
@@ -38,8 +41,8 @@ export class Members extends DomainDataSource<GraphqlContext, Member, PropType, 
     let memberToReturn: Member;
     let roleDo;
     if (input.role !== undefined) {
-      let mongoRole = await this.context.dataSources.roleCosmosdbApi.findOneById(input.role);
-      roleDo = new RoleConverter().toDomain(mongoRole, { passport: ReadOnlyPassport.GetInstance() });
+      let role = await this.context.dataSources.roleCosmosdbApi.getRoleById(input.role);
+      roleDo = role as RoleEntityReference; //new RoleConverter().toDomain(role, { passport: ReadOnlyPassport.GetInstance() });
     }
     await this.withTransaction(async (repo) => {
       let member = await repo.getById(input.id);
@@ -84,11 +87,11 @@ export class Members extends DomainDataSource<GraphqlContext, Member, PropType, 
   async memberAccountAdd(input: MemberAccountAddInput): Promise<Member> {
     let memberToReturn: Member;
 
-    let mongoUser = await this.context.dataSources.userCosmosdbApi.findOneById(input.account.user);
-    let userDo = new UserConverter().toDomain(mongoUser, { passport: ReadOnlyPassport.GetInstance() });
+    let user = await this.context.dataSources.userCosmosdbApi.getUserById(input.account.user);
+    let userDo = user as UserEntityReference; // new UserConverter().toDomain(mongoUser, { passport: ReadOnlyPassport.GetInstance() });
 
-    let currentMongoUser = await this.context.dataSources.userCosmosdbApi.getByExternalId(this.context.verifiedUser.verifiedJWT.sub);
-    let currentUserDo = new UserConverter().toDomain(currentMongoUser, { passport: ReadOnlyPassport.GetInstance() });
+    let currentUser = await this.context.dataSources.userCosmosdbApi.getByExternalId(this.context.verifiedUser.verifiedJWT.sub);
+    let currentUserDo = currentUser as UserEntityReference; //new UserConverter().toDomain(currentMongoUser, { passport: ReadOnlyPassport.GetInstance() });
 
     await this.withTransaction(async (repo) => {
       let member = await repo.getById(input.memberId);

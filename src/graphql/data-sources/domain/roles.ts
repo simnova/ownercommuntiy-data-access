@@ -1,4 +1,4 @@
-import { Role as RoleDO } from '../../../app/domain/contexts/community/role';
+import { Role as RoleDO, RoleEntityReference } from '../../../app/domain/contexts/community/role';
 import { RoleConverter, RoleDomainAdapter }from '../../../infrastructure-services-impl/datastore/mongodb/infrastructure/role.domain-adapter';
 import { MongoRoleRepository } from '../../../infrastructure-services-impl/datastore/mongodb/infrastructure/role.mongo-repository';
 import { GraphqlContext } from '../../graphql-context';
@@ -7,6 +7,7 @@ import { DomainDataSource } from './domain-data-source';
 import { Role } from '../../../infrastructure-services-impl/datastore/mongodb/models/role';
 import { CommunityConverter } from '../../../infrastructure-services-impl/datastore/mongodb/infrastructure/community.domain-adapter';
 import { ReadOnlyPassport } from '../../../app/domain/contexts/iam/passport';
+import { CommunityEntityReference } from '../../../app/domain/contexts/community/community';
 
 type PropType = RoleDomainAdapter;
 type DomainType = RoleDO<PropType>;
@@ -22,7 +23,7 @@ export class Roles extends DomainDataSource<GraphqlContext,Role,PropType,DomainT
     
     let roleToReturn : Role;
     let community = await this.context.dataSources.communityCosmosdbApi.getCommunityById(this.context.community);
-    let communityDo = new CommunityConverter().toDomain(community,{passport:ReadOnlyPassport.GetInstance()});
+    let communityDo = community as CommunityEntityReference; //new CommunityConverter().toDomain(community,{passport:ReadOnlyPassport.GetInstance()});
 
     await this.withTransaction(async (repo) => {
       let roleDo = await repo.getNewInstance(
@@ -87,8 +88,8 @@ export class Roles extends DomainDataSource<GraphqlContext,Role,PropType,DomainT
       throw new Error('Unauthorized:roleDeleteAndReassign');
     }
 
-    let mongoNewRole = await this.context.dataSources.roleCosmosdbApi.getRoleById(input.roleToReassignTo);
-    let newROleDo = new RoleConverter().toDomain(mongoNewRole,{passport:ReadOnlyPassport.GetInstance()});
+    let newRole = await this.context.dataSources.roleCosmosdbApi.getRoleById(input.roleToReassignTo);
+    let newROleDo = newRole as RoleEntityReference; //new RoleConverter().toDomain(newRole,{passport:ReadOnlyPassport.GetInstance()});
     let roleToReturn : Role;
     await this.withTransaction(async (repo) => {
       let roleDo = await repo.getById(input.roleToDelete);

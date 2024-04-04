@@ -1,6 +1,6 @@
-import { CommunityBlobStorageApplicationServiceImpl } from './community.application-service';
-import { MemberBlobStorageApplicationServiceImpl } from './member.application-service';
-import { PropertyBlobStorageApplicationServiceImpl } from './property.application-service';
+import { CommunityBlobStorageApplicationServiceImpl } from './community';
+import { MemberBlobStorageApplicationServiceImpl } from './member';
+import { PropertyBlobStorageApplicationServiceImpl } from './property';
 
 export {
   CommunityBlobStorageApplicationServiceImpl as CommunityBlobApiImpl,

@@ -25,7 +25,7 @@ export class PropertyDomainApplicationServiceImpl<Context extends BaseApplicatio
     }
 
     let propertyToReturn: Root;
-    let community = await this.context.applicationServices.communityDataApi.getCommunityById(this.context.communityId);
+    let community = await this.context.applicationServices.communityDatastoreApi.getCommunityById(this.context.communityId);
     let communityDo = community as CommunityEntityReference; // new CommunityConverter().toDomain(community, { passport: ReadOnlyPassport.GetInstance() });
 
     await this.withTransaction(async (repo) => {
@@ -38,7 +38,7 @@ export class PropertyDomainApplicationServiceImpl<Context extends BaseApplicatio
   async propertyUpdate(input: PropertyUpdateInput): Promise<Root> {
     let propertyToReturn: Root;
 
-    let member = await this.context.applicationServices.memberDataApi.getMemberById(input.owner?.id);
+    let member = await this.context.applicationServices.memberDatastoreApi.getMemberById(input.owner?.id);
     let memberDo = member as MemberEntityReference; // new MemberConverter().toDomain(mongoMember, { passport: ReadOnlyPassport.GetInstance() });
 
     await this.withTransaction(async (repo) => {
@@ -147,7 +147,7 @@ export class PropertyDomainApplicationServiceImpl<Context extends BaseApplicatio
 
   async propertyAssignOwner(input: PropertyAssignOwnerInput): Promise<Root> {
     let propertyToReturn: Root;
-    let member = await this.context.applicationServices.memberDataApi.getMemberById(input.ownerId);
+    let member = await this.context.applicationServices.memberDatastoreApi.getMemberById(input.ownerId);
     let memberDo = member as MemberEntityReference; // new MemberConverter().toDomain(mongoMember, { passport: ReadOnlyPassport.GetInstance() });
     await this.withTransaction(async (repo) => {
       let property = await repo.getById(input.id);

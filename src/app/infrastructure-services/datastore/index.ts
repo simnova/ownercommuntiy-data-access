@@ -17,11 +17,11 @@ export {
   UserDatastoreInfrastructureService,
 }
 export interface DatastoreInfrastructureService extends DatastoreDomain, DatastoreDomainInitializeable {
-  communityDatastore: CommunityDatastoreInfrastructureService;
-  memberDatastore: MemberDatastoreInfrastructureService
-  roleDatastore: RoleDatastoreInfrastructureService;
-  propertyDatastore: PropertyDatastoreInfrastructureService;
-  serviceDatastore: ServiceDatastoreInfrastructureService;
-  serviceTicketDatastore: ServiceTicketDatastoreInfrastructureService
-  userDatastore: UserDatastoreInfrastructureService
+  communityDatastore<TDataCommunity>(): CommunityDatastoreInfrastructureService<TDataCommunity>;
+  memberDatastore<TDataMember>(): MemberDatastoreInfrastructureService<TDataMember>;
+  roleDatastore<TDataRole>(): RoleDatastoreInfrastructureService<TDataRole>;
+  propertyDatastore<TDataProperty>(): PropertyDatastoreInfrastructureService<TDataProperty>;
+  serviceDatastore<TDataService>(): ServiceDatastoreInfrastructureService<TDataService>;
+  serviceTicketDatastore<TDataServiceTicket>(): ServiceTicketDatastoreInfrastructureService<TDataServiceTicket>;
+  userDatastore<TDataUser>(): UserDatastoreInfrastructureService<TDataUser>;
 }

@@ -1,9 +1,9 @@
 import { Community, Member, Property, Resolvers,Service, ServiceTicket, ServiceTicketMutationResult } from '../builder/generated';
 import { getMemberForCurrentUser } from '../resolver-helper';
 import { isValidObjectId } from 'mongoose';
-import { ServiceTicket as ServiceTicketDo } from '../../../infrastructure-services-impl/datastore/mongodb/models/service-ticket';
+import { ServiceTicketData } from '../../../startup/execution-types-builder';
 
-const ServiceTicketMutationResolver = async (getServiceTicket: Promise<ServiceTicketDo>): Promise<ServiceTicketMutationResult> => {
+const ServiceTicketMutationResolver = async (getServiceTicket: Promise<ServiceTicketData>): Promise<ServiceTicketMutationResult> => {
   try {
     return {
       status: { success: true },
@@ -22,31 +22,31 @@ const serviceTicket: Resolvers = {
   ServiceTicket: {
     community: async (parent, args, context, info) => {
       if (parent.community && isValidObjectId(parent.community.toString())) {
-        return (await context.dataSources.communityCosmosdbApi.findOneById(parent.community.toString())) as Community;
+        return (await context.dataSources.communityCosmosdbApi.getCommunityById(parent.community.toString())) as Community;
       }
       return parent.community;
     },
     property: async (parent, args, context, info) => {
       if (parent.property && isValidObjectId(parent.property.toString())) {
-        return (await context.dataSources.propertyCosmosdbApi.findOneById(parent.property.toString())) as Property;
+        return (await context.dataSources.propertyCosmosdbApi.getPropertyById(parent.property.toString())) as Property;
       }
       return parent.property;
     },
     requestor: async (parent, args, context, info) => {
       if (parent.requestor && isValidObjectId(parent.requestor.toString())) {
-        return (await context.dataSources.memberCosmosdbApi.findOneById(parent.requestor.toString())) as Member;
+        return (await context.dataSources.memberCosmosdbApi.getMemberById(parent.requestor.toString())) as Member;
       }
       return parent.requestor;
     },
     assignedTo: async (parent, args, context, info) => {
       if (parent.assignedTo && isValidObjectId(parent.assignedTo.toString())) {
-        return (await context.dataSources.memberCosmosdbApi.findOneById(parent.assignedTo.toString())) as Member;
+        return (await context.dataSources.memberCosmosdbApi.getMemberById(parent.assignedTo.toString())) as Member;
       }
       return parent.assignedTo;
     },
     service: async (parent, args, context, info) => {
       if(parent.service && isValidObjectId(parent.service.toString())){
-        return (await context.dataSources.serviceCosmosdbApi.findOneById(parent.service.toString())) as Service;
+        return (await context.dataSources.serviceCosmosdbApi.getServiceById(parent.service.toString())) as Service;
       }
       return parent.service;
     }
@@ -54,14 +54,14 @@ const serviceTicket: Resolvers = {
   ServiceTicketActivityDetail: {
     activityBy: async (parent, args, context, info) => {
       if (parent.activityBy && isValidObjectId(parent.activityBy.toString())) {
-        return (await context.dataSources.memberCosmosdbApi.findOneById(parent.activityBy.toString())) as Member;
+        return (await context.dataSources.memberCosmosdbApi.getMemberById(parent.activityBy.toString())) as Member;
       }
       return parent.activityBy;
     },
   },
   Query: {
     serviceTicket: async (_parent, args, context, _info) => {
-      return (await context.dataSources.serviceTicketCosmosdbApi.findOneById(args.id)) as ServiceTicket;
+      return (await context.dataSources.serviceTicketCosmosdbApi.getServiceTicketById(args.id)) as ServiceTicket;
     },
     serviceTicketsOpenByCommunity: async (_parent, _args, context, _info) => {
       return (await context.dataSources.serviceTicketCosmosdbApi.getServiceTicketsByCommunityId(context.community)) as ServiceTicket[];

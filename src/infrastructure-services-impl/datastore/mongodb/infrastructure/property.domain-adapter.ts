@@ -27,7 +27,8 @@ export class PropertyDomainAdapter extends MongooseDomainAdapter<Property> imple
     }
   }
   public setCommunityRef(community: CommunityEntityReference) {
-    this.doc.set('community', community['props']['doc']);
+    // this.doc.set('community', community['props']['doc']);
+    this.doc.set('community', community.id);
   }
 
   // get location() {

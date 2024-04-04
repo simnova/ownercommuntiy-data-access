@@ -1,11 +1,10 @@
 import { Passport } from '../app/domain/contexts/iam/passport';
 import { HttpRequest } from '@azure/functions';
 import { PortalTokenValidation } from '../auth/portal-token-validation';
-import { ApplicationServices } from '../app/application-services';
+import { ApplicationServices } from '../app/application-services/application-services-builder';
 import { InfrastructureServices } from '../app/infrastructure-services';
 import * as util from '../../seedwork/auth-seedwork-oidc/util';
-import { AppContext, AppContextImpl } from '../app/app-context';
-import { ApplicationServicesBuilder } from '../startup/application-services-builder';
+import { AppContext, AppContextBuilder } from '../app/app-context-builder';
 import { DataSourceBuilder } from './data-sources/data-source-builder';
 
 export type VerifiedUser = {
@@ -22,7 +21,6 @@ export interface GraphqlContext{
   init(
     req: HttpRequest, 
     portalTokenValidator: PortalTokenValidation,
-    // applicationServices: ApplicationServices,
     infrastructureServices: InfrastructureServices,
   ): Promise<void>;
   dataSources: DataSourceBuilder;
@@ -35,14 +33,12 @@ export class GraphqlContextImpl implements GraphqlContext{
   private _portalTokenValidator: PortalTokenValidation;
   private _appContext: AppContext;
   private _verifiedUser: VerifiedUser;
-  private _applicationServices: ApplicationServices;
   private _infrastructureServices: InfrastructureServices;
   private _dataSources: DataSourceBuilder;
 
   public async init(
     req: HttpRequest, 
     portalTokenValidator: PortalTokenValidation,
-    // applicationServices: ApplicationServices,
     infrastructureServices: InfrastructureServices,
     ) {
       // execute following in order
@@ -51,16 +47,14 @@ export class GraphqlContextImpl implements GraphqlContext{
     this._infrastructureServices = infrastructureServices;
     await this.setVerifiedUser();
     await this.setAppContext();
-    // this._applicationServices = new ApplicationServicesBuilder(this._appContext);
     await this.setReqHeaders();
     this._dataSources = new DataSourceBuilder(this);
   }
   
   private async setAppContext(): Promise<void> {
-    this._appContext = new AppContextImpl(
+    this._appContext = new AppContextBuilder(
       this._verifiedUser, 
       this._req.headers.get('community'),
-      // this._applicationServices,
       this._infrastructureServices
     );
     await this._appContext.init();

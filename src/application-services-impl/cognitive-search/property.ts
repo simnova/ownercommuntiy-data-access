@@ -1,4 +1,4 @@
-import { AppContext } from '../../app/app-context';
+import { AppContext } from '../../app/app-context-builder';
 import dayjs from 'dayjs';
 import { CognitiveSearchApplicationServiceImpl } from './_cognitive-search.application-service';
 import { FilterDetail, PropertiesSearchInput, PropertySearchResult } from '../../app/application-services/cognitive-search/property.interface';

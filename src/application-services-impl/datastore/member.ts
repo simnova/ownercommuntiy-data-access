@@ -1,64 +1,63 @@
-import { AppContext } from '../../app/app-context';
+import { AppContext } from '../../app/app-context-builder';
 import { MemberDatastoreApplicationService } from '../../app/application-services/datastore/member.interface';
 import { DatastoreApplicationServiceImpl } from './_datastore.application-service';
-import { MemberDataStructure } from '../../app/application-services/datastore';
 
-export class MemberDatastoreApplicationServiceImpl 
+export class MemberDatastoreApplicationServiceImpl<TData>
   extends DatastoreApplicationServiceImpl<AppContext> 
-  implements MemberDatastoreApplicationService
+  implements MemberDatastoreApplicationService<TData>
 {
 
-  async getMemberByCommunityIdUserId(communityId: string, userId: string): Promise<MemberDataStructure> {
-    let memberToReturn: MemberDataStructure;
+  async getMemberByCommunityIdUserId(communityId: string, userId: string): Promise<TData> {
+    let memberToReturn: TData;
     await this.withDatastore(async (_passport, datastore) => {
-      memberToReturn = (await datastore.memberDatastore.findByFields({ community: communityId, 'accounts.user': userId }))?.[0];
+      memberToReturn = (await datastore.memberDatastore().findByFields({ community: communityId, 'accounts.user': userId }))?.[0] as TData;
     });
     return memberToReturn;
   }
 
-  async getMembers(): Promise<MemberDataStructure[]> {
-    let memberToReturn: MemberDataStructure[];
+  async getMembers(): Promise<TData[]> {
+    let memberToReturn: TData[];
     await this.withDatastore(async (_passport, datastore) => {
-      memberToReturn = await datastore.memberDatastore.findByFields({ community: this.context.communityId });
+      memberToReturn = await datastore.memberDatastore().findByFields({ community: this.context.communityId }) as TData[];
     });
     return memberToReturn;
   }
 
-  async getMembersByCommunityId(communityId: string): Promise<MemberDataStructure[]> {
-    let memberToReturn: MemberDataStructure[];
+  async getMembersByCommunityId(communityId: string): Promise<TData[]> {
+    let memberToReturn: TData[];
     await this.withDatastore(async (_passport, datastore) => {
       memberToReturn = await datastore.memberDatastore.findByFields({ community: communityId });
     });
     return memberToReturn;
   }
 
-  async getMembersAssignableToTickets(): Promise<MemberDataStructure[]> {
+  async getMembersAssignableToTickets(): Promise<TData[]> {
     const communityId = this.context.communityId;
-    let memberToReturn: MemberDataStructure[];
+    let memberToReturn: TData[];
     await this.withDatastore(async (_passport, datastore) => {
       memberToReturn = await datastore.memberDatastore.getMembersAssignableToTickets(communityId);
     });
     return memberToReturn;
   }
 
-  async getMemberByIdWithCommunity(memberId: string): Promise<MemberDataStructure> {
-    let memberToReturn: MemberDataStructure;
+  async getMemberByIdWithCommunity(memberId: string): Promise<TData> {
+    let memberToReturn: TData;
     await this.withDatastore(async (_passport, datastore) => {
       memberToReturn = await datastore.memberDatastore.getMemberByIdWithCommunity(memberId);
     });
     return memberToReturn;
   }
 
-  async getMemberById(memberId: string): Promise<MemberDataStructure> {
-    let memberToReturn: MemberDataStructure;
+  async getMemberById(memberId: string): Promise<TData> {
+    let memberToReturn: TData;
     await this.withDatastore(async (_passport, datastore) => {
       memberToReturn = await datastore.memberDatastore.findOneById(memberId);
     });
     return memberToReturn;
   }
 
-  async getMemberByCommunityAccountWithCommunityAccountRole(communityId: string, userId: string): Promise<MemberDataStructure> {
-    let memberToReturn: MemberDataStructure;
+  async getMemberByCommunityAccountWithCommunityAccountRole(communityId: string, userId: string): Promise<TData> {
+    let memberToReturn: TData;
     await this.withDatastore(async (_passport, datastore) => {
       memberToReturn = await datastore.memberDatastore.getMemberByCommunityAccountWithCommunityAccountRole(communityId, userId);
     });

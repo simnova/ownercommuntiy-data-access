@@ -4,6 +4,7 @@ import { PropertyConverter } from '../../../infrastructure-services-impl/datasto
 import { MutationStatus, PropertyBlobFileAuthHeaderResult } from '../../schema/builder/generated';
 import { nanoid } from 'nanoid';
 import { BlobRequestSettings } from '../../../../seedwork/services-seedwork-blob-storage-az';
+import { PropertyEntityReference } from '../../../app/domain/contexts/property/property';
 
 interface FileInfo {
 	fileName: string;
@@ -17,11 +18,11 @@ export class Properties extends BlobDataSource<GraphqlContext> {
 	public async propertyPublicFileRemove(propertyId: string,memberId: string, fileName: string): Promise<void> {
 		const blobName = `public-files/${fileName}`;
 		await this.withStorage(async (passport, blobStorage) => {
-			let property = await(await this.context.dataSources.propertyCosmosdbApi.findOneById(propertyId)).populate(['community', 'owner']);
+			let property = await this.context.applicationServices.propertyDatastoreApi.getPropertyByIdWithCommunityOwner(propertyId);
 			if (!property) {
 				return;
 			}
-			let propertyDO = new PropertyConverter().toDomain(property, { passport: passport });
+			let propertyDO = property as PropertyEntityReference; //new PropertyConverter().toDomain(property, { passport: passport });
 			if (!passport.forProperty(propertyDO).determineIf((permissions) => permissions.canManageProperties || permissions.canEditOwnProperty && propertyDO.owner.id === memberId)) {
 				return;
 			}
@@ -66,12 +67,12 @@ export class Properties extends BlobDataSource<GraphqlContext> {
 	public async propertyListingImageRemove(propertyId: string, memberId: string, blobName: string): Promise<MutationStatus> {
 		let mutationResult: MutationStatus;
 		await this.withStorage(async (passport, blobStorage) => {
-			let property = await (await this.context.dataSources.propertyCosmosdbApi.findOneById(propertyId)).populate(['community', 'owner']);
+			let property = await (await this.context.applicationServices.propertyDatastoreApi.getPropertyByIdWithCommunityOwner(propertyId));
 			if (!property) {
 				mutationResult = { success: false, errorMessage: `Property not found: ${propertyId}` } as MutationStatus;
 				return;
 			}
-			let propertyDO = new PropertyConverter().toDomain(property, { passport: passport });
+			let propertyDO = property as PropertyEntityReference; //new PropertyConverter().toDomain(property, { passport: passport });
 			if (
 				!passport
 					.forProperty(propertyDO)
@@ -80,7 +81,8 @@ export class Properties extends BlobDataSource<GraphqlContext> {
 				mutationResult = { success: false, errorMessage: `User does not have permission to remove images from property: ${propertyId}` } as MutationStatus;
 				return;
 			}
-			await blobStorage.deleteBlob(blobName, property.community.id);
+			const communityId = typeof property.community === 'string' ? property.community : property.community.id;
+			await blobStorage.deleteBlob(blobName, communityId);
 			mutationResult = { success: true } as MutationStatus;
 		});
 		return mutationResult;
@@ -90,13 +92,13 @@ export class Properties extends BlobDataSource<GraphqlContext> {
 		let headerResult: PropertyBlobFileAuthHeaderResult;
 		const { fileName, contentType, contentLength, maxSizeBytes } = fileInfo;
 		await this.withStorage(async (passport, blobStorage) => {
-			let property = await (await this.context.dataSources.propertyCosmosdbApi.findOneById(propertyId)).populate(['community','owner']);
+			let property = await (await this.context.applicationServices.propertyDatastoreApi.getPropertyByIdWithCommunityOwner(propertyId));
 			if (!property) {
 				headerResult = { status: { success: false, errorMessage: `Property not found: ${propertyId}` } } as PropertyBlobFileAuthHeaderResult;
 				return;
 			}
     
-			let propertyDO = new PropertyConverter().toDomain(property, { passport: passport });
+			let propertyDO = property as PropertyEntityReference; //new PropertyConverter().toDomain(property, { passport: passport });
       
 			if (!passport.forProperty(propertyDO).determineIf(
           (permissions) => 
@@ -146,7 +148,8 @@ export class Properties extends BlobDataSource<GraphqlContext> {
         value,
       }));
 
-			const blobContainerName = property.community.id;
+			const communityId = typeof property.community === 'string' ? property.community : property.community.id;
+			const blobContainerName = communityId;
 			const blobDataStorageAccountName = process.env.BLOB_ACCOUNT_NAME;
 			const blobPath = `https://${blobDataStorageAccountName}.blob.core.windows.net/${blobContainerName}/${blobName}`;
 

@@ -51,7 +51,7 @@ export class ServiceTicketDomainAdapter extends MongooseDomainAdapter<ServiceTic
     }
   }
   public setRequestorRef(requestor: MemberEntityReference) {
-    this.doc.set('requestor', requestor ? requestor['props']['doc'] : null);
+    this.doc.set('requestor', requestor?.id);
   }
 
   get assignedTo() {
@@ -60,14 +60,14 @@ export class ServiceTicketDomainAdapter extends MongooseDomainAdapter<ServiceTic
     }
   }
   public setAssignedToRef(assignedTo: MemberEntityReference) {
-    this.doc.set('assignedTo', assignedTo ? assignedTo['props']['doc'] : null);
+    this.doc.set('assignedTo', assignedTo?.id);
   }
 
   get service() {
     return this.doc.service ? new ServiceDomainAdapter(this.doc.service) : undefined;
   }
   public setServiceRef(service: ServiceEntityReference) {
-    this.doc.set('service', service ? service['props']['doc'] : null);
+    this.doc.set('service', service?.id);
   }
 
   get title() {
@@ -155,7 +155,7 @@ export class ActivityDetailDomainAdapter implements ActivityDetailProps {
     }
   }
   public setActivityByRef(activityBy: MemberEntityReference) {
-    this.props.set('activityBy', activityBy['props']['doc']);
+    this.props.set('activityBy', activityBy?.id);
   }
 }
 

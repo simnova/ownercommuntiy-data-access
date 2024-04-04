@@ -1,47 +1,23 @@
-import { MemberModel } from '../../../infrastructure-services-impl/datastore/mongodb/models/member';
-import { Property, PropertyModel } from '../../../infrastructure-services-impl/datastore/mongodb/models/property';
 import { GraphqlContext } from '../../graphql-context';
-import { Types } from 'mongoose';
-import { CosmosDataSource } from './cosmos-data-source';
+import { DataSource } from '../data-source';
 
-export class Properties extends CosmosDataSource<Property, GraphqlContext> {
-  async getPropertiesByCommunityId(communityId: string): Promise<Property[]> {
-    return this.findByFields({ community: communityId });
+export class Properties<TData> extends DataSource<GraphqlContext> {
+  async getPropertiesByCommunityId(communityId: string): Promise<TData[]> {
+    return this.context.applicationServices.propertyDatastoreApi.getPropertiesByCommunityId(communityId);
   }
-
-  async getPropertiesByIds(propertyIds: string[]): Promise<Property[]> {
-    return this.findManyByIds(propertyIds);
+  async getPropertiesByIds(propertyIds: string[]): Promise<TData[]> {
+    return this.context.applicationServices.propertyDatastoreApi.getPropertiesByIds(propertyIds);
   }
-
-  async getAllProperties(): Promise<Property[]> {
-    return PropertyModel.find().exec();
+  async getAllProperties(): Promise<TData[]> {
+    return this.context.applicationServices.propertyDatastoreApi.getAllProperties();
   }
-
-  async getPropertiesForCurrentUserByCommunityId(communityId: string, userId: string): Promise<Property[]> {
-    let result = await MemberModel.aggregate<Properties>([
-      {
-        $match: {
-          community: new Types.ObjectId(communityId),
-          'accounts.user': new Types.ObjectId(userId),
-        },
-      },
-      {
-        $lookup: {
-          from: 'properties',
-          localField: '_id',
-          foreignField: 'owner',
-          as: 'p',
-        },
-      },
-      {
-        $unwind: {
-          path: '$p',
-        },
-      },
-      {
-        $replaceWith: '$p',
-      },
-    ]).exec();
-    return result.map((r) => PropertyModel.hydrate(r));
+  async getPropertiesForCurrentUserByCommunityId(communityId: string, userId: string): Promise<TData[]> {
+    return this.context.applicationServices.propertyDatastoreApi.getPropertiesForCurrentUserByCommunityId(communityId, userId);
+  }
+  async getPropertyById(id: string): Promise<TData> {
+    return this.context.applicationServices.propertyDatastoreApi.getPropertyById(id);
+  }
+  async getPropertyByIdWithCommunityOwner(id: string): Promise<TData> {
+    return this.context.applicationServices.propertyDatastoreApi.getPropertyByIdWithCommunityOwner(id);
   }
 }

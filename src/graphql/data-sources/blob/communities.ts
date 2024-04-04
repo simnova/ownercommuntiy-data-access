@@ -3,13 +3,14 @@ import { GraphqlContext } from '../../graphql-context';
 import { CommunityConverter } from '../../../infrastructure-services-impl/datastore/mongodb/infrastructure/community.domain-adapter';
 import { CommunityBlobContentAuthHeaderResult, FileInfo } from '../../schema/builder/generated';
 import { BlobRequestSettings } from '../../../../seedwork/services-seedwork-blob-storage-az';
+import { CommunityEntityReference } from '../../../app/domain/contexts/community/community';
 
 export class Communities extends BlobDataSource<GraphqlContext> {
   public async communityPublicFilesList(communityId: string): Promise<FileInfo[]> {
     let result: FileInfo[] = [];
     await this.withStorage(async (passport, blobStorage) => {
-      let community = await this.context.dataSources.communityCosmosdbApi.findOneById(communityId);
-      let communityDO = new CommunityConverter().toDomain(community, { passport: passport });
+      let community = await this.context.dataSources.communityCosmosdbApi.getCommunityById(communityId);
+      let communityDO = community as CommunityEntityReference; // new CommunityConverter().toDomain(community, { passport: passport });
       if (!passport.forCommunity(communityDO).determineIf((permissions) => permissions.canManageSiteContent)) {
         return;
       }
@@ -52,11 +53,11 @@ export class Communities extends BlobDataSource<GraphqlContext> {
   public async communityPublicFileRemove(communityId: string, fileName: string): Promise<void> {
     const blobName = `public-files/${fileName}`;
     await this.withStorage(async (passport, blobStorage) => {
-      let community = await this.context.dataSources.communityCosmosdbApi.findOneById(communityId);
+      let community = await this.context.dataSources.communityCosmosdbApi.getCommunityById(communityId);
       if (!community) {
         return;
       }
-      let communityDO = new CommunityConverter().toDomain(community, { passport: passport });
+      let communityDO = community as CommunityEntityReference; //new CommunityConverter().toDomain(community, { passport: passport });
       if (!passport.forCommunity(communityDO).determineIf((permissions) => permissions.canManageSiteContent)) {
         return;
       }
@@ -83,12 +84,12 @@ export class Communities extends BlobDataSource<GraphqlContext> {
   ) {
     let headerResult: CommunityBlobContentAuthHeaderResult;
     await this.withStorage(async (passport, blobStorage) => {
-      let community = await this.context.dataSources.communityCosmosdbApi.findOneById(communityId);
+      let community = await this.context.dataSources.communityCosmosdbApi.getCommunityById(communityId);
       if (!community) {
         headerResult = { status: { success: false, errorMessage: `Community not found: ${communityId}` } } as CommunityBlobContentAuthHeaderResult;
         return;
       }
-      let communityDO = new CommunityConverter().toDomain(community, { passport: passport });
+      let communityDO = community as CommunityEntityReference; //new CommunityConverter().toDomain(community, { passport: passport });
       if (!passport.forCommunity(communityDO).determineIf((permissions) => permissions.canManageSiteContent)) {
         headerResult = {
           status: { success: false, errorMessage: `User does not have permission to create content for community: ${communityId}` },

@@ -1,10 +1,11 @@
 import { GraphqlContext } from "../graphql-context";
 import { CommunityBlobAPI, MemberBlobAPI, PropertyBlobAPI } from "./blob"
 import { PropertySearchAPI, ServiceTicketsSearchAPI } from "./cognitive-search";
-import { CommunityCosmosdbAPI, CommunityModel, MemberCosmosdbAPI, MemberModel, PropertyCosmosdbAPI, PropertyModel, RoleCosmosdbAPI, RoleModel, ServiceCosmosdbAPI, ServiceModel, ServiceTicketCosmosdbAPI, ServiceTicketModel, UserCosmosdbAPI, UserModel } from "./cosmos-db";
+import { CommunityCosmosdbAPI, CommunityModel, MemberCosmosdbAPI, MemberModel, PropertyCosmosdbAPI, PropertyModel, RoleDatastoreDatasource, RoleModel, ServiceCosmosdbAPI, ServiceModel, ServiceTicketCosmosdbAPI, ServiceTicketModel, UserDatastoreDatasource, UserModel } from "./cosmos-db";
 import { CommunityDomainAPI, CommunityUnitOfWork, MemberDomainAPI, MemberUnitOfWork, PropertyDomainAPI, PropertyUnitOfWork, RoleDomainAPI, RoleUnitOfWork, ServiceDomainAPI, ServiceTicketDomainAPI, ServiceTicketUnitOfWork, ServiceUnitOfWork, UserDomainAPI, UserUnitOfWork } from "./domain";
 import { PropertyMapAPI } from "./maps";
 import { CommunityVercelAPI } from "./vercel";
+import { CommunityData, MemberData, RoleData, PropertyData, ServiceData, ServiceTicketData, UserData } from "../../startup/execution-types-builder";
 
 export class DataSourceBuilder {
   communityBlobAPI: CommunityBlobAPI;
@@ -12,13 +13,13 @@ export class DataSourceBuilder {
   propertyBlobAPI: PropertyBlobAPI;
   propertySearchApi: PropertySearchAPI;
   serviceTicketsSearchApi: ServiceTicketsSearchAPI;
-  userCosmosdbApi: UserCosmosdbAPI;
-  roleCosmosdbApi: RoleCosmosdbAPI;
-  serviceCosmosdbApi: ServiceCosmosdbAPI;
-  serviceTicketCosmosdbApi: ServiceTicketCosmosdbAPI;
-  memberCosmosdbApi: MemberCosmosdbAPI;
-  communityCosmosdbApi: CommunityCosmosdbAPI;
-  propertyCosmosdbApi: PropertyCosmosdbAPI;
+  userCosmosdbApi: UserDatastoreDatasource<UserData>;
+  roleCosmosdbApi: RoleDatastoreDatasource<RoleData>;
+  serviceCosmosdbApi: ServiceCosmosdbAPI<ServiceData>;
+  serviceTicketCosmosdbApi: ServiceTicketCosmosdbAPI<ServiceTicketData>;
+  memberCosmosdbApi: MemberCosmosdbAPI<MemberData>;
+  communityCosmosdbApi: CommunityCosmosdbAPI<CommunityData>;
+  propertyCosmosdbApi: PropertyCosmosdbAPI<PropertyData>;
   userDomainAPI: UserDomainAPI;
   communityDomainAPI: CommunityDomainAPI;
   memberDomainAPI: MemberDomainAPI;
@@ -35,13 +36,13 @@ export class DataSourceBuilder {
     this.propertyBlobAPI = new PropertyBlobAPI({ context });
     this.propertySearchApi = new PropertySearchAPI({ context });
     this.serviceTicketsSearchApi = new ServiceTicketsSearchAPI({ context });
-    this.userCosmosdbApi = new UserCosmosdbAPI({ modelOrCollection: UserModel, context });
-    this.roleCosmosdbApi = new RoleCosmosdbAPI({ modelOrCollection: RoleModel, context });
-    this.serviceCosmosdbApi = new ServiceCosmosdbAPI({ modelOrCollection: ServiceModel, context });
-    this.serviceTicketCosmosdbApi = new ServiceTicketCosmosdbAPI({ modelOrCollection: ServiceTicketModel, context });
-    this.memberCosmosdbApi = new MemberCosmosdbAPI({ modelOrCollection: MemberModel, context });
-    this.communityCosmosdbApi = new CommunityCosmosdbAPI({ modelOrCollection: CommunityModel, context });
-    this.propertyCosmosdbApi = new PropertyCosmosdbAPI({ modelOrCollection: PropertyModel, context });
+    this.userCosmosdbApi = new UserDatastoreDatasource<UserData>({ context });//modelOrCollection: UserModel, 
+    this.roleCosmosdbApi = new RoleDatastoreDatasource<RoleData>({ context });//modelOrCollection: RoleModel, 
+    this.serviceCosmosdbApi = new ServiceCosmosdbAPI<ServiceData>({ context });//modelOrCollection: ServiceModel, 
+    this.serviceTicketCosmosdbApi = new ServiceTicketCosmosdbAPI<ServiceTicketData>({ context });//modelOrCollection: ServiceTicketModel, 
+    this.memberCosmosdbApi = new MemberCosmosdbAPI<MemberData>({ context });//modelOrCollection: MemberModel, 
+    this.communityCosmosdbApi = new CommunityCosmosdbAPI<CommunityData>({  context });//modelOrCollection: CommunityModel,
+    this.propertyCosmosdbApi = new PropertyCosmosdbAPI<PropertyData>({ context });//modelOrCollection: PropertyModel, 
     this.userDomainAPI = new UserDomainAPI({ unitOfWork: UserUnitOfWork, context });
     this.communityDomainAPI = new CommunityDomainAPI({ unitOfWork: CommunityUnitOfWork, context });
     this.memberDomainAPI = new MemberDomainAPI({ unitOfWork: MemberUnitOfWork, context });

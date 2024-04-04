@@ -3,16 +3,17 @@ import { GraphqlContext } from '../../graphql-context';
 import { MemberAvatarImageAuthHeaderResult, MutationStatus, BlobAuthHeader } from '../../schema/builder/generated';
 import { MemberConverter } from '../../../infrastructure-services-impl/datastore/mongodb/infrastructure/member.domain-adapter';
 import { BlobRequestSettings } from '../../../../seedwork/services-seedwork-blob-storage-interfaces';
+import { MemberEntityReference } from '../../../app/domain/contexts/community/member';
 
 export class Members extends BlobDataSource<GraphqlContext> {
   async memberProfileAvatarRemove(memberId: string): Promise<MutationStatus> {
     let mutationResult: MutationStatus;
     await this.withStorage(async (passport, blobStorage) => {
-      let member = await (await this.context.dataSources.memberCosmosdbApi.findOneById(memberId)).populate('community');
+      let member = await (await this.context.applicationServices.memberDatastoreApi.getMemberByIdWithCommunity(memberId));
       if (!member) {
         mutationResult = { success: false, errorMessage: `Member not found: ${memberId}` } as MutationStatus;
       }
-      let memberDo = new MemberConverter().toDomain(member, { passport: passport });
+      let memberDo = member as MemberEntityReference; //new MemberConverter().toDomain(member, { passport: passport });
       if (
         !passport
           .forMember(memberDo)
@@ -21,7 +22,8 @@ export class Members extends BlobDataSource<GraphqlContext> {
         mutationResult = { success: false, errorMessage: `User does not have permission to remove avatar for member: ${memberId}` } as MutationStatus;
         return;
       }
-      await blobStorage.deleteBlob(member.profile.avatarDocumentId, member.community.id);
+      const communityId = typeof member.community === 'string' ? member.community : member.community.id;
+      await blobStorage.deleteBlob(member.profile.avatarDocumentId, communityId);
       mutationResult = { success: true } as MutationStatus;
     });
     return mutationResult;
@@ -33,12 +35,12 @@ export class Members extends BlobDataSource<GraphqlContext> {
 
     let headerResult: MemberAvatarImageAuthHeaderResult;
     await this.withStorage(async (passport, blobStorage) => {
-      let member = await (await this.context.dataSources.memberCosmosdbApi.findOneById(memberId)).populate('community');
+      let member = await (await this.context.applicationServices.memberDatastoreApi.getMemberByIdWithCommunity(memberId));
       if (!member) {
         headerResult = { status: { success: false, errorMessage: `Member not found: ${memberId}` } } as MemberAvatarImageAuthHeaderResult;
         return;
       }
-      let memberDo = new MemberConverter().toDomain(member, { passport: passport });
+      let memberDo = member as MemberEntityReference; //new MemberConverter().toDomain(member, { passport: passport });
       if (
         !passport
           .forMember(memberDo)

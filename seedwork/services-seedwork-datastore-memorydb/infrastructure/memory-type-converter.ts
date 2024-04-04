@@ -1,12 +1,12 @@
 // import { BaseDataStructure } from '../interfaces/base';
 // import { AggregateRoot } from '../../domain-seedwork/aggregate-root';
 // import { TypeConverter } from '../../domain-seedwork/type-converter';
-// import { MemoryDomainAdapterType } from './memory-domain-adapter';
+// import { EntityProps } from '../../domain-seedwork/entity';
 
 // export abstract class MemoryTypeConverter<
 //   ContextType, 
 //   MemoryDataStructure extends BaseDataStructure,
-//   DomainPropInterface extends MemoryDomainAdapterType<MemoryDataStructure>, 
+//   DomainPropInterface extends EntityProps,
 //   DomainType extends AggregateRoot<DomainPropInterface>
 //   > implements TypeConverter<MemoryDataStructure, DomainType,DomainPropInterface,ContextType> 
 // {
@@ -16,7 +16,7 @@
 //   ) {}
 
 //   toPersistence(domainType: DomainType): MemoryDataStructure {
-//     return domainType.props.doc;
+//     return domainType.props as any as MemoryDataStructure;
 //   }
 //   toDomain(memoryDataStructure: MemoryDataStructure, context:ContextType): DomainType {
 //     if(!memoryDataStructure) { return null;}

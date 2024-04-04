@@ -1,33 +1,32 @@
 /** @format */
 
 import { RoleDatastoreApplicationService } from "../../app/application-services/datastore/role.interface";
-import { RoleDataStructure } from "../../app/application-services/datastore";
-import { AppContext } from '../../app/app-context';
+import { AppContext } from '../../app/app-context-builder';
 import { DatastoreApplicationServiceImpl } from "./_datastore.application-service";
 
-export class RoleDatastoreApplicationServiceImpl 
+export class RoleDatastoreApplicationServiceImpl<TData>
   extends DatastoreApplicationServiceImpl<AppContext> 
-  implements RoleDatastoreApplicationService
+  implements RoleDatastoreApplicationService<TData>
 {
 
-  async getRoleById(roleId: string): Promise<RoleDataStructure> {
-    let roleToReturn: RoleDataStructure;
+  async getRoleById(roleId: string): Promise<TData> {
+    let roleToReturn: TData;
     await this.withDatastore(async (_passport, datastore) => {
       roleToReturn = (await datastore.roleDatastore.findByFields({ id: roleId, community: this.context.communityId }))?.[0];
     });
     return roleToReturn;
   }
 
-  async getRoles(): Promise<RoleDataStructure[]> {
-    let roleToReturn: RoleDataStructure[];
+  async getRoles(): Promise<TData[]> {
+    let roleToReturn: TData[];
     await this.withDatastore(async (_passport, datastore) => {
       roleToReturn = await datastore.roleDatastore.findByFields({ community: this.context.communityId });
     });
     return roleToReturn;
   }
 
-  async getRolesByCommunityId(communityId: string): Promise<RoleDataStructure[]> {
-    let roleToReturn: RoleDataStructure[];
+  async getRolesByCommunityId(communityId: string): Promise<TData[]> {
+    let roleToReturn: TData[];
     await this.withDatastore(async (_passport, datastore) => {
       roleToReturn = await datastore.roleDatastore.findByFields({ community: communityId });
     });

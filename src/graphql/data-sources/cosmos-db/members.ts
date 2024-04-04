@@ -1,21 +1,20 @@
 import { GraphqlContext } from '../../graphql-context';
-import { MemberDataStructure } from '../../../app/application-services/datastore';
 import { DataSource } from '../data-source';
 
-export class Members extends DataSource<GraphqlContext> {
-  async getMemberByCommunityIdUserId(communityId: string, userId: string): Promise<MemberDataStructure> {
+export class Members<TData> extends DataSource<GraphqlContext> {
+  async getMemberByCommunityIdUserId(communityId: string, userId: string): Promise<TData> {
     return this.context.applicationServices.memberDatastoreApi.getMemberByCommunityIdUserId(communityId, userId);
   }
-  async getMembers(): Promise<MemberDataStructure[]> {
+  async getMembers(): Promise<TData[]> {
     return this.context.applicationServices.memberDatastoreApi.getMembers();
   }
-  async getMembersByCommunityId(communityId: string): Promise<MemberDataStructure[]> {
+  async getMembersByCommunityId(communityId: string): Promise<TData[]> {
     return this.context.applicationServices.memberDatastoreApi.getMembersByCommunityId(communityId);
   }
-  async getMembersAssignableToTickets(): Promise<MemberDataStructure[]> {
+  async getMembersAssignableToTickets(): Promise<TData[]> {
     return this.context.applicationServices.memberDatastoreApi.getMembersAssignableToTickets();
   }
-  async getMemberById(memberId: string): Promise<MemberDataStructure> {
+  async getMemberById(memberId: string): Promise<TData> {
     return this.context.applicationServices.memberDatastoreApi.getMemberById(memberId);
   }
 }

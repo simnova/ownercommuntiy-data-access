@@ -18,12 +18,12 @@ import { MapsInfrastructureService } from '../app/infrastructure-services/maps';
 // import { MongoServiceUnitOfWork } from '../infrastructure-impl/datastore/mongodb/infrastructure/service.uow';
 // import { MongoServiceTicketUnitOfWork } from '../infrastructure-impl/datastore/mongodb/infrastructure/service-ticket.uow';
 
-export class InfrastructureServicesBuilder implements InfrastructureServices{
+export class InfrastructureServicesBuilder<TDataCommunity, TDataMember, TDataRole, TDataProperty, TDataService, TDataServiceTicket, TDataUser> implements InfrastructureServices<TDataCommunity, TDataMember, TDataRole, TDataProperty, TDataService, TDataServiceTicket, TDataUser>{
   private _vercel: VercelInfrastructureService;
   private _contentModerator: ContentModeratorInfrastructureService;
   private _cognitiveSearch: CognitiveSearchInfrastructureService;
   private _blobStorage: BlobStorageInfrastructureService;
-  private _datastore: DatastoreInfrastructureService;
+  private _datastore: DatastoreInfrastructureService<TDataCommunity, TDataMember, TDataRole, TDataProperty, TDataService, TDataServiceTicket, TDataUser>;
   private _maps: MapsInfrastructureService;
   
   constructor() {
@@ -48,7 +48,7 @@ export class InfrastructureServicesBuilder implements InfrastructureServices{
     return this._blobStorage;
   }
 
-  public get datastore(): DatastoreInfrastructureService {
+  public get datastore(): DatastoreInfrastructureService<TDataCommunity, TDataMember, TDataRole, TDataProperty, TDataService, TDataServiceTicket, TDataUser> {
     return this._datastore;
   }
 
@@ -88,7 +88,7 @@ export class InfrastructureServicesBuilder implements InfrastructureServices{
     return new AzBlobStorageImpl(storageAccount, storageKey);
   }
 
-  private InitDataStore(): DatastoreInfrastructureService {
+  private InitDataStore(): DatastoreInfrastructureService<TDataCommunity, TDataMember, TDataRole, TDataProperty, TDataService, TDataServiceTicket, TDataUser> {
     return new MongodbDatastoreImpl();
     // return {
     //   communityUnitOfWork: MongoCommunityUnitOfWork,

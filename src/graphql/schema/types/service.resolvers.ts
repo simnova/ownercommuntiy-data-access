@@ -1,9 +1,9 @@
 import { Community, Resolvers, Service, ServiceMutationResult } from '../builder/generated';
 import { isValidObjectId } from 'mongoose';
-import { Service as ServiceDo } from '../../../infrastructure-services-impl/datastore/mongodb/models/service';
+import { ServiceData } from '../../../startup/execution-types-builder';
 
 
-const ServiceMutationResolver = async (getService:Promise<ServiceDo>): Promise<ServiceMutationResult> => {
+const ServiceMutationResolver = async (getService:Promise<ServiceData>): Promise<ServiceMutationResult> => {
   try {
     return {
       status : { success: true },

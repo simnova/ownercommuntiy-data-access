@@ -1,5 +1,5 @@
 // import { BlobDataSource } from './blob-data-source';
-import { AppContext } from '../../app/app-context';
+import { AppContext } from '../../app/app-context-builder';
 // import { CommunityConverter } from '../../../infrastructure-impl/datastore/mongodb/infrastructure/community.domain-adapter';
 // import { CommunityBlobContentAuthHeaderResult, FileInfo } from '';
 // import { BlobRequestSettings } from '../../../services-seedwork-blob-storage-az';
@@ -9,7 +9,7 @@ import { BlobRequestSettings, FileInfo } from '../../../seedwork/services-seedwo
 import { CommunityEntityReference } from '../../app/domain/contexts/community/community';
 import { CommunityBlobContentAuthHeaderResult } from '../../app/application-services/blob-storage/community.interface';
 
-export class CommunityBlobStorageApplicationServiceImpl extends BlobStorageApplicationServiceImpl<AppContext> {
+export class CommunityBlobStorageApplicationServiceImpl<TDataCommunity, TDataRole> extends BlobStorageApplicationServiceImpl<AppContext> {
   public async communityPublicFilesList(communityId: string): Promise<FileInfo[]> {
     let result: FileInfo[] = [];
     await this.withStorage(async (passport, blobStorage) => {
@@ -46,7 +46,7 @@ export class CommunityBlobStorageApplicationServiceImpl extends BlobStorageAppli
     fileName: string,
     contentType: string,
     contentLength: number
-  ): Promise<CommunityBlobContentAuthHeaderResult> {
+  ): Promise<CommunityBlobContentAuthHeaderResult<TDataCommunity, TDataRole>> {
     const maxSizeMb = 10;
     const maxSizeBytes = maxSizeMb * 1024 * 1024;
     const permittedContentTypes = ['image/jpeg', 'image/png', 'image/gif', 'text/plain', 'text/csv', 'application/json', 'application/pdf'];
@@ -69,7 +69,7 @@ export class CommunityBlobStorageApplicationServiceImpl extends BlobStorageAppli
     });
   }
 
-  public async communityPublicContentCreateAuthHeader(communityId: string, contentType: string, contentLength: number): Promise<CommunityBlobContentAuthHeaderResult> {
+  public async communityPublicContentCreateAuthHeader(communityId: string, contentType: string, contentLength: number): Promise<CommunityBlobContentAuthHeaderResult<TDataCommunity, TDataRole>> {
     const maxSizeMb = 10;
     const maxSizeBytes = maxSizeMb * 1024 * 1024;
     const permittedContentTypes = ['image/jpeg', 'image/png', 'image/gif', 'text/plain', 'text/json', 'application/json'];
@@ -86,26 +86,26 @@ export class CommunityBlobStorageApplicationServiceImpl extends BlobStorageAppli
     blobName: string,
     fileName?: string
   ) {
-    let headerResult: CommunityBlobContentAuthHeaderResult;
+    let headerResult: CommunityBlobContentAuthHeaderResult<TDataCommunity, TDataRole>;
     await this.withStorage(async (passport, blobStorage) => {
       let community = await this.context.applicationServices.communityDatastoreApi.getCommunityById(communityId);
       if (!community) {
-        headerResult = { status: { success: false, errorMessage: `Community not found: ${communityId}` } } as CommunityBlobContentAuthHeaderResult;
+        headerResult = { status: { success: false, errorMessage: `Community not found: ${communityId}` } } as CommunityBlobContentAuthHeaderResult<TDataCommunity, TDataRole>;
         return;
       }
       let communityDO = community as CommunityEntityReference; //new CommunityConverter().toDomain(community, { passport: passport });
       if (!passport.forCommunity(communityDO).determineIf((permissions) => permissions.canManageSiteContent)) {
         headerResult = {
           status: { success: false, errorMessage: `User does not have permission to create content for community: ${communityId}` },
-        } as CommunityBlobContentAuthHeaderResult;
+        } as CommunityBlobContentAuthHeaderResult<TDataCommunity, TDataRole>;
         return;
       }
       if (!permittedContentTypes.includes(contentType)) {
-        headerResult = { status: { success: false, errorMessage: 'Content type not permitted.' } } as CommunityBlobContentAuthHeaderResult;
+        headerResult = { status: { success: false, errorMessage: 'Content type not permitted.' } } as CommunityBlobContentAuthHeaderResult<TDataCommunity, TDataRole>;
         return;
       }
       if (contentLength > maxSizeBytes) {
-        headerResult = { status: { success: false, errorMessage: 'Content length exceeds permitted limit.' } } as CommunityBlobContentAuthHeaderResult;
+        headerResult = { status: { success: false, errorMessage: 'Content length exceeds permitted limit.' } } as CommunityBlobContentAuthHeaderResult<TDataCommunity, TDataRole>;
         return;
       }
 
@@ -158,7 +158,7 @@ export class CommunityBlobStorageApplicationServiceImpl extends BlobStorageAppli
       headerResult = {
         status: { success: true },
         authHeader: { authHeader: authHeader, requestDate: requestDate, indexTags: indexKeyValues, metadataFields: metadataKeyValues, blobPath, blobName },
-      } as CommunityBlobContentAuthHeaderResult;
+      } as CommunityBlobContentAuthHeaderResult<TDataCommunity, TDataRole>;
     });
     return headerResult;
   }

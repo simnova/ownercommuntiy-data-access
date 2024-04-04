@@ -1,11 +1,11 @@
-import { AppContext } from '../../app/app-context';
+import { AppContext } from '../../app/app-context-builder';
 import { MutationStatus } from '../../app/application-services/blob-storage/_base.interfaces';
 import { BlobStorageApplicationServiceImpl } from './_blob-storage.application-service';
 import { BlobAuthHeader, BlobRequestSettings } from '../../../seedwork/services-seedwork-blob-storage-interfaces';
 import { MemberAvatarImageAuthHeaderResult } from '../../app/application-services/blob-storage/member.interface';
 import { MemberEntityReference } from '../../app/domain/contexts/community/member';
 
-export class MemberBlobStorageApplicationServiceImpl extends BlobStorageApplicationServiceImpl<AppContext> {
+export class MemberBlobStorageApplicationServiceImpl<TDataMember> extends BlobStorageApplicationServiceImpl<AppContext> {
   async memberProfileAvatarRemove(memberId: string): Promise<MutationStatus> {
     let mutationResult: MutationStatus;
     await this.withStorage(async (passport, blobStorage) => {
@@ -29,15 +29,15 @@ export class MemberBlobStorageApplicationServiceImpl extends BlobStorageApplicat
     return mutationResult;
   }
 
-  async memberProfileAvatarCreateAuthHeader(memberId: string, fileName: string, contentType: string, contentLength: number): Promise<MemberAvatarImageAuthHeaderResult> {
+  async memberProfileAvatarCreateAuthHeader(memberId: string, fileName: string, contentType: string, contentLength: number): Promise<MemberAvatarImageAuthHeaderResult<TDataMember>> {
     const blobContainerName = this.context.communityId;
     const blobDataStorageAccountName = process.env.BLOB_ACCOUNT_NAME;
 
-    let headerResult: MemberAvatarImageAuthHeaderResult;
+    let headerResult: MemberAvatarImageAuthHeaderResult<TDataMember>;
     await this.withStorage(async (passport, blobStorage) => {
       let member = await (await this.context.applicationServices.memberDatastoreApi.getMemberByIdWithCommunity(memberId));
       if (!member) {
-        headerResult = { status: { success: false, errorMessage: `Member not found: ${memberId}` } } as MemberAvatarImageAuthHeaderResult;
+        headerResult = { status: { success: false, errorMessage: `Member not found: ${memberId}` } } as MemberAvatarImageAuthHeaderResult<TDataMember>;
         return;
       }
       let memberDo = member as unknown as MemberEntityReference; // [MG-TBD] - remove unknown //new MemberConverter().toDomain(member, { passport: passport });
@@ -48,7 +48,7 @@ export class MemberBlobStorageApplicationServiceImpl extends BlobStorageApplicat
       ) {
         headerResult = {
           status: { success: false, errorMessage: `User does not have permission to update avatar for member: ${memberId}` },
-        } as MemberAvatarImageAuthHeaderResult;
+        } as MemberAvatarImageAuthHeaderResult<TDataMember>;
         return;
       }
 
@@ -56,11 +56,11 @@ export class MemberBlobStorageApplicationServiceImpl extends BlobStorageApplicat
       const maxSizeBytes = maxSizeMb * 1024 * 1024;
       const permittedContentTypes = ['image/jpeg', 'image/png', 'image/gif', 'text/plain', 'text/json', 'application/json'];
       if (!permittedContentTypes.includes(contentType)) {
-        headerResult = { status: { success: false, errorMessage: 'Content type not permitted.' } } as MemberAvatarImageAuthHeaderResult;
+        headerResult = { status: { success: false, errorMessage: 'Content type not permitted.' } } as MemberAvatarImageAuthHeaderResult<TDataMember>;
         return;
       }
       if (contentLength > maxSizeBytes) {
-        headerResult = { status: { success: false, errorMessage: 'Content length exceeds permitted limit.' } } as MemberAvatarImageAuthHeaderResult;
+        headerResult = { status: { success: false, errorMessage: 'Content length exceeds permitted limit.' } } as MemberAvatarImageAuthHeaderResult<TDataMember>;
         return;
       }
 
@@ -105,7 +105,7 @@ export class MemberBlobStorageApplicationServiceImpl extends BlobStorageApplicat
       headerResult = {
         status: { success: true },
         authHeader: { authHeader: authHeader, requestDate: requestDate, indexTags: indexKeyValues, metadataFields: metadataKeyValues, blobPath, blobName } as BlobAuthHeader,
-      } as MemberAvatarImageAuthHeaderResult;
+      } as MemberAvatarImageAuthHeaderResult<TDataMember>;
     });
     return headerResult;
   }

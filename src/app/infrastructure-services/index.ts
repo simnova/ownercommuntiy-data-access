@@ -5,11 +5,19 @@ import { BlobStorageInfrastructureService } from "./blob-storage";
 import { DatastoreInfrastructureService } from "./datastore";
 import { MapsInfrastructureService } from "./maps";
 
-export interface InfrastructureServices {
+export interface InfrastructureServices<
+TDataCommunity,
+TDataMember,
+TDataProperty,
+TDataRole,
+TDataService,
+TDataServiceTicket,
+TDataUser,
+> {
     vercel: VercelInfrastructureService;
     contentModerator: ContentModeratorInfrastructureService;
     cognitiveSearch: CognitiveSearchInfrastructureService;
     blobStorage: BlobStorageInfrastructureService;
-    datastore: DatastoreInfrastructureService;
+    datastore: DatastoreInfrastructureService<TDataCommunity, TDataMember, TDataRole, TDataProperty, TDataService, TDataServiceTicket, TDataUser>;
     maps: MapsInfrastructureService;
 }

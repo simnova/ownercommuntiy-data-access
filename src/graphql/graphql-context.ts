@@ -1,10 +1,10 @@
 import { Passport } from '../app/domain/contexts/iam/passport';
 import { HttpRequest } from '@azure/functions';
 import { PortalTokenValidation } from '../auth/portal-token-validation';
-import { ApplicationServices } from '../app/application-services';
+import { ApplicationServices } from '../app/application-services/application-services-builder';
 import { InfrastructureServices } from '../app/infrastructure-services';
 import * as util from '../../seedwork/auth-seedwork-oidc/util';
-import { AppContext, AppContextImpl } from '../app/app-context';
+import { AppContext, AppContextBuilder } from '../app/app-context-builder';
 import { DataSourceBuilder } from './data-sources/data-source-builder';
 
 export type VerifiedUser = {
@@ -52,7 +52,7 @@ export class GraphqlContextImpl implements GraphqlContext{
   }
   
   private async setAppContext(): Promise<void> {
-    this._appContext = new AppContextImpl(
+    this._appContext = new AppContextBuilder(
       this._verifiedUser, 
       this._req.headers.get('community'),
       this._infrastructureServices

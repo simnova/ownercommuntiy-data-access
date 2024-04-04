@@ -1,11 +1,9 @@
-import { MemberDataStructure } from "../../../infrastructure-services-impl/datastore/data-structures/member";
-
-export interface MemberDatastoreApplicationService {
-  getMemberByCommunityIdUserId(communityId: string, userId: string): Promise<MemberDataStructure>;
-  getMembers(): Promise<MemberDataStructure[]>;
-  getMembersByCommunityId(communityId: string): Promise<MemberDataStructure[]>;
-  getMembersAssignableToTickets(): Promise<MemberDataStructure[]>;
-  getMemberByIdWithCommunity(memberId: string): Promise<MemberDataStructure>;
-  getMemberById(memberId: string): Promise<MemberDataStructure>;
-  getMemberByCommunityAccountWithCommunityAccountRole(communityId: string, userId: string): Promise<MemberDataStructure>;
+export interface MemberDatastoreApplicationService<TDataMember> {
+  getMemberByCommunityIdUserId(communityId: string, userId: string): Promise<TDataMember>;
+  getMembers(): Promise<TDataMember[]>;
+  getMembersByCommunityId(communityId: string): Promise<TDataMember[]>;
+  getMembersAssignableToTickets(): Promise<TDataMember[]>;
+  getMemberByIdWithCommunity(memberId: string): Promise<TDataMember>;
+  getMemberById(memberId: string): Promise<TDataMember>;
+  getMemberByCommunityAccountWithCommunityAccountRole(communityId: string, userId: string): Promise<TDataMember>;
 }

@@ -1,4 +1,4 @@
-import { AppContext } from '../../app/app-context';
+import { AppContext } from '../../app/app-context-builder';
 import { MutationStatus,  } from '../../app/application-services/blob-storage/_base.interfaces';
 import { PropertyBlobFileAuthHeaderResult } from '../../app/application-services/blob-storage/property.interface';
 import { nanoid } from 'nanoid';
@@ -13,7 +13,7 @@ interface FileInfo {
 	maxSizeBytes: number;
 }
 
-export class PropertyBlobStorageApplicationServiceImpl extends BlobStorageApplicationServiceImpl<AppContext> {
+export class PropertyBlobStorageApplicationServiceImpl<TDataProperty> extends BlobStorageApplicationServiceImpl<AppContext> {
 
 	public async propertyPublicFileRemove(propertyId: string,memberId: string, fileName: string): Promise<void> {
 		const blobName = `public-files/${fileName}`;
@@ -30,7 +30,7 @@ export class PropertyBlobStorageApplicationServiceImpl extends BlobStorageApplic
 		});
 	}
 
-	public async propertyListingImageCreateAuthHeader(propertyId: string, fileName: string, memberId:string, contentType: string, contentLength: number): Promise<PropertyBlobFileAuthHeaderResult> {
+	public async propertyListingImageCreateAuthHeader(propertyId: string, fileName: string, memberId:string, contentType: string, contentLength: number): Promise<PropertyBlobFileAuthHeaderResult<TDataProperty>> {
 		const maxSizeMb = 10;
 		const maxSizeBytes = maxSizeMb * 1024 * 1024;
 		const permittedContentTypes = [
@@ -47,7 +47,7 @@ export class PropertyBlobStorageApplicationServiceImpl extends BlobStorageApplic
 		});
 	}
 
-	public async propertyFloorPlanImageCreateAuthHeader(propertyId: string, fileName: string, memberId:string, contentType: string, contentLength: number): Promise<PropertyBlobFileAuthHeaderResult> {
+	public async propertyFloorPlanImageCreateAuthHeader(propertyId: string, fileName: string, memberId:string, contentType: string, contentLength: number): Promise<PropertyBlobFileAuthHeaderResult<TDataProperty>> {
 		const maxSizeMb = 10;
 		const maxSizeBytes = maxSizeMb * 1024 * 1024;
 		const permittedContentTypes = [
@@ -89,12 +89,12 @@ export class PropertyBlobStorageApplicationServiceImpl extends BlobStorageApplic
 	}
 
 	private async getHeader(propertyId: string, memberId:string, permittedContentTypes: string[], blobName: string, fileInfo: FileInfo) {
-		let headerResult: PropertyBlobFileAuthHeaderResult;
+		let headerResult: PropertyBlobFileAuthHeaderResult<TDataProperty>;
 		const { fileName, contentType, contentLength, maxSizeBytes } = fileInfo;
 		await this.withStorage(async (passport, blobStorage) => {
 			let property = await (await this.context.applicationServices.propertyDatastoreApi.getPropertyByIdWithCommunityOwner(propertyId));
 			if (!property) {
-				headerResult = { status: { success: false, errorMessage: `Property not found: ${propertyId}` } } as PropertyBlobFileAuthHeaderResult;
+				headerResult = { status: { success: false, errorMessage: `Property not found: ${propertyId}` } } as PropertyBlobFileAuthHeaderResult<TDataProperty>;
 				return;
 			}
     
@@ -111,15 +111,15 @@ export class PropertyBlobStorageApplicationServiceImpl extends BlobStorageApplic
               );
             }
           )) {
-				headerResult = { status: { success: false, errorMessage: `User does not have permission to add images to property: ${propertyId}` } } as PropertyBlobFileAuthHeaderResult;
+				headerResult = { status: { success: false, errorMessage: `User does not have permission to add images to property: ${propertyId}` } } as PropertyBlobFileAuthHeaderResult<TDataProperty>;
 				return;
 			}
 			if (!permittedContentTypes.includes(contentType)) {
-				headerResult = { status: { success: false, errorMessage: 'Content type not permitted.' } } as PropertyBlobFileAuthHeaderResult;
+				headerResult = { status: { success: false, errorMessage: 'Content type not permitted.' } } as PropertyBlobFileAuthHeaderResult<TDataProperty>;
 				return;
 			}
 			if (contentLength > maxSizeBytes) {
-				headerResult = { status: { success: false, errorMessage: 'Content length exceeds permitted limit.' } } as PropertyBlobFileAuthHeaderResult;
+				headerResult = { status: { success: false, errorMessage: 'Content length exceeds permitted limit.' } } as PropertyBlobFileAuthHeaderResult<TDataProperty>;
 				return;
 			}
 
@@ -166,7 +166,7 @@ export class PropertyBlobStorageApplicationServiceImpl extends BlobStorageApplic
       headerResult = {
 				status: { success: true },
 				authHeader: { authHeader: authHeader, requestDate: requestDate, indexTags: indexKeyValues, metadataFields: metadataKeyValues, blobPath, blobName },
-			 } as PropertyBlobFileAuthHeaderResult;
+			 } as PropertyBlobFileAuthHeaderResult<TDataProperty>;
 		});
 		return headerResult;
 	}

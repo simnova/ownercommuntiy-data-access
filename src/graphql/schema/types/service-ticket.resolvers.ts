@@ -1,10 +1,9 @@
 import { Community, Member, Property, Resolvers,Service, ServiceTicket, ServiceTicketMutationResult } from '../builder/generated';
 import { getMemberForCurrentUser } from '../resolver-helper';
 import { isValidObjectId } from 'mongoose';
-import { ServiceTicket as ServiceTicketDo } from '../../../infrastructure-services-impl/datastore/mongodb/models/service-ticket';
-import { ServiceTicketDataStructure } from '../../../app/application-services/datastore';
+import { ServiceTicketData } from '../../../startup/execution-types-builder';
 
-const ServiceTicketMutationResolver = async (getServiceTicket: Promise<ServiceTicketDataStructure>): Promise<ServiceTicketMutationResult> => {
+const ServiceTicketMutationResolver = async (getServiceTicket: Promise<ServiceTicketData>): Promise<ServiceTicketMutationResult> => {
   try {
     return {
       status: { success: true },

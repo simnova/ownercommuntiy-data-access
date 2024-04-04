@@ -1,16 +1,15 @@
-import { ServiceTicketDataStructure } from '../../app/application-services/datastore';
 import { ServiceTicketDatastoreApplicationService } from '../../app/application-services/datastore/service-ticket.interface';
 import { ServiceTicketEntityReference } from '../../app/domain/contexts/service-ticket/service-ticket';
-import { AppContext } from '../../app/app-context';
+import { AppContext } from '../../app/app-context-builder';
 import { DatastoreApplicationServiceImpl } from './_datastore.application-service';
 
-export class ServiceTicketDatastoreApplicationServiceImpl 
+export class ServiceTicketDatastoreApplicationServiceImpl<TData>
   extends DatastoreApplicationServiceImpl<AppContext> 
-  implements ServiceTicketDatastoreApplicationService
+  implements ServiceTicketDatastoreApplicationService<TData>
 {
 
-  async getServiceTicketById(id: string): Promise<ServiceTicketDataStructure> {
-    let serviceTicketToReturn: ServiceTicketDataStructure;
+  async getServiceTicketById(id: string): Promise<TData> {
+    let serviceTicketToReturn: TData;
     await this.withDatastore(async (_passport, datastore) => {
       serviceTicketToReturn = await datastore.serviceTicketDatastore.findOneById(id);
     });
@@ -18,39 +17,39 @@ export class ServiceTicketDatastoreApplicationServiceImpl
     // return this.applyPermissionFilter([serviceTicketToReturn], this.context)[0];
   }
   
-  async getServiceTicketsByCommunityId(communityId: string): Promise<ServiceTicketDataStructure[]> {
-    let serviceTicketToReturn: ServiceTicketDataStructure[];
+  async getServiceTicketsByCommunityId(communityId: string): Promise<TData[]> {
+    let serviceTicketToReturn: TData[];
     await this.withDatastore(async (_passport, datastore) => {
       serviceTicketToReturn = await datastore.serviceTicketDatastore.findByFieldsWithPopulatedValues({ community: communityId });
     });
     return this.applyPermissionFilter(serviceTicketToReturn, this.context);
   }
 
-  async getServiceTicketsOpenByRequestor(memberId: string): Promise<ServiceTicketDataStructure[]> {
-    let serviceTicketToReturn: ServiceTicketDataStructure[];
+  async getServiceTicketsOpenByRequestor(memberId: string): Promise<TData[]> {
+    let serviceTicketToReturn: TData[];
     await this.withDatastore(async (_passport, datastore) => {
       serviceTicketToReturn = await datastore.serviceTicketDatastore.findByFieldsWithPopulatedValues({ requestor: memberId });
     });
     return this.applyPermissionFilter(serviceTicketToReturn, this.context);
   }
 
-  async getServiceTicketsClosedByRequestor(memberId: string): Promise<ServiceTicketDataStructure[]> {
-    let serviceTicketToReturn: ServiceTicketDataStructure[];
+  async getServiceTicketsClosedByRequestor(memberId: string): Promise<TData[]> {
+    let serviceTicketToReturn: TData[];
     await this.withDatastore(async (_passport, datastore) => {
       serviceTicketToReturn = await datastore.serviceTicketDatastore.findByFieldsWithPopulatedValues({ requestor: memberId , status: 'CLOSED'});
     });
     return this.applyPermissionFilter(serviceTicketToReturn, this.context);
   }
 
-  async getServiceTicketsByAssignedTo(communityId: string, memberId: string): Promise<ServiceTicketDataStructure[]> {
-    let serviceTicketToReturn: ServiceTicketDataStructure[];
+  async getServiceTicketsByAssignedTo(communityId: string, memberId: string): Promise<TData[]> {
+    let serviceTicketToReturn: TData[];
     await this.withDatastore(async (_passport, datastore) => {
       serviceTicketToReturn = await datastore.serviceTicketDatastore.findByFields({ community: communityId, assignedTo: memberId});
     });
     return this.applyPermissionFilter(serviceTicketToReturn, this.context);
   }
 
-  private async applyPermissionFilter(serviceTickets: ServiceTicketDataStructure[], context: AppContext): Promise<ServiceTicketDataStructure[]> {
+  private async applyPermissionFilter(serviceTickets: TData[], context: AppContext): Promise<TData[]> {
     return (await Promise.all(serviceTickets.map((ticket) => ticket)))
       .map((ticket) => ticket as unknown as ServiceTicketEntityReference) // [MG-TBD] remove unknown
       .filter((ticket) =>
@@ -64,6 +63,6 @@ export class ServiceTicketDatastoreApplicationServiceImpl
               (permissions.canWorkOnTickets && permissions.isEditingAssignedTicket)
           )
       )
-      .map((ticket) => ticket as unknown as ServiceTicketDataStructure); // [MG-TBD] remove unknown
+      .map((ticket) => ticket as unknown as TData); // [MG-TBD] remove unknown
   }
 }

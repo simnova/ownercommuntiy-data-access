@@ -1,11 +1,10 @@
 import { Resolvers, Community, Member, Property, PropertyMutationResult, PropertyUpdateInput } from '../builder/generated';
 import { isValidObjectId } from 'mongoose';
-import { Property as PropertyDo } from '../../../infrastructure-services-impl/datastore/mongodb/models/property';
 import { getMemberForCurrentUser } from '../resolver-helper';
 import { trace } from "@opentelemetry/api";
-import { PropertyDataStructure } from '../../../app/application-services/datastore';
+import { PropertyData } from '../../../startup/execution-types-builder';
 
-const PropertyMutationResolver = async (getProperty: Promise<PropertyDataStructure>): Promise<PropertyMutationResult> => {
+const PropertyMutationResolver = async (getProperty: Promise<PropertyData>): Promise<PropertyMutationResult> => {
   try {
     const temp: PropertyMutationResult = {
       status: { success: true },

@@ -1,12 +1,11 @@
 import { Passport, PassportImpl, ReadOnlyPassport } from "./domain/contexts/iam/passport";
 import { UserEntityReference } from "./domain/contexts/user/user";
 import { MemberEntityReference } from "./domain/contexts/community/member";
-import { CommunityDataStructure } from "./application-services/datastore";
 import { CommunityEntityReference } from "./domain/contexts/community/community";
-import { ApplicationServices } from "./application-services";
+import { ApplicationServices } from "./application-services/application-services-builder";
 import { InfrastructureServices } from "./infrastructure-services";
 import { BaseApplicationServiceExecutionContext } from "../application-services-impl/_base.application-service";
-import { ApplicationServicesBuilder } from "../startup/application-services-builder";
+import { ApplicationServicesBuilder } from "./application-services/application-services-builder";
 import { DomainImpl } from "./domain/domain-impl";
 
 export type VerifiedUser = {
@@ -14,31 +13,43 @@ export type VerifiedUser = {
   openIdConfigKey: string;
 };
 
-export interface AppContext extends BaseApplicationServiceExecutionContext{
+export interface AppContext
+  extends BaseApplicationServiceExecutionContext
+{
   verifiedUser: VerifiedUser;
   communityId: string;
   passport: Passport;
-  applicationServices: ApplicationServices;
-  infrastructureServices: InfrastructureServices;
+  applicationServices: ApplicationServices<TDataCommunity, TDataMember, TDataProperty, TDataRole, TDataService, TDataServiceTicket, TDataUser>;
+  infrastructureServices: InfrastructureServices<TDataCommunity, TDataMember, TDataProperty, TDataRole, TDataService, TDataServiceTicket, TDataUser>;
   init(): Promise<void>;
 }
 
-export class AppContextImpl implements AppContext {
+export class AppContextBuilder<TDataCommunity, TDataMember, TDataProperty, TDataRole, TDataService, TDataServiceTicket, TDataUser>
+  implements AppContext
+{
   private _verifiedUser: VerifiedUser;
   private _communityHeader: string;
-  private _communityData: CommunityDataStructure
+  private _communityData: TDataCommunity;
   private _passport: Passport;
-  private _applicationServices: ApplicationServices;
-  private _infrastructureServices: InfrastructureServices;
+  private _applicationServices: ApplicationServices<TDataCommunity, TDataMember, TDataProperty, TDataRole, TDataService, TDataServiceTicket, TDataUser>;
+  private _infrastructureServices: InfrastructureServices<TDataCommunity, TDataMember, TDataProperty, TDataRole, TDataService, TDataServiceTicket, TDataUser>;
 
   constructor(
     verifiedUser: VerifiedUser, 
     communityHeader: string,
-    infrastructureServices: InfrastructureServices
+    infrastructureServices: InfrastructureServices<TDataCommunity, TDataMember, TDataProperty, TDataRole, TDataService, TDataServiceTicket, TDataUser>
     ) {
       this._verifiedUser = verifiedUser;
       this._communityHeader = communityHeader;
-      this._applicationServices = new ApplicationServicesBuilder(this);
+      this._applicationServices = new ApplicationServicesBuilder<TDataCommunity, TDataMember, TDataProperty, TDataRole, TDataService, TDataServiceTicket, TDataUser>(this,
+        infrastructureServices.datastore.communityUnitOfWork, 
+        infrastructureServices.datastore.memberUnitOfWork, 
+        infrastructureServices.datastore.roleUnitOfWork, 
+        infrastructureServices.datastore.propertyUnitOfWork,
+        infrastructureServices.datastore.serviceUnitOfWork, 
+        infrastructureServices.datastore.serviceTicketUnitOfWork, 
+        infrastructureServices.datastore.userUnitOfWork, 
+        );
       this._infrastructureServices = infrastructureServices;
   }
 
@@ -54,11 +65,11 @@ export class AppContextImpl implements AppContext {
     return this._passport;
   }
 
-  get applicationServices(): ApplicationServices {
+  get applicationServices(): ApplicationServices<TDataCommunity, TDataMember, TDataProperty, TDataRole, TDataService, TDataServiceTicket, TDataUser> {
     return this._applicationServices;
   }
 
-  get infrastructureServices(): InfrastructureServices {
+  get infrastructureServices(): InfrastructureServices<TDataCommunity, TDataMember, TDataProperty, TDataRole, TDataService, TDataServiceTicket, TDataUser> {
     return this._infrastructureServices;
   }
 

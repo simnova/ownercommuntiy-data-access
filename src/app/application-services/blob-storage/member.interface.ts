@@ -1,17 +1,16 @@
-import { MemberDataStructure } from "../../../infrastructure-services-impl/datastore/data-structures/member";
 import { BlobAuthHeader } from "../../../../seedwork/services-seedwork-blob-storage-interfaces";
 import { MutationStatus } from "./_base.interfaces";
 
-export interface MemberBlobStorageApplicationService {
+export interface MemberBlobStorageApplicationService<TDataMember> {
   memberProfileAvatarRemove(memberId: string): Promise<MutationStatus>;
-  memberProfileAvatarCreateAuthHeader(memberId: string, fileName: string, contentType: string, contentLength: number): Promise<MemberAvatarImageAuthHeaderResult>;
+  memberProfileAvatarCreateAuthHeader(memberId: string, fileName: string, contentType: string, contentLength: number): Promise<MemberAvatarImageAuthHeaderResult<TDataMember>>;
 }
 
 
-export type MemberAvatarImageAuthHeaderResult = {
+export type MemberAvatarImageAuthHeaderResult<TDataMember> = {
   authHeader?: BlobAuthHeader;
-  member?: Member;
+  member?: TDataMember;
   status: MutationStatus;
 };
 
-export type Member = MemberDataStructure
+// export type Member = MemberDataStructure

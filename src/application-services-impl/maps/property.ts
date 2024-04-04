@@ -1,4 +1,4 @@
-import { AppContext } from '../../app/app-context';
+import { AppContext } from '../../app/app-context-builder';
 import { MapsApplicationServiceImpl } from './_maps.application-service';
 
 export class PropertyMapsApplicationServiceImpl extends MapsApplicationServiceImpl<AppContext> {

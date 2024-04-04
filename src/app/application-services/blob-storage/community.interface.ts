@@ -1,30 +1,28 @@
-import { CommunityDataStructure } from "../../../infrastructure-services-impl/datastore/data-structures/community";
-import { RoleDataStructure } from "../../../infrastructure-services-impl/datastore/data-structures/role";
 import { BlobAuthHeader, FileInfo } from "../../../../seedwork/services-seedwork-blob-storage-interfaces";
 import { MutationStatus } from "./_base.interfaces";
 
-export interface CommunityBlobStorageApplicationService {
+export interface CommunityBlobStorageApplicationService<TDataCommunity, TDataRole> {
   communityPublicFilesList(communityId: string): Promise<FileInfo[]>;
   communityPublicFilesListByType(communityId: string, type: string): Promise<FileInfo[]>;
-  communityPublicFileCreateAuthHeader(communityId: string, fileName: string, contentType: string, contentLength: number): Promise<CommunityBlobContentAuthHeaderResult>;
+  communityPublicFileCreateAuthHeader(communityId: string, fileName: string, contentType: string, contentLength: number): Promise<CommunityBlobContentAuthHeaderResult<TDataCommunity, TDataRole>>;
   communityPublicFileRemove(communityId: string, fileName: string): Promise<void>;
-  communityPublicContentCreateAuthHeader(communityId: string, contentType: string, contentLength: number): Promise<CommunityBlobContentAuthHeaderResult>;
+  communityPublicContentCreateAuthHeader(communityId: string, contentType: string, contentLength: number): Promise<CommunityBlobContentAuthHeaderResult<TDataCommunity, TDataRole>>;
 }
 
-export type CommunityBlobContentAuthHeaderResult = {
+export type CommunityBlobContentAuthHeaderResult<TDataCommunity, TDataRole> = {
   authHeader?: BlobAuthHeader;
-  community?: Community;
+  community?: Community<TDataCommunity, TDataRole>;
   status: MutationStatus;
 };
 
 
 
-export type Community = CommunityDataStructure & {
+export type Community<TDataCommunity, TDataRole> = TDataCommunity & {
   domainStatus?: CommunityDomainResult;
   files?: FileInfo[];
   filesByType?: FileInfo[];
   publicContentBlobUrl?: string;
-  roles?: RoleDataStructure[];
+  roles?: TDataRole[];
   userIsAdmin?: boolean;
 };
 

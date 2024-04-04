@@ -1,31 +1,30 @@
-import { UserDataStructure } from '../../app/application-services/datastore';
 import { UserDatastoreApplicationService } from '../../app/application-services/datastore/user.interface';
-import { AppContext } from '../../app/app-context';
+import { AppContext } from '../../app/app-context-builder';
 import { DatastoreApplicationServiceImpl } from './_datastore.application-service';
 
-export class UserDatastoreApplicationServiceImpl 
+export class UserDatastoreApplicationServiceImpl<TData>
   extends DatastoreApplicationServiceImpl<AppContext> 
-  implements UserDatastoreApplicationService
+  implements UserDatastoreApplicationService<TData>
 {
   
-  async getUserById(userId : string): Promise<UserDataStructure> {
-    let userToReturn: UserDataStructure;
+  async getUserById(userId : string): Promise<TData> {
+    let userToReturn: TData;
     await this.withDatastore(async (_passport, datastore) => {
       userToReturn = await datastore.userDatastore.findOneById(userId);
     });
     return userToReturn;
   }
 
-  async getByExternalId(externalId : string): Promise<UserDataStructure> {
-    let userToReturn: UserDataStructure;
+  async getByExternalId(externalId : string): Promise<TData> {
+    let userToReturn: TData;
     await this.withDatastore(async (_passport, datastore) => {
       userToReturn = (await datastore.userDatastore.findByFields({externalId: externalId}))?.[0];
     });
     return userToReturn;
   }
 
-  async getUsers(): Promise<UserDataStructure[]> {
-    let userToReturn: UserDataStructure[];
+  async getUsers(): Promise<TData[]> {
+    let userToReturn: TData[];
     await this.withDatastore(async (_passport, datastore) => {
       userToReturn = await datastore.userDatastore.getAll();
     });

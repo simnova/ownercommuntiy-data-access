@@ -1,21 +1,23 @@
 /** @format */
 
-import { Role } from "../../../infrastructure-services-impl/datastore/mongodb/models/role";
+import { Role, RoleModel } from "../../../infrastructure-services-impl/datastore/mongodb/models/role";
 import { GraphqlContext } from "../../graphql-context";
 import { CosmosDataSource } from "./cosmos-data-source";
 
 export class Roles extends CosmosDataSource<Role, GraphqlContext> {
 
   async getRoleById(id: string): Promise<Role> {
-    const roles = await this.findByFields({ community: this.context.community })
-    return roles.find(role => role.id === id);
+    const result = await this.context.applicationServices.roleDataApi.getRoleById(id);
+    return RoleModel.hydrate(result);
   }
 
   async getRoles(): Promise<Role[]> {
-    return this.findByFields({ community: this.context.community });
+    const result = await this.context.applicationServices.roleDataApi.getRoles();
+    return result.map((r) => RoleModel.hydrate(r));
   }
 
   async getRolesByCommunityId(communityId: string): Promise<Role[]> {
-    return this.findByFields({ community: communityId });
+    const result = await this.context.applicationServices.roleDataApi.getRolesByCommunityId(communityId);
+    return result.map((r) => RoleModel.hydrate(r));
   }
 }
